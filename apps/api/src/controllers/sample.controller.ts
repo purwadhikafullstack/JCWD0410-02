@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '@/prisma';
 
-
 export class SampleController {
   async getSampleData(req: Request, res: Response) {
     const sampleData = await prisma.sample.findMany();
@@ -33,5 +32,3 @@ export class SampleController {
     return res.status(201).send(newSampleData);
   }
 }
-
-console.log('Hello')
