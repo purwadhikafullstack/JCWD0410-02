@@ -10,12 +10,232 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sample {
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  firstName  String
+  lastName   String
+  password   String?
+  imageUrl   String?
+  role       Role
+  provider   Provider @default(CREDENTIALS)
+  isVerified Boolean  @default(false)
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenants      Tenant[]
+  transactions Transaction[]
+  reviews      Review[]
+
+  @@map("users") // if you want to use snake_case format
+}
+
+enum Role {
+  USER
+  TENANT
+}
+
+enum Provider {
+  CREDENTIALS
+  GOOGLE
+}
+
+model Tenant {
+  id         Int      @id @default(autoincrement())
+  name       String
+  imageUrl   String?
+  phone      String?
+  userId     Int
+  bankName   String
+  bankNumber String
+  balance    Int      @default(0)
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  properties Property[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tenants")
+}
+
+model Property {
+  id          Int            @id @default(autoincrement())
+  slug        String
+  title       String
+  category    Category
+  description String         @db.LongText()
+  latitude    String
+  longitude   String
+  status      StatusProperty
+  tenantId    Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  propertyFacilities PropertyFacility[]
+  propertyImages     PropertyImage[]
+  rooms              Room[]
+  reviews            Review[]
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("properties")
+}
+
+enum Category {
+  HOTEL
+  APARTMENT
+  VILLA
+}
+
+enum StatusProperty {
+  PUBLISHED
+  DRAFT
+}
+
+model PropertyFacility {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  propertyId  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("property_facilities")
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  imageUrl   String?
+  propertyId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("property_images")
+}
+
+model Room {
+  id         Int      @id @default(autoincrement())
+  name       String
+  stock      Int      @default(0)
+  price      Int
+  propertyId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  roomFacilities        RoomFacility[]
+  roomImages            RoomImage[]
+  roomNonAvailabilities RoomNonAvailability[]
+  peakSeasonRates       PeakSeasonRate[]
+  transactions          Transaction[]
+
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("rooms")
+}
+
+model RoomFacility {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  roomId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("room_facilities")
+}
+
+model RoomImage {
   id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
+  imageUrl  String
+  roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("samples") // if you want to use snake_case format
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("room_images")
+}
+
+model RoomNonAvailability {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  roomId    Int
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("room_non_availabilities")
+}
+
+model PeakSeasonRate {
+  id        Int      @id @default(autoincrement())
+  price     Int
+  startDate DateTime
+  endDate   DateTime
+  roomId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("peak_season_rates")
+}
+
+model Transaction {
+  id              Int               @id @default(autoincrement())
+  uuid            String            @default(uuid())
+  userId          Int
+  roomId          Int
+  status          StatusTransaction
+  total           Int
+  startDate       DateTime
+  endDate         DateTime
+  paymentProof    String?
+  snapToken       String?
+  snapRedirectUrl String?
+  expiredAt       DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  reviews Review[]
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
+enum StatusTransaction {
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_PAYMENT_CONFIRMATION
+  CANCELLED
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  rating        Int      @default(0)
+  review        String
+  userId        Int
+  transactionId Int
+  propertyId    Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  property    Property    @relation(fields: [propertyId], references: [id])
+
+  @@map("reviews")
 }
