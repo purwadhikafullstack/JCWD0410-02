@@ -4,7 +4,8 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NextAuthProvider from '@/providers/NextAuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -32,7 +33,19 @@ export default function RootLayout({
             <Footer />
           </ReactQueryProvider>
         </NextAuthProvider>
-        <ToastContainer />
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+        />
       </body>
     </html>
   );

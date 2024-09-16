@@ -48,7 +48,7 @@ export const registerService = async (body: User) => {
       { id: Number(newUser!.id) || existingUser!.id },
       JWT_SECRET!,
       {
-        expiresIn: '30m',
+        expiresIn: '1m',
       },
     );
 
