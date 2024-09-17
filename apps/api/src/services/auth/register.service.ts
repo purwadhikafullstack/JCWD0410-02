@@ -48,11 +48,11 @@ export const registerService = async (body: User) => {
       { id: Number(newUser!.id) || existingUser!.id },
       JWT_SECRET!,
       {
-        expiresIn: '1m',
+        expiresIn: '60m',
       },
     );
 
-    const link = BASE_URL_FE + `/verification?token=${token}`;
+    const link = BASE_URL_FE + `/verification/${token}`;
 
     const emailTemplatePath = path.join(
       __dirname,

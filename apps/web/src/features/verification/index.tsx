@@ -1,28 +1,31 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useVerification from '@/hooks/api/auth/useVerification';
 import { useFormik } from 'formik';
-import { RegisterSchema } from './schemas/RegisterSchema';
-import useRegister from '@/hooks/api/auth/useRegister';
-import Link from 'next/link';
-import { Role } from '@/types/user';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { FC } from 'react';
+import { VerificationSchema } from './schemas/VerificationSchema';
 
-const RegisterPage = () => {
-  const { mutateAsync: register, isPending } = useRegister();
+interface VerificationPageProps {
+  token: string;
+}
+
+const VerificationPage: FC<VerificationPageProps> = ({ token }) => {
+  const { mutateAsync: verification, isPending } = useVerification(token);
+  console.log(token);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      email: '',
-      role: Role.USER,
+      password: '',
+      confirmPassword: '',
     },
-    validationSchema: RegisterSchema,
+    validationSchema: VerificationSchema,
     onSubmit: async (values) => {
-      await register(values);
+      await verification(values);
     },
   });
 
@@ -31,8 +34,8 @@ const RegisterPage = () => {
       <div className="flex flex-col lg:flex-row w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="relative h-auto lg:h-auto lg:w-1/2 overflow-hidden">
           <Image
-            src="/registerPageImage.svg"
-            alt="Register Page Image"
+            src="/verificationPage.svg"
+            alt="Verification Page Image"
             fill
             className="object-cover"
           />
@@ -41,51 +44,49 @@ const RegisterPage = () => {
           <Card>
             <CardHeader className="mb-6 text-center lg:text-left">
               <CardTitle className="text-3xl font-bold text-center text-[#336aea]">
-                Join EaseCoz
+                Complete Registration
               </CardTitle>
-              <Link href="/login" className="mt-3 flex justify-center text-xs">
-                Already have an account? Login
-              </Link>
             </CardHeader>
             <CardContent>
               <form onSubmit={formik.handleSubmit}>
                 <div className="grid gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="password">Password</Label>
                     <Input
-                      name="name"
-                      type="text"
-                      placeholder="Your name"
-                      value={formik.values.name}
+                      name="password"
+                      type="password"
+                      placeholder="Your Password"
+                      value={formik.values.password}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                     />
-                    {!!formik.touched.name && !!formik.errors.name ? (
+                    {!!formik.touched.password && !!formik.errors.password ? (
                       <p className="text-xs text-red-500">
-                        {formik.errors.name}
+                        {formik.errors.password}
                       </p>
                     ) : null}
                   </div>
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="confirmPassword">Password</Label>
                     <Input
-                      name="email"
-                      type="email"
-                      placeholder="Your email"
-                      value={formik.values.email}
+                      name="confirmPassword"
+                      type="confirmPassword"
+                      placeholder="Confirm Your Password"
+                      value={formik.values.confirmPassword}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                     />
-                    {!!formik.touched.email && !!formik.errors.email ? (
+                    {!!formik.touched.confirmPassword &&
+                    !!formik.errors.confirmPassword ? (
                       <p className="text-xs text-red-500">
-                        {formik.errors.email}
+                        {formik.errors.confirmPassword}
                       </p>
                     ) : null}
                   </div>
                 </div>
 
                 <Button className="mt-7 w-full" disabled={isPending}>
-                  {isPending ? 'Loading...' : 'Join'}
+                  {isPending ? 'Verifying...' : 'Complete Registration'}
                 </Button>
               </form>
             </CardContent>
@@ -96,4 +97,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default VerificationPage;
