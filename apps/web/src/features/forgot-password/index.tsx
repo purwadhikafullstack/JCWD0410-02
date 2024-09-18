@@ -1,28 +1,25 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useForgotPassword from '@/hooks/api/auth/useForgotPassword';
 import { useFormik } from 'formik';
-import { RegisterSchema } from './schemas/RegisterSchema';
-import useRegister from '@/hooks/api/auth/useRegister';
-import Link from 'next/link';
-import { Role } from '@/types/user';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ForgotPasswordSchema } from './schemas/ForgotPasswordSchema';
 
-const RegisterPage = () => {
-  const { mutateAsync: register, isPending } = useRegister();
+const ForgotPasswordPage = () => {
+  const { mutateAsync: forgotPassword, isPending } = useForgotPassword();
 
   const formik = useFormik({
     initialValues: {
-      name: '',
       email: '',
-      role: Role.USER,
     },
-    validationSchema: RegisterSchema,
+    validationSchema: ForgotPasswordSchema,
     onSubmit: async (values) => {
-      await register(values);
+      await forgotPassword(values);
     },
   });
 
@@ -31,8 +28,8 @@ const RegisterPage = () => {
       <div className="flex flex-col lg:flex-row w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="relative h-auto lg:h-auto lg:w-1/2 overflow-hidden">
           <Image
-            src="/registerPageImage.svg"
-            alt="Register Page Image"
+            src="/forgotPasswordImage.svg"
+            alt="forgot Password Page Image"
             fill
             className="object-cover"
           />
@@ -41,31 +38,16 @@ const RegisterPage = () => {
           <Card>
             <CardHeader className="mb-6 text-center lg:text-left">
               <CardTitle className="text-3xl font-bold text-center text-[#336aea]">
-                Join EaseCoz
+                Reset your password
               </CardTitle>
-              <Link href="/login" className="mt-3 flex justify-center text-sm">
-                Already have an account? Login
-              </Link>
+              <p className="text-sm text-center">
+                If you signed up with an email and password, reset your password
+                below.
+              </p>
             </CardHeader>
             <CardContent>
               <form onSubmit={formik.handleSubmit}>
                 <div className="grid gap-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      name="name"
-                      type="text"
-                      placeholder="Your name"
-                      value={formik.values.name}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {!!formik.touched.name && !!formik.errors.name ? (
-                      <p className="text-xs text-red-500">
-                        {formik.errors.name}
-                      </p>
-                    ) : null}
-                  </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -85,9 +67,12 @@ const RegisterPage = () => {
                 </div>
 
                 <Button className="mt-7 w-full" disabled={isPending}>
-                  {isPending ? 'Loading...' : 'Join'}
+                  {isPending ? 'Loading...' : 'Reset Password'}
                 </Button>
               </form>
+              <Link href="/login" className="mt-3 flex justify-center text-sm">
+                Back to Login
+              </Link>
             </CardContent>
           </Card>
         </div>
@@ -96,4 +81,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ForgotPasswordPage;

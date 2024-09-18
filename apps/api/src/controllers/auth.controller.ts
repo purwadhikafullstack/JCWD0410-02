@@ -2,10 +2,12 @@
 // import { forgotPasswordService } from '@/services/auth/forgot-password.service';
 // import { loginService } from '@/services/auth/login.service';
 // import { resetPasswordService } from '@/services/auth/reset-password.service';
+import { forgotPasswordService } from '@/services/auth/forgot-password.service';
 import { getUserService } from '@/services/auth/get-user.service';
 // import { GoogleService } from '@/services/auth/google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
+import { resetPasswordService } from '@/services/auth/reset-password.service';
 import { verifyService } from '@/services/auth/verify.service';
 import { NextFunction, Request, Response } from 'express';
 
@@ -32,6 +34,33 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await loginService(req.body);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async forgotPasswordController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await forgotPasswordService(req.body);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async resetPasswordController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(res.locals.user.id);
+      const password = req.body.password;
+      const result = await resetPasswordService(userId, password);
+
       return res.status(200).send(result);
     } catch (error) {
       next(error);
