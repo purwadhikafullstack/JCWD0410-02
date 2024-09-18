@@ -13,13 +13,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
     Google({
-      authorization: {
-        params: {
-          prompt: 'consent',
-          access_type: 'offline',
-          response_type: 'code',
-        },
-      },
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
     }),
   ],
   session: {
@@ -31,7 +26,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: '/error',
   },
   callbacks: {
-    async signIn() {
+    async signIn({ account, profile }) {
+      if (account?.provider === 'google') {
+        return profile?.email_verified &&
+          profile.email?.endsWith('@example.com')
+          ? true
+          : false;
+      }
       return true;
     },
     async jwt({ token, user }) {

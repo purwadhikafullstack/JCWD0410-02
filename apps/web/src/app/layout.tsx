@@ -7,6 +7,7 @@ import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NextAuthProvider from '@/providers/NextAuthProvider';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,11 +28,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider>
-          <ReactQueryProvider>
-            <Header />
-            {children}
-            <Footer />
-          </ReactQueryProvider>
+          <GoogleOAuthProvider clientId="806369835528-mcqafjg6t68vvc9opfo8vllb09ia9ngr.apps.googleusercontent.com">
+            <ReactQueryProvider>
+              <Header />
+              {children}
+              <Footer />
+            </ReactQueryProvider>
+          </GoogleOAuthProvider>
         </NextAuthProvider>
         <ToastContainer
           position="top-center"
