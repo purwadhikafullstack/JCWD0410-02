@@ -16,7 +16,7 @@ model User {
   name       String
   password   String?
   imageUrl   String?
-  role       Role
+  role       Role     @default(USER)
   provider   Provider @default(CREDENTIALS)
   isVerified Boolean  @default(false)
   isDeleted  Boolean  @default(false)

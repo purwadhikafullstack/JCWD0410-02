@@ -1,9 +1,9 @@
 export interface User {
   id: number;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   provider: Provider;
+  imageUrl: string;
   role: Role;
   isVerified: Boolean;
   isDeleted: Boolean;

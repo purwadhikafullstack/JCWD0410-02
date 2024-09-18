@@ -27,6 +27,8 @@ export class AuthRouter {
       // verificationValidator,
       this.authController.verifyController,
     );
+    this.router.post('/login', this.authController.login);
+    // this.router.post('/google', this.authController.GoogleController);
   }
 
   getRouter(): Router {
