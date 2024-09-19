@@ -1,4 +1,5 @@
 import { AuthController } from '@/controllers/auth.controller';
+import { uploader } from '@/lib/multer';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -31,6 +32,12 @@ export class AuthRouter {
       this.authController.resetPasswordController,
     );
     // this.router.post('/google', this.authController.GoogleController);
+    this.router.post('/google', this.authController.loginWithGoogleController);
+    this.router.patch(
+      '/:id',
+      uploader().single('imageUrl'),
+      this.authController.updateProfileController,
+    );
   }
 
   getRouter(): Router {

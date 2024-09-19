@@ -1,71 +1,55 @@
 import { JWT_SECRET } from '@/config';
+import { getUserInfo } from '@/lib/getUserInfo';
+import { transporter } from '@/lib/nodemailer';
 import prisma from '@/prisma';
-import { Role } from '@prisma/client';
-import { OAuth2Client } from 'google-auth-library';
 import { sign } from 'jsonwebtoken';
-import { jwtDecode } from 'jwt-decode';
 
-const oAuth2Client = new OAuth2Client(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  'postmessage',
-);
-
-interface LoginGoogleArgs {
-  email: string;
-  name: string;
-  imageUrl: string;
-}
-
-export const getGoogleTokenService = async (code: string, role: Role) => {
+export const loginWithGoogleService = async (accessToken: string) => {
   try {
-    const { tokens } = await oAuth2Client.getToken(code);
-    const idToken = tokens.id_token;
+    const userInfo = await getUserInfo(accessToken);
 
-    const decode = jwtDecode(idToken as string) as LoginGoogleArgs;
-
-    const existingUser = await prisma.user.findFirst({
-      where: { email: decode.email },
-    });
-
-    if (
-      existingUser &&
-      existingUser.imageUrl &&
-      existingUser.imageUrl.includes('googleusercontent.com')
-    ) {
-      const token = sign({ id: existingUser.id }, JWT_SECRET!, {
-        expiresIn: '2h',
-      });
-
+    if (!userInfo) {
       return {
-        message: 'login google success',
-        data: existingUser,
-        token: token,
+        status: 400,
+        message: 'Failed to get user info from google',
       };
     }
 
-    if (existingUser?.password) {
-      throw new Error('Please login using email');
-    }
-
-    const newUser = await prisma.user.create({
-      data: {
-        email: decode.email,
-        name: decode.name,
-        imageUrl: decode.imageUrl,
-        isVerified: true,
-        role,
-      },
+    const user = await prisma.user.findFirst({
+      where: { email: userInfo.email },
     });
 
-    const token = sign({ id: newUser.id }, JWT_SECRET!, {
+    if (user && user.provider !== 'GOOGLE') {
+      throw new Error('Provider not Google');
+    }
+    let newUser;
+
+    if (!user) {
+      newUser = await prisma.user.create({
+        data: {
+          email: userInfo.email,
+          name: userInfo.name,
+          isVerified: true,
+          provider: 'GOOGLE',
+        },
+      });
+
+      await transporter.sendMail({
+        from: 'Admin',
+        to: userInfo.email,
+        subject: 'Welcome to EaseCoz',
+        html: `<p>Welcome to EaseCoz</p>`,
+      });
+    }
+
+    const token = sign({ id: newUser?.id || user?.id }, JWT_SECRET!, {
       expiresIn: '2h',
     });
 
     return {
-      message: 'Login by Google Success!',
-      data: newUser,
-      token: token,
+      message: `Hello ${userInfo.name}`,
+      data: newUser || user,
+      token,
     };
   } catch (error) {
     throw error;
