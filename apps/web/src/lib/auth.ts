@@ -1,6 +1,8 @@
+import axios from 'axios';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
+import { axiosInstance } from './axios';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -26,12 +28,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: '/error',
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account, user }: any) {
       if (account?.provider === 'google') {
-        return profile?.email_verified &&
-          profile.email?.endsWith('@example.com')
-          ? true
-          : false;
+        const accessToken = account?.access_token;
+        console.log('Google Access Token', accessToken);
+
+        const { data } = await axiosInstance.post('/auth/google', {
+          accessToken,
+        });
+        console.log(data);
+
+        user.id = data.data.id;
+        user.name = data.data.name;
+        user.role = data.data.role;
+        user.provider = data.data.provider;
+        user.token = data.token;
       }
       return true;
     },

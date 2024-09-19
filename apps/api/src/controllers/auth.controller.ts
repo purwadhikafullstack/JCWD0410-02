@@ -3,9 +3,10 @@
 // import { loginService } from '@/services/auth/login.service';
 // import { resetPasswordService } from '@/services/auth/reset-password.service';
 import { getUserService } from '@/services/auth/get-user.service';
-// import { GoogleService } from '@/services/auth/google.service';
+import { loginWithGoogleService } from '@/services/auth/google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
+import { updateProfileService } from '@/services/auth/update-user.service';
 import { verifyService } from '@/services/auth/verify.service';
 import { NextFunction, Request, Response } from 'express';
 
@@ -37,21 +38,40 @@ export class AuthController {
       next(error);
     }
   }
-  // async GoogleController(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const { code, role } = req.body;
-  //     const result = await GoogleService(code, role);
-
-  //     return res.status(200).send(result);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  async loginWithGoogleController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { accessToken } = req.body;
+      const result = await loginWithGoogleService(accessToken);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
   async getUserController(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const result = await getUserService(Number(id));
 
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateProfileController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updateProfileService(
+        Number(req.params.id),
+        req.body,
+        req.file!,
+      );
       return res.status(200).send(result);
     } catch (error) {
       next(error);
