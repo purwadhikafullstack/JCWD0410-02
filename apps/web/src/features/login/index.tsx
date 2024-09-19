@@ -11,7 +11,6 @@ import Image from 'next/image';
 import { FcGoogle } from 'react-icons/fc';
 import { LoginSchema } from './schemas/LoginSchema';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 
 const LoginPage = () => {
   const { mutateAsync: login, isPending: isLoginPending } = useLogin();
@@ -84,14 +83,8 @@ const LoginPage = () => {
                     ) : null}
                   </div>
                 </div>
-                <Link
-                  href="/forgot-password"
-                  className=" mt-7 flex justify-center text-sm"
-                >
-                  Forgot password?
-                </Link>
 
-                <Button className="mt-3 w-full" disabled={isLoginPending}>
+                <Button className="mt-7 w-full" disabled={isLoginPending}>
                   {isLoginPending ? 'Loading...' : 'Log in'}
                 </Button>
                 <div className="relative flex py-5 items-center">
