@@ -6,6 +6,7 @@ import { getUserService } from '@/services/auth/get-user.service';
 import { loginWithGoogleService } from '@/services/auth/google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
+import { resetPasswordService } from '@/services/auth/reset-password.service';
 import { updateProfileService } from '@/services/auth/update-user.service';
 import { verifyService } from '@/services/auth/verify.service';
 import { NextFunction, Request, Response } from 'express';
