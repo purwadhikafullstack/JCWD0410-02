@@ -1,7 +1,6 @@
-// import { SampleController } from '@/controllers/sample.controller';
 import { AuthController } from '@/controllers/auth.controller';
+import { uploader } from '@/lib/multer';
 import { verifyToken } from '@/middlewares/verifyToken';
-// import { registerValidator } from '@/middlewares/registerValidator';
 import { Router } from 'express';
 
 export class AuthRouter {
@@ -16,19 +15,29 @@ export class AuthRouter {
 
   private initializeRoutes(): void {
     this.router.get('/:id', verifyToken, this.authController.getUserController);
-    this.router.post(
-      '/register',
-      // registerValidator,
-      this.authController.registerController,
-    );
+    this.router.post('/register', this.authController.registerController);
     this.router.patch(
       '/verification',
       verifyToken,
-      // verificationValidator,
       this.authController.verifyController,
     );
     this.router.post('/login', this.authController.login);
+    this.router.post(
+      '/forgot-password',
+      this.authController.forgotPasswordController,
+    );
+    this.router.patch(
+      '/reset-password',
+      verifyToken,
+      this.authController.resetPasswordController,
+    );
     // this.router.post('/google', this.authController.GoogleController);
+    this.router.post('/google', this.authController.loginWithGoogleController);
+    this.router.patch(
+      '/:id',
+      uploader().single('imageUrl'),
+      this.authController.updateProfileController,
+    );
   }
 
   getRouter(): Router {
