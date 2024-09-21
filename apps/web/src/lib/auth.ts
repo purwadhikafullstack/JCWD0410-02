@@ -17,8 +17,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID as string,
       clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
-      clientId: process.env.AUTH_GOOGLE_ID as string,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
     }),
   ],
   session: {

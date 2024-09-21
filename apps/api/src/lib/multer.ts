@@ -9,7 +9,7 @@ export const uploader = (fileLimit?: number) => {
     file: Express.Multer.File,
     cb: FileFilterCallback,
   ) => {
-    const extAllowed = /\.(jpg|jpeg|png)$/;
+    const extAllowed = /\.(jpg|jpeg|png|gif)$/;
     const isExtMatch = file.originalname.toLocaleLowerCase().match(extAllowed);
     if (isExtMatch) {
       cb(null, true);
@@ -19,7 +19,7 @@ export const uploader = (fileLimit?: number) => {
     }
   };
 
-  const limits = { fileSize: fileLimit || 5 * 1024 * 1024 };
+  const limits = { fileSize: fileLimit || 1 * 1024 * 1024 };
 
   return multer({ storage, fileFilter, limits });
 };

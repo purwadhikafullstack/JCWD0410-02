@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 
-export const ProfileSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+export const ChangeEmailSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
 });

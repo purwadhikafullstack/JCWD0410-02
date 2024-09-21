@@ -1,6 +1,7 @@
 import { cloudinaryUpload } from '@/lib/cloudinary';
 import prisma from '@/prisma';
 import { User } from '@prisma/client';
+import fs from 'fs';
 
 export const updateProfileService = async (
   userId: number,

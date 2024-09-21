@@ -220,6 +220,7 @@ enum StatusTransaction {
   WAITING_FOR_PAYMENT
   WAITING_FOR_PAYMENT_CONFIRMATION
   CANCELLED
+  PROCESSED
 }
 
 model Review {
