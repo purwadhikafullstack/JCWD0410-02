@@ -1,4 +1,5 @@
 'use client';
+import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 export const Header = () => {
@@ -18,5 +19,11 @@ export const Header = () => {
   ) {
     return null;
   }
-  return <div>Header</div>;
+  return (
+    <div>
+      <p onClick={() => signOut()} className="cursor-pointer">
+        sign out
+      </p>
+    </div>
+  );
 };

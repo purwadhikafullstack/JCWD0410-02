@@ -25,7 +25,7 @@ const useUpdateProfile = (id: number) => {
       editProfileForm.append('name', payload.name);
       editProfileForm.append('email', payload.email);
       const { data } = await axiosInstance.patch(
-        `/user/${id}`,
+        `/auth/${id}`,
         editProfileForm,
       );
       return data;
@@ -33,7 +33,7 @@ const useUpdateProfile = (id: number) => {
     onSuccess: async (data) => {
       await signIn('credentials', { ...data, redirect: false });
       toast.success('Update Profile Success');
-      if (data.roles !== 'TENANT') {
+      if (data.role !== 'TENANT') {
         router.push('/');
       } else {
         return router.push('/dashboard');

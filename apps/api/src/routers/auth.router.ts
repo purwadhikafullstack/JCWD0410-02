@@ -33,6 +33,22 @@ export class AuthRouter {
     );
     // this.router.post('/google', this.authController.GoogleController);
     this.router.post('/google', this.authController.loginWithGoogleController);
+
+    this.router.patch(
+      '/change-password/:id',
+      verifyToken,
+      this.authController.changePassword,
+    );
+    this.router.patch(
+      '/change-email',
+      verifyToken,
+      this.authController.changeEmailController,
+    );
+    this.router.patch(
+      '/verify-email',
+      verifyToken,
+      this.authController.changeEmailVerificationController,
+    );
     this.router.patch(
       '/:id',
       uploader().single('imageUrl'),
