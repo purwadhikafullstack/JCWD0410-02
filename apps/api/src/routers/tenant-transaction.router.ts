@@ -13,6 +13,7 @@ export class TenantTransactionRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.transactionController.getTransactions);
+    this.router.post('/:id/confirm', this.transactionController.confirmPayment); 
   }
 
   getRouter(): Router {
