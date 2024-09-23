@@ -1,4 +1,5 @@
 
+import { confirmPaymentService } from '@/services/tenanttransactions/confirmpayment.service';
 import { getTransactionsService } from '@/services/tenanttransactions/orderlist.service';
 import { NextFunction, Request, Response } from 'express';
 
@@ -31,6 +32,19 @@ async getTransactions(req: Request, res: Response, next: NextFunction) {
     });
 
     return res.status(200).json(transactions);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async confirmPayment(req: Request, res: Response, next: NextFunction) {
+  try {
+    const transactionId = parseInt(req.params.id); // Mengambil ID transaksi dari parameter URL
+    const confirm = req.body.confirm; // Mengambil nilai confirm dari body (true/false)
+
+    const result = await confirmPaymentService(transactionId, confirm);
+
+    return res.status(200).send(result);
   } catch (error) {
     next(error);
   }
