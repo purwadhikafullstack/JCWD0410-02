@@ -1,4 +1,5 @@
 
+import { cancelOrderService } from '@/services/tenanttransactions/cancelorder.service';
 import { confirmPaymentService } from '@/services/tenanttransactions/confirmpayment.service';
 import { getTransactionsService } from '@/services/tenanttransactions/orderlist.service';
 import { NextFunction, Request, Response } from 'express';
@@ -43,6 +44,19 @@ async confirmPayment(req: Request, res: Response, next: NextFunction) {
     const confirm = req.body.confirm; // Mengambil nilai confirm dari body (true/false)
 
     const result = await confirmPaymentService(transactionId, confirm);
+
+    return res.status(200).send(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async cancelOrder(req: Request, res: Response, next: NextFunction) {
+  try {
+    const transactionId = parseInt(req.params.id); // ID transaksi dari URL
+
+    // Konfirmasi pembatalan transaksi
+    const result = await cancelOrderService(transactionId);
 
     return res.status(200).send(result);
   } catch (error) {
