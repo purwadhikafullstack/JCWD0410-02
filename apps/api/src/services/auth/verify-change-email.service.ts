@@ -6,18 +6,22 @@ import { hashPassword } from '@/lib/bcrypt';
 import { transporter } from '@/lib/nodemailer';
 import { BASE_URL_FE } from '@/config';
 
-export const verifyChangeEmailService = async (userId: number) => {
+export const verifyChangeEmailService = async (
+  userId: number,
+  email: string,
+) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId },
+      where: { id: userId, email, isVerified: true },
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Email already verified');
     }
     const verifyChangeEmailUser = await prisma.user.update({
       where: { id: userId },
       data: {
+        email,
         isVerified: true,
       },
     });
