@@ -14,7 +14,6 @@ export class AuthRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/:id', verifyToken, this.authController.getUserController);
     this.router.post('/register', this.authController.registerController);
     this.router.patch(
       '/verification',
@@ -54,6 +53,7 @@ export class AuthRouter {
       uploader().single('imageUrl'),
       this.authController.updateProfileController,
     );
+    this.router.get('/:id', verifyToken, this.authController.getUserController);
   }
 
   getRouter(): Router {

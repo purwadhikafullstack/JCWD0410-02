@@ -1,31 +1,47 @@
+'use client';
+import AddGuest from '@/components/AddGuest';
+import BestDeals from '@/components/BestDeals';
+import { DatePickerWithRange } from '@/components/DateRangePicker';
 import { Jumbotron } from '@/components/Jumbotron';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import PropertyList from './components/PropertyList';
 
 const HomePage = () => {
   return (
-    <div>
+    <main>
       <Jumbotron />
-      <div>
-        <div className="w-full overflow-hidden">
-          <div className="absolute z-[15] flex flex-col gap-12 items-center justify-center inset-0 h-[85vh] md:h-[70vh]">
-            <div className="drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)] font-bold w-[60%] text-3xl md:text-5xl lg:w-full text-center text-white">
-              Find the accommodation of your next adventure
-            </div>
-          </div>
+      <div className="grid md:grid-cols-3 bg-white shadow-inner p-2 rounded-xl max-w-7xl mx-auto mt-20 items-center gap-2">
+        {/* <SEARCH HOTEL /> */}
+        <div className="bg-white p-1 rounded-xl">
+          <p className="font-semibold text-center text-[#294791] mb-1">Hotel</p>
+          <Input
+            type="text"
+            placeholder="Search Hotel"
+            className="border-none text-base"
+          />
         </div>
-        <div
-          id="bigCard"
-          className="relative w-full mt-[-35px] bg-white py-16 z-10 rounded-[30px]"
-        >
-          <div className="w-[80vw] mx-auto ">
-            {/* <ExploreCity></ExploreCity> */}
-            {/* <FeaturedRooms listings={listings}></FeaturedRooms> */}
-            {/* <BestDeals></BestDeals> */}
-            {/* <WhyRoomer></WhyRoomer> */}
-          </div>
+        <DatePickerWithRange />
+        {/* <ADD GUEST /> */}
+        <div className="bg-white p-1 rounded-xl">
+          <p className="font-semibold text-center text-[#294791] mb-1">Who</p>
+          <Input
+            type="number"
+            placeholder="Add guest"
+            className="border-none text-base"
+          />
         </div>
-        {/* <Newsletter></Newsletter> */}
       </div>
-    </div>
+      <div className="container max-w-7xl mx-auto mt-3 text-center">
+        <Button className="w-full">Search</Button>
+      </div>
+      <div className="my-20">
+        <PropertyList />
+      </div>
+      <div className="my-20">
+        <BestDeals />
+      </div>
+    </main>
   );
 };
 

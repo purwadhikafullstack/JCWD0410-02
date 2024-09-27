@@ -1,3 +1,9 @@
+import HomePage from '@/features/home';
+
 export default function Home() {
-  return <main></main>;
+  return (
+    <main>
+      <HomePage />
+    </main>
+  );
 }

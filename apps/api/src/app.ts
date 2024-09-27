@@ -10,6 +10,7 @@ import express, {
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
 import { TenantTransactionRouter } from './routers/tenant-transaction.router';
+import { PropertyRouter } from './routers/property.router';
 // import { SampleRouter } from './routers/auth.router';
 
 export default class App {
@@ -54,6 +55,8 @@ export default class App {
   private routes(): void {
     const authRouter = new AuthRouter();
     const tenantTransactionRouter = new TenantTransactionRouter();
+    const propertyRouter = new PropertyRouter();
+
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Hello! Welcome to EaseCoz API!`);
     });
@@ -63,6 +66,7 @@ export default class App {
       '/api/tenanttransactions',
       tenantTransactionRouter.getRouter(),
     );
+    this.app.use('/api/property', propertyRouter.getRouter());
   }
 
   public start(): void {

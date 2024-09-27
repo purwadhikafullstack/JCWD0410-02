@@ -16,7 +16,10 @@ import { FaCircleXmark } from 'react-icons/fa6';
 
 const ProfilePage = () => {
   const session = useSession();
-  const isVerified = session.data?.user.isVerified;
+  const isVerified = String(session.data?.user.isVerified);
+
+  console.log(isVerified);
+
   const [iconColor, setIconColor] = useState('#B8BACF');
   const [selectedImage, setSelectedImage] = useState<string>('');
   const photoRef = useRef<HTMLInputElement>(null);
@@ -125,7 +128,7 @@ const ProfilePage = () => {
                         Email
                       </label>
                       <p className="flex items-center">
-                        {isVerified ? (
+                        {isVerified === 'true' ? (
                           <span className="flex items-center text-green-500">
                             <IoMdCheckmarkCircle className="mr-1" /> Email
                             Verified

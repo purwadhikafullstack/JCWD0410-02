@@ -29,13 +29,14 @@ export const Jumbotron = () => {
     return null;
   }
   return (
-    <div className="w-full overflow-hidden">
-      <div>
-        <div className="absolute z-[15] flex flex-col gap-12 items-center justify-center inset-0 h-[85vh] md:h-[70vh]">
-          <p className="drop-shadow font-bold text-3xl md:text-5xl w-[50%] lg:w-full text-center text-white">
-            Find the accommodation of your next adventure
+    <div>
+      <div className="w-full overflow-hidden rounded-b-3xl relative">
+        <div className="absolute z-[15] flex flex-col items-center justify-center inset-0 h-[70vh] md:h-[65vh]">
+          <p className="drop-shadow-2xl font-bold w-[60%] text-3xl md:text-5xl md:w-[50%] lg:w-full text-center text-white leading-snug">
+            Easy Living, Cozy Feels
           </p>
         </div>
+
         <Carousel plugins={[plugin.current]}>
           <CarouselContent className="h-[600px]">
             <CarouselItem className="relative w-full overflow-hidden">
@@ -65,7 +66,6 @@ export const Jumbotron = () => {
           </CarouselContent>
         </Carousel>
       </div>
-      <div className="grid grid-cols-3"></div>
     </div>
   );
 };

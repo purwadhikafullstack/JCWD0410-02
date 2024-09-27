@@ -6,13 +6,10 @@ import { hashPassword } from '@/lib/bcrypt';
 import { transporter } from '@/lib/nodemailer';
 import { BASE_URL_FE } from '@/config';
 
-export const verifyChangeEmailService = async (
-  userId: number,
-  email: string,
-) => {
+export const verifyChangeEmailService = async (userId: number) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId, email, isVerified: true },
+      where: { id: userId, isVerified: true },
     });
 
     if (!user) {
@@ -21,7 +18,6 @@ export const verifyChangeEmailService = async (
     const verifyChangeEmailUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        email,
         isVerified: true,
       },
     });
