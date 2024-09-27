@@ -1,5 +1,7 @@
+"use client"
 import React from "react";
 import useCancelOrder from "@/hooks/api/transaction-tenant/useCancelOrder";
+import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction untuk memeriksa status
 
 interface CancelOrderModalProps {
   transaction: any;
@@ -23,6 +25,9 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
     );
   };
 
+  // Periksa apakah status adalah WAITING_FOR_PAYMENT
+  const canCancelOrder = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
+
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
@@ -34,10 +39,20 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
+            {/* Jika status bukan WAITING_FOR_PAYMENT, tampilkan pesan peringatan */}
+            {!canCancelOrder && (
+              <p className="text-red-500 mt-2">
+                Only orders with status "Waiting for Payment" can be cancelled.
+              </p>
+            )}
+
             <div className="flex justify-between mt-4">
               <button
                 onClick={handleCancelOrder}
-                className="bg-red-500 text-white px-4 py-2 rounded-md"
+                className={`px-4 py-2 rounded-md ${
+                  canCancelOrder ? "bg-red-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!canCancelOrder} // Tombol dinonaktifkan jika tidak bisa dibatalkan
               >
                 Confirm Cancel
               </button>

@@ -17,28 +17,21 @@ const TableTransaction = () => {
   const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
-  const take = 10;
-
+  const take = 5;
   const { data, isLoading, error, refetch } = useGetTransactions({
     tenantId: 1,
     status: selectedStatus === "ALL" ? undefined : selectedStatus,
     page,
     take,
+    sortBy: "createdAt",
+    sortOrder: "desc",
   });
 
-  const handleDetail = (transaction: Transaction) => {
+  const handleModal = (type: "detail" | "edit" | "cancel", transaction: Transaction) => {
     setSelectedTransaction(transaction);
-    setIsDetailOpen(true);
-  };
-
-  const handleEdit = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsEditOpen(true);
-  };
-
-  const handleCancel = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsCancelOpen(true);
+    if (type === "detail") setIsDetailOpen(true);
+    else if (type === "edit") setIsEditOpen(true);
+    else setIsCancelOpen(true);
   };
 
   const closeModal = () => {
@@ -47,53 +40,62 @@ const TableTransaction = () => {
     setIsCancelOpen(false);
   };
 
-  const toggleDropdown = (id: number) => {
-    setDropdownOpen(dropdownOpen === id ? null : id);
-  };
+  const renderDropdown = (transaction: Transaction) => (
+    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-10">
+      {["Detail", "Edit", "Cancel Order"].map((action, index) => (
+        <button
+          key={index}
+          className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${action === "Cancel Order" && "text-red-600"}`}
+          onClick={() => {
+            handleModal(action.toLowerCase() as "detail" | "edit" | "cancel", transaction);
+            setDropdownOpen(null);
+          }}
+        >
+          {action}
+        </button>
+      ))}
+    </div>
+  );
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="container mx-auto p-4 bg-white shadow-md rounded-lg">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Order List</h2>
-        <div className="flex items-center">
-          <select
-            id="status-filter"
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value as StatusTransaction | "ALL")}
-            className="border px-4 py-2 rounded-lg"
-          >
-            <option value="ALL">All</option>
-            {Object.values(StatusTransaction).map((status) => (
-              <option key={status} value={status}>
-                {status.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Order List</h2>
+        <select
+          id="status-filter"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value as StatusTransaction | "ALL")}
+          className="border-gray-300 rounded-lg shadow-sm px-4 py-2"
+        >
+          <option value="ALL">All</option>
+          {Object.values(StatusTransaction).map((status) => (
+            <option key={status} value={status}>
+              {status.replace(/_/g, " ")}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200 bg-white">
-          <thead>
+        <table className="min-w-full bg-white rounded-lg shadow-md">
+          <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">User Name</th>
-              <th className="border px-4 py-2">Property</th>
-              <th className="border px-4 py-2">Payment Proof</th>
-              <th className="border px-4 py-2">Status</th>
-              <th className="border px-4 py-2">Actions</th>
+              {["User Name", "Property", "Payment Proof", "Status", "Actions"].map((header) => (
+                <th key={header} className="px-6 py-3 border-b border-gray-200">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-gray-600">
             {data?.data.map((transaction: Transaction) => (
-              <tr key={transaction.id}>
-                <td className="border px-4 py-2">{transaction.id}</td>
-                <td className="border px-4 py-2">{transaction.user.name}</td>
-                <td className="border px-4 py-2">{transaction.room.property.title}</td>
-                <td className="border px-4 py-2">
+              <tr key={transaction.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 border-b border-gray-200">{transaction.user?.name}</td>
+                <td className="px-6 py-4 border-b border-gray-200">{transaction.room?.property?.title}</td>
+                <td className="px-6 py-4 border-b border-gray-200">
                   {transaction.paymentProof ? (
                     <a href={transaction.paymentProof} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
                       View Proof
@@ -102,45 +104,19 @@ const TableTransaction = () => {
                     "No Proof"
                   )}
                 </td>
-                <td className="border px-4 py-2">{transaction.status.replace(/_/g, " ")}</td>
-                <td className="border px-4 py-2 relative">
-                  <div className="relative">
-                    <FiMoreVertical
-                      className="cursor-pointer text-blue-500"
-                      onClick={() => toggleDropdown(transaction.id)}
-                    />
-                    {dropdownOpen === transaction.id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-10">
-                        <button
-                          className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => {
-                            handleDetail(transaction);
-                            toggleDropdown(transaction.id);
-                          }}
-                        >
-                          Detail
-                        </button>
-                        <button
-                          className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => {
-                            handleEdit(transaction);
-                            toggleDropdown(transaction.id);
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="block w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600"
-                          onClick={() => {
-                            handleCancel(transaction);
-                            toggleDropdown(transaction.id);
-                          }}
-                        >
-                          Cancel Order
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                <td
+                  className={`px-6 py-4 border-b border-gray-200 ${
+                    transaction.status === "PROCESSED" ? "text-green-500" : ""
+                  } ${transaction.status === "CANCELLED" ? "text-red-500" : ""}`}
+                >
+                  {transaction.status.replace(/_/g, " ")}
+                </td>
+                <td className="px-6 py-4 border-b border-gray-200 relative">
+                  <FiMoreVertical
+                    className="cursor-pointer text-gray-600 hover:text-gray-800"
+                    onClick={() => setDropdownOpen(dropdownOpen === transaction.id ? null : transaction.id)}
+                  />
+                  {dropdownOpen === transaction.id && renderDropdown(transaction)}
                 </td>
               </tr>
             ))}
@@ -148,32 +124,32 @@ const TableTransaction = () => {
         </table>
       </div>
 
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          className={`px-4 py-2 bg-gray-200 rounded-lg ${page === 1 ? "cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          Previous
-        </button>
-        <p className="text-sm text-gray-700">Page {page}</p>
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={data && page * take >= data.total}
-          className={`px-4 py-2 bg-gray-200 rounded-lg ${data && page * take >= data.total ? "cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          Next
-        </button>
+      <div className="flex justify-between items-center mt-6">
+        <div className="text-sm text-gray-500">Showing {data?.data.length || 0} rows per page</div>
+        <div className="flex items-center space-x-2">
+          {["Previous", "Next"].map((buttonText, index) => (
+            <button
+              key={buttonText}
+              onClick={() => setPage(buttonText === "Previous" ? page - 1 : page + 1)}
+              disabled={index === 0 ? page === 1 : data && page * take >= data.meta.total}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                index === 0
+                  ? page === 1
+                    ? "text-gray-400 bg-gray-200 cursor-not-allowed"
+                    : "text-blue-600 bg-gray-100 hover:bg-gray-200"
+                  : data && page * take >= data.meta.total
+                  ? "text-gray-400 bg-gray-200 cursor-not-allowed"
+                  : "text-blue-600 bg-gray-100 hover:bg-gray-200"
+              }`}
+            >
+              {buttonText}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {isDetailOpen && selectedTransaction && (
-        <DetailModal transaction={selectedTransaction} closeModal={closeModal} />
-      )}
-
-      {isEditOpen && selectedTransaction && (
-        <EditModal transaction={selectedTransaction} closeModal={closeModal} refetch={refetch} />
-      )}
-
+      {isDetailOpen && selectedTransaction && <DetailModal transaction={selectedTransaction} closeModal={closeModal} />}
+      {isEditOpen && selectedTransaction && <EditModal transaction={selectedTransaction} closeModal={closeModal} refetch={refetch} />}
       {isCancelOpen && selectedTransaction && (
         <CancelOrderModal transaction={selectedTransaction} closeModal={closeModal} refetch={refetch} />
       )}
