@@ -1,5 +1,6 @@
 import React from "react";
 import useConfirmPayment from '@/hooks/api/transaction-tenant/useConfirmPayment';
+import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction
 
 interface EditModalProps {
   transaction: any; // Can be refined based on type
@@ -23,6 +24,14 @@ const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch 
     );
   };
 
+  // Periksa apakah status memungkinkan untuk konfirmasi atau penolakan
+  const canConfirmOrDecline = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION;
+
+  // Jika status sudah diubah menjadi PROCESSED atau WAITING_FOR_PAYMENT, nonaktifkan tombol
+  const isProcessedOrWaitingForPayment = 
+    transaction.status === StatusTransaction.PROCESSED ||
+    transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
+
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
@@ -33,16 +42,32 @@ const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch 
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
+            {/* Jika status tidak memungkinkan, tampilkan peringatan */}
+            {!canConfirmOrDecline && (
+              <p className="text-red-500 mt-2">
+                This transaction cannot be modified. It is either already processed or awaiting payment.
+              </p>
+            )}
+
             <div className="flex justify-between mt-4">
+              {/* Tombol Confirm */}
               <button
                 onClick={() => handleConfirm(true)}
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                className={`px-4 py-2 rounded-md ${
+                  canConfirmOrDecline ? "bg-green-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
               >
                 Confirm
               </button>
+
+              {/* Tombol Decline */}
               <button
                 onClick={() => handleConfirm(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md"
+                className={`px-4 py-2 rounded-md ${
+                  canConfirmOrDecline ? "bg-red-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
               >
                 Decline
               </button>
