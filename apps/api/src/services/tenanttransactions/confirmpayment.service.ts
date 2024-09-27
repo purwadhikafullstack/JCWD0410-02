@@ -1,8 +1,7 @@
 import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
 import { transporter } from '@/lib/nodemailer';
-import schedule from 'node-schedule'; // Import node-schedule
-
+import schedule from 'node-schedule'; 
 // Fungsi untuk konfirmasi atau tolak pembayaran
 export const confirmPaymentService = async (
   transactionId: number,
@@ -66,7 +65,6 @@ export const confirmPaymentService = async (
       const reminderDate = new Date(transaction.startDate);
       reminderDate.setDate(reminderDate.getDate() - 1); // Set pengingat H-1
 
-      // Jadwalkan pengiriman email pengingat
       schedule.scheduleJob(reminderDate, async () => {
         await transporter.sendMail({
           to: transaction.user.email,
