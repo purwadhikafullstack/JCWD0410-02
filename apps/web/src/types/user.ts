@@ -5,8 +5,8 @@ export interface User {
   provider: Provider;
   imageUrl: string;
   role: Role;
-  isVerified: Boolean;
-  isDeleted: Boolean;
+  isVerified: boolean;
+  isDeleted: boolean;
 }
 
 export enum Provider {

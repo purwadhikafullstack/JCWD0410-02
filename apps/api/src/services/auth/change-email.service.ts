@@ -25,16 +25,9 @@ export const changeEmailService = async (userId: number, email: string) => {
       }
     }
 
-    const updateEmail = await prisma.user.update({
-      where: { id: userId },
-      data: { email, isVerified: false },
+    const token = sign({ id: userId, email }, JWT_SECRET!, {
+      expiresIn: '60m',
     });
-
-    const token = sign(
-      { id: Number(updateEmail!.id) || user!.id },
-      JWT_SECRET!,
-      { expiresIn: '60m' },
-    );
 
     const link = BASE_URL_FE + `/verify-email/${token}`;
 

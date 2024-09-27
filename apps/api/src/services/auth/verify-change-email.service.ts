@@ -9,11 +9,11 @@ import { BASE_URL_FE } from '@/config';
 export const verifyChangeEmailService = async (userId: number) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId },
+      where: { id: userId, isVerified: true },
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Email already verified');
     }
     const verifyChangeEmailUser = await prisma.user.update({
       where: { id: userId },
