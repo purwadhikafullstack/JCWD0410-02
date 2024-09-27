@@ -1,6 +1,7 @@
 import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
 import { transporter } from '@/lib/nodemailer';
+import schedule from 'node-schedule'; // Import node-schedule
 
 // Fungsi untuk konfirmasi atau tolak pembayaran
 export const confirmPaymentService = async (
@@ -61,11 +62,12 @@ export const confirmPaymentService = async (
         `,
       });
 
-      // Mengatur pengingat H-1
+      // Mengatur pengingat H-1 menggunakan node-schedule
       const reminderDate = new Date(transaction.startDate);
-      reminderDate.setDate(reminderDate.getDate() - 1);
+      reminderDate.setDate(reminderDate.getDate() - 1); // Set pengingat H-1
 
-      setTimeout(async () => {
+      // Jadwalkan pengiriman email pengingat
+      schedule.scheduleJob(reminderDate, async () => {
         await transporter.sendMail({
           to: transaction.user.email,
           subject: 'Reminder - Check-in Tomorrow',
@@ -83,7 +85,7 @@ export const confirmPaymentService = async (
             </div>
           `,
         });
-      }, reminderDate.getTime() - new Date().getTime()); // Menghitung jarak waktu untuk pengiriman email H-1
+      });
     }
 
     return updatedTransaction;
