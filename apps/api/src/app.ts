@@ -10,6 +10,7 @@ import express, {
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
 import { TenantTransactionRouter } from './routers/tenant-transaction.router';
+import { UserTransactionRouter } from './routers/user-transaction.router';
 import { PropertyRouter } from './routers/property.router';
 // import { SampleRouter } from './routers/auth.router';
 
@@ -55,6 +56,7 @@ export default class App {
   private routes(): void {
     const authRouter = new AuthRouter();
     const tenantTransactionRouter = new TenantTransactionRouter();
+    const userTransactionRouter = new UserTransactionRouter();
     const propertyRouter = new PropertyRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
@@ -66,6 +68,7 @@ export default class App {
       '/api/tenanttransactions',
       tenantTransactionRouter.getRouter(),
     );
+    this.app.use('/api/usertransactions', userTransactionRouter.getRouter());
     this.app.use('/api/property', propertyRouter.getRouter());
   }
 
