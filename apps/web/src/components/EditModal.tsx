@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 import useConfirmPayment from '@/hooks/api/transaction-tenant/useConfirmPayment';
-import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction
+import { StatusTransaction } from '@/types/transaction'; // Import enum StatusTransaction
 
 interface EditModalProps {
   transaction: any; // Can be refined based on type
@@ -8,7 +8,11 @@ interface EditModalProps {
   refetch: () => void;
 }
 
-const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch }) => {
+const EditModal: React.FC<EditModalProps> = ({
+  transaction,
+  closeModal,
+  refetch,
+}) => {
   const confirmPaymentMutation = useConfirmPayment();
 
   // Handle Confirm Payment
@@ -20,32 +24,39 @@ const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch 
           refetch();
           closeModal(); // Close modal after success
         },
-      }
+      },
     );
   };
 
   // Periksa apakah status memungkinkan untuk konfirmasi atau penolakan
-  const canConfirmOrDecline = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION;
+  const canConfirmOrDecline =
+    transaction.status === StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION;
 
   // Jika status sudah diubah menjadi PROCESSED atau WAITING_FOR_PAYMENT, nonaktifkan tombol
-  const isProcessedOrWaitingForPayment = 
+  const isProcessedOrWaitingForPayment =
     transaction.status === StatusTransaction.PROCESSED ||
     transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-gray-500 bg-opacity-75 fixed inset-0" onClick={closeModal}></div>
+        <div
+          className="bg-gray-500 bg-opacity-75 fixed inset-0"
+          onClick={closeModal}
+        ></div>
         <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-20">
           <div className="p-4">
-            <h3 className="text-lg font-semibold">Confirm Payment for {transaction.user.name}</h3>
+            <h4 className="text-lg font-semibold">
+              Confirm Payment for {transaction.user.name}
+            </h4>
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
             {/* Jika status tidak memungkinkan, tampilkan peringatan */}
             {!canConfirmOrDecline && (
               <p className="text-red-500 mt-2">
-                This transaction cannot be modified. It is either already processed or awaiting payment.
+                This transaction cannot be modified. It is either already
+                processed or awaiting payment.
               </p>
             )}
 
@@ -54,7 +65,9 @@ const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch 
               <button
                 onClick={() => handleConfirm(true)}
                 className={`px-4 py-2 rounded-md ${
-                  canConfirmOrDecline ? "bg-green-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  canConfirmOrDecline
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
                 disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
               >
@@ -65,7 +78,9 @@ const EditModal: React.FC<EditModalProps> = ({ transaction, closeModal, refetch 
               <button
                 onClick={() => handleConfirm(false)}
                 className={`px-4 py-2 rounded-md ${
-                  canConfirmOrDecline ? "bg-red-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  canConfirmOrDecline
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
                 disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
               >

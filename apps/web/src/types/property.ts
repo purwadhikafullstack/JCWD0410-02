@@ -19,7 +19,7 @@ export interface Property {
   propertyImages: PropertyImage[];
   propertyFacilities: PropertyFacility[];
   reviews: Review[];
-  tenant: Tenant[];
+  tenant: Tenant;
   rooms: Room[];
 }
 

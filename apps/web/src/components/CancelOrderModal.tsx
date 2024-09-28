@@ -1,7 +1,7 @@
-"use client"
-import React from "react";
-import useCancelOrder from "@/hooks/api/transaction-tenant/useCancelOrder";
-import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction untuk memeriksa status
+'use client';
+import React from 'react';
+import useCancelOrder from '@/hooks/api/transaction-tenant/useCancelOrder';
+import { StatusTransaction } from '@/types/transaction'; // Import enum StatusTransaction untuk memeriksa status
 
 interface CancelOrderModalProps {
   transaction: any;
@@ -9,7 +9,11 @@ interface CancelOrderModalProps {
   refetch: () => void;
 }
 
-const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeModal, refetch }) => {
+const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
+  transaction,
+  closeModal,
+  refetch,
+}) => {
   const cancelOrderMutation = useCancelOrder();
 
   // Handle cancel order
@@ -21,21 +25,28 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
           refetch(); // Refresh data
           closeModal(); // Close modal after success
         },
-      }
+      },
     );
   };
 
   // Periksa apakah status adalah WAITING_FOR_PAYMENT
-  const canCancelOrder = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
+  const canCancelOrder =
+    transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-gray-500 bg-opacity-75 fixed inset-0" onClick={closeModal}></div>
+        <div
+          className="bg-gray-500 bg-opacity-75 fixed inset-0"
+          onClick={closeModal}
+        ></div>
         <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-20">
           <div className="p-4">
-            <h3 className="text-lg font-semibold">Cancel Order</h3>
-            <p>Are you sure you want to cancel the order for {transaction.user.name}?</p>
+            <h4 className="text-lg font-semibold">Cancel Order</h4>
+            <p>
+              Are you sure you want to cancel the order for{' '}
+              {transaction.user.name}?
+            </p>
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
@@ -50,7 +61,9 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
               <button
                 onClick={handleCancelOrder}
                 className={`px-4 py-2 rounded-md ${
-                  canCancelOrder ? "bg-red-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  canCancelOrder
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
                 disabled={!canCancelOrder} // Tombol dinonaktifkan jika tidak bisa dibatalkan
               >
