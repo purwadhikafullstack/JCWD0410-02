@@ -9,6 +9,7 @@ export interface Room {
   name: string;
   stock: number;
   price: number;
+  guest: number;
   propertyId: number;
   createdAt: Date;
   updatedAt: Date;

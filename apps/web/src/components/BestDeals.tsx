@@ -26,9 +26,9 @@ const BestDeals = () => {
 
   return (
     <div className="container max-w-7xl mx-auto">
-      <h3 className="font-semibold text-2xl mb-3 text-center md:text-left">
+      <h2 className="font-semibold text-2xl mb-3 text-center md:text-left">
         Best deals for a price-less travel!
-      </h3>
+      </h2>
       <div>
         <Carousel plugins={[plugin.current]} className="mx-auto">
           <CarouselContent className="mx-auto -ml-1">

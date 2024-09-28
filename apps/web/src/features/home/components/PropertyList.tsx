@@ -3,12 +3,12 @@ import Pagination from '@/components/Pagination';
 import PropertyCard from '@/components/PropertyCard';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useGetProperty } from '@/hooks/api/property/useGetProperty';
+import { useGetProperties } from '@/hooks/api/property/useGetProperties';
 import { useState } from 'react';
 
 const PropertyList = () => {
   const [page, setPage] = useState(1);
-  const { data, isPending } = useGetProperty({
+  const { data, isPending } = useGetProperties({
     page,
     take: 4,
   });
@@ -44,6 +44,7 @@ const PropertyList = () => {
         {data?.data.map((property, index) => {
           return (
             <PropertyCard
+              slug={property.slug}
               key={index}
               imageUrl={property.propertyImages[0]?.imageUrl}
               title={property.title}
