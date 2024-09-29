@@ -227,7 +227,7 @@ enum StatusTransaction {
 model Review {
   id            Int      @id @default(autoincrement())
   rating        Int      @default(0)
-  review        String
+  review        String   @db.LongText()
   userId        Int
   transactionId Int
   propertyId    Int

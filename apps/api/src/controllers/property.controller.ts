@@ -1,8 +1,13 @@
+import { getPropertiesService } from '@/services/property/get-properties.service';
 import { getPropertyService } from '@/services/property/get-property.service';
 import { NextFunction, Request, Response } from 'express';
 
 export class PropertyController {
-  async getPropertyController(req: Request, res: Response, next: NextFunction) {
+  async getPropertiesController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const query = {
         take: parseInt(req.query.take as string) || 10,
@@ -11,7 +16,15 @@ export class PropertyController {
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
       };
-      const result = await getPropertyService(query);
+      const result = await getPropertiesService(query);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getPropertyController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getPropertyService(req.params.slug);
       return res.status(200).send(result);
     } catch (error) {
       next(error);

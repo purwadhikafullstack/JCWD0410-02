@@ -1,27 +1,19 @@
 'use client';
 
 import useAxios from '@/hooks/useAxios';
-import { PageableResponse, PaginationQueries } from '@/types/pagination';
 import { Property } from '@/types/property';
 import { useQuery } from '@tanstack/react-query';
 
-interface GetPropertyQueries extends PaginationQueries {
-  search?: string;
-}
-
-export const useGetProperty = (queries: GetPropertyQueries) => {
+const useGetProperty = (slug: string) => {
   const { axiosInstance } = useAxios();
 
   return useQuery({
-    queryKey: ['property', queries],
+    queryKey: ['property', slug],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<PageableResponse<Property>>(
-        '/property',
-        {
-          params: queries,
-        },
-      );
+      const { data } = await axiosInstance.get<Property>(`/property/${slug}`);
       return data;
     },
   });
 };
+
+export default useGetProperty;

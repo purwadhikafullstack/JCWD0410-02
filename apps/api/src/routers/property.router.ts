@@ -12,7 +12,8 @@ export class PropertyRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/', this.propertyController.getPropertyController);
+    this.router.get('/:slug', this.propertyController.getPropertyController);
+    this.router.get('/', this.propertyController.getPropertiesController);
   }
 
   getRouter(): Router {

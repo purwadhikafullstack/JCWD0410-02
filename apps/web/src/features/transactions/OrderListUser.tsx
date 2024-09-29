@@ -1,10 +1,11 @@
-"use client"
+'use client';
 import React, { useState, useEffect } from 'react';
 import { Transaction } from '@/types/transaction';
 import useGetUserTransactions from '@/hooks/api/transaction-user/useGetUserOrders';
 
 const TransactionList = () => {
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const { data, isLoading, error } = useGetUserTransactions({
     page: 1,
     take: 10,
@@ -28,7 +29,7 @@ const TransactionList = () => {
     <div className="grid grid-cols-12 gap-4 p-6">
       {/* List Transaksi di Kiri */}
       <div className="col-span-4">
-        <h2 className="text-xl font-bold mb-4">Daftar Transaksi</h2>
+        <h3 className="text-xl font-bold mb-4">Daftar Transaksi</h3>
         <div className="space-y-4">
           {data?.data.map((transaction: Transaction) => (
             <div
@@ -38,10 +39,14 @@ const TransactionList = () => {
               }`}
               onClick={() => setSelectedTransaction(transaction)}
             >
-              <h3 className="font-bold text-lg">{transaction.room.property.title}</h3>
+              <h3 className="font-bold text-lg">
+                {transaction.room.property.title}
+              </h3>
               <p>Status: {transaction.status.replace(/_/g, ' ')}</p>
               <p>Total: Rp{transaction.total}</p>
-              <p>Tanggal: {new Date(transaction.createdAt).toLocaleDateString()}</p>
+              <p>
+                Tanggal: {new Date(transaction.createdAt).toLocaleDateString()}
+              </p>
             </div>
           ))}
         </div>
@@ -54,7 +59,9 @@ const TransactionList = () => {
             <h2 className="text-2xl font-bold mb-4">Detail Transaksi</h2>
             <div className="space-y-4">
               <div className="border-b pb-4">
-                <h3 className="font-bold">Properti: {selectedTransaction.room.property.title}</h3>
+                <h3 className="font-bold">
+                  Properti: {selectedTransaction.room.property.title}
+                </h3>
                 <p>Kategori: {selectedTransaction.room.property.category}</p>
                 <p>Total Pembayaran: Rp{selectedTransaction.total}</p>
               </div>
@@ -66,8 +73,14 @@ const TransactionList = () => {
 
               <div className="border-b pb-4">
                 <h3 className="font-bold">Tanggal Transaksi</h3>
-                <p>Mulai: {new Date(selectedTransaction.startDate).toLocaleDateString()}</p>
-                <p>Selesai: {new Date(selectedTransaction.endDate).toLocaleDateString()}</p>
+                <p>
+                  Mulai:{' '}
+                  {new Date(selectedTransaction.startDate).toLocaleDateString()}
+                </p>
+                <p>
+                  Selesai:{' '}
+                  {new Date(selectedTransaction.endDate).toLocaleDateString()}
+                </p>
               </div>
 
               <div className="border-b pb-4">

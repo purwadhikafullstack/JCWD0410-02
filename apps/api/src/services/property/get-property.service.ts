@@ -1,38 +1,22 @@
 import prisma from '@/prisma';
-import { PaginationQueryParams } from '@/types/pagination';
-import { Prisma } from '@prisma/client';
 
-interface GetPropertyQuery extends PaginationQueryParams {
-  search: string;
-}
-
-export const getPropertyService = async (query: GetPropertyQuery) => {
+export const getPropertyService = async (slug: string) => {
   try {
-    const { take, page, sortBy, sortOrder, search } = query;
-
-    const whereClause: Prisma.PropertyWhereInput = {};
-
-    if (search) {
-      whereClause.title = {
-        contains: search,
-      };
-    }
-
-    const properties = await prisma.property.findMany({
-      where: whereClause,
-      skip: (page - 1) * take,
-      take: take,
-      orderBy: { [sortBy]: sortOrder },
+    const property = await prisma.property.findFirst({
+      where: { slug },
       include: {
-        propertyImages: { select: { imageUrl: true } },
-        reviews: { select: { rating: true } },
-        tenant: { select: { name: true } },
-        rooms: { select: { price: true } },
+        tenant: true,
+        rooms: { include: { roomImages: true, roomFacilities: true } },
+        propertyImages: true,
+        propertyFacilities: true,
+        reviews: true,
       },
     });
 
-    const count = await prisma.property.count({ where: whereClause });
-    return { data: properties, meta: { page, take, total: count } };
+    if (!property) {
+      throw new Error('Invalid Property Slug');
+    }
+    return property;
   } catch (error) {
     throw error;
   }
