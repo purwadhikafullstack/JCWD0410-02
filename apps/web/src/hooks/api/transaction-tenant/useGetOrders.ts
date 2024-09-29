@@ -4,7 +4,7 @@ import { IPageableResponse } from '@/types/pagination';
 import useAxios from '@/hooks/useAxios';
 
 interface GetTransactionsQuery {
-  tenantId?: number; // tenantId sekarang bisa undefined jika belum tersedia
+  tenantId?: number;
   status?: string;
   page?: number;
   take?: number;
@@ -23,7 +23,7 @@ const useGetTransactions = (queries: GetTransactionsQuery) => {
       const { data } = await axiosInstance.get<IPageableResponse<Transaction>>(
         '/tenanttransactions', 
         {
-          params: queries,
+          params: queries,  // Kirim semua parameter dinamis ke backend
         }
       );
       return data;

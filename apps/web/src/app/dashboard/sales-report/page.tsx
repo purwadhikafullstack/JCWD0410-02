@@ -1,9 +1,10 @@
 import React from 'react';
 import Navbar from '@/components/Dashboard/Navbar';
 import Sidebar from '@/components/Dashboard/Sidebar';
-import TableTransaction from '@/features/dashboard/tenant-transactions/TableTransaction';
+import SalesReportChart from '@/features/dashboard/salesreport';
 
-const TenantManagement: React.FC = () => {
+
+const SalesReport: React.FC = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -17,11 +18,11 @@ const TenantManagement: React.FC = () => {
         {/* Main Dashboard Content */}
         <div className="p-6">
           {/* Contoh Konten Utama */}
-          <TableTransaction />
+          <SalesReportChart />
         </div>
       </div>
     </div>
   );
 };
 
-export default TenantManagement;
+export default SalesReport;
