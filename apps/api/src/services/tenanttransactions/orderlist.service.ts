@@ -8,58 +8,55 @@ interface GetTransactionsService {
   sortOrder: string;
   search?: string;
   status?: StatusTransaction;
-  tenantId: number;
+  tenantIds: number[];
 }
 
-// Fungsi untuk mendapatkan tenantId berdasarkan userId
-export const getTenantIdByUserId = async (userId: number): Promise<number | null> => {
+// Fungsi untuk mendapatkan daftar tenantId berdasarkan userId
+export const getTenantIdsByUserId = async (userId: number): Promise<number[]> => {
   try {
-    // Menggunakan findFirst karena userId tidak unik di tenant
-    const tenant = await prisma.tenant.findFirst({
+    const tenants = await prisma.tenant.findMany({
       where: { userId },
       select: { id: true },
     });
 
-    return tenant ? tenant.id : null;
+    return tenants.map(tenant => tenant.id); // Mengembalikan array tenantId
   } catch (error) {
-    throw new Error("Failed to retrieve tenant ID");
+    throw new Error("Failed to retrieve tenant IDs");
   }
 };
 
-// Fungsi untuk mendapatkan daftar transaksi berdasarkan tenantId
+// Fungsi untuk mendapatkan daftar transaksi berdasarkan tenantIds
 export const getTransactionsService = async (query: GetTransactionsService) => {
   try {
-    const { page, take, sortBy, sortOrder, search, status, tenantId } = query;
+    const { page, take, sortBy, sortOrder, search, status, tenantIds } = query;
 
-    // Validasi tenantId
-    if (!tenantId || isNaN(tenantId)) {
-      throw new Error("Invalid tenantId provided");
+    if (!tenantIds || tenantIds.length === 0) {
+      throw new Error("Invalid tenantIds provided");
     }
 
-    // Membuat where clause berdasarkan tenantId, status, dan search
     const whereClause: Prisma.TransactionWhereInput = {
       room: {
         property: {
-          tenantId: tenantId,
-          ...(search ? {
-            title: {
-              contains: search,
-            },
-          } : {}),
+          tenantId: {
+            in: tenantIds,
+          },
+          ...(search ? { title: { contains: search } } : {}),
         },
       },
       ...(status ? { status: status } : {}),
     };
 
-    // Query transaksi berdasarkan filter dan paginasi
     const transactions = await prisma.transaction.findMany({
       where: whereClause,
-      take: take,
-      skip: (page - 1) * take,
-      orderBy: {
-        [sortBy]: sortOrder,
-      },
-      include: {
+      take: take || 10,
+      skip: (page - 1) * take || 0,
+      orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
+      select: {
+        id: true,
+        createdAt: true,
+        status: true,
+        total: true,
+        paymentProof: true,  
         user: {
           select: {
             name: true,
@@ -68,7 +65,8 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
           },
         },
         room: {
-          include: {
+          select: {
+            name: true,
             property: {
               select: {
                 title: true,
@@ -85,15 +83,13 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
       },
     });
 
-    // Hitung total transaksi
     const total = await prisma.transaction.count({
       where: whereClause,
     });
 
-    // Mengembalikan hasil dan metadata
     return {
       data: transactions,
-      meta: { total, take, page },
+      meta: { total, take: take || 10, page: page || 1 },
     };
   } catch (error) {
     throw error;

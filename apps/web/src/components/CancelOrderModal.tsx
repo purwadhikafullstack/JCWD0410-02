@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import useCancelOrder from "@/hooks/api/transaction-tenant/useCancelOrder";
 import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction untuk memeriksa status
@@ -42,7 +42,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
             {/* Jika status bukan WAITING_FOR_PAYMENT, tampilkan pesan peringatan */}
             {!canCancelOrder && (
               <p className="text-red-500 mt-2">
-                Only orders with status "Waiting for Payment" can be cancelled.
+                Only orders with status &quot;Waiting for Payment&quot; can be cancelled.
               </p>
             )}
 

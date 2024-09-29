@@ -7,6 +7,7 @@ import useGetTransactions from "@/hooks/api/transaction-tenant/useGetOrders";
 import EditModal from "@/components/EditModal";
 import DetailModal from "@/components/DetailModal";
 import CancelOrderModal from "@/components/CancelOrderModal";
+import Image from "next/image"; // Import Image from next/image
 
 const TableTransaction = () => {
   const [selectedStatus, setSelectedStatus] = useState<StatusTransaction | "ALL">("ALL");
@@ -19,7 +20,7 @@ const TableTransaction = () => {
 
   const take = 5;
   const { data, isLoading, error, refetch } = useGetTransactions({
-    tenantId: 1,
+    tenantId: 1, 
     status: selectedStatus === "ALL" ? undefined : selectedStatus,
     page,
     take,
@@ -97,9 +98,13 @@ const TableTransaction = () => {
                 <td className="px-6 py-4 border-b border-gray-200">{transaction.room?.property?.title}</td>
                 <td className="px-6 py-4 border-b border-gray-200">
                   {transaction.paymentProof ? (
-                    <a href={transaction.paymentProof} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                      View Proof
-                    </a>
+                    <Image
+                      src={transaction.paymentProof}
+                      alt="Payment Proof"
+                      width={128} // Sesuaikan ukuran gambar
+                      height={128}
+                      className="object-cover rounded-lg"
+                    />
                   ) : (
                     "No Proof"
                   )}
