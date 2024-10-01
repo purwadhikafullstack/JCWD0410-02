@@ -1,4 +1,5 @@
 import { PropertyController } from '@/controllers/property.controller';
+import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
 export class PropertyRouter {

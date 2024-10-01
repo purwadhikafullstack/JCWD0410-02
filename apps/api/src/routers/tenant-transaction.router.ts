@@ -13,9 +13,21 @@ export class TenantTransactionRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/', verifyToken, this.transactionController.getTransactions); // Verifikasi token
-    this.router.post('/:id/confirm', verifyToken, this.transactionController.confirmPayment);
-    this.router.post('/:id/cancel', verifyToken, this.transactionController.cancelOrder);
+    this.router.get(
+      '/',
+      verifyToken,
+      this.transactionController.getTransactions,
+    ); // Verifikasi token
+    this.router.post(
+      '/:id/confirm',
+      verifyToken,
+      this.transactionController.confirmPayment,
+    );
+    this.router.post(
+      '/:id/cancel',
+      verifyToken,
+      this.transactionController.cancelOrder,
+    );
   }
 
   getRouter(): Router {

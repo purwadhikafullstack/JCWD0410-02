@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GrLanguage } from 'react-icons/gr';
 
@@ -22,7 +23,7 @@ export const Footer = () => {
     return null;
   }
   return (
-    <div className="bg-[#284693] w-full justify-items-center rounded-t-3xl overflow-hidden">
+    <main className="bg-[#284693] w-full rounded-t-3xl overflow-hidden">
       <div className="py-20 grid md:grid-cols-4 gap-7 max-w-7xl mx-auto">
         <div>
           <h1 className="text-2xl text-white font-semibold">About</h1>
@@ -59,9 +60,11 @@ export const Footer = () => {
         </div>
         <div>
           <h1 className="text-2xl text-white font-semibold">Tenant</h1>
-          <p className="text-white mt-5 hover:underline cursor-pointer">
-            Be a Tenant
-          </p>
+          <Link href="/dashboard/register">
+            <p className="text-white mt-5 hover:underline cursor-pointer">
+              Be a Tenant
+            </p>
+          </Link>
           <p className="text-white hover:underline cursor-pointer">
             EaseCoz Cover for Tenants
           </p>
@@ -84,6 +87,6 @@ export const Footer = () => {
           <p className="text-white hover:underline cursor-pointer">Investors</p>
         </div>
       </div>
-    </div>
+    </main>
   );
 };

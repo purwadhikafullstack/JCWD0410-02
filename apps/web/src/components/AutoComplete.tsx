@@ -74,7 +74,7 @@ const Autocomplete = () => {
         placeholder="Search hotel..."
         className="mx-auto w-full"
         loadOptions={loadOptions}
-        // onChange={(property) => router.push(`/property/${property?.label}`)}
+        onChange={(property) => router.push(`/property/${property?.label}`)}
       />
     </div>
   );

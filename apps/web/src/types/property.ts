@@ -1,3 +1,4 @@
+import { PropertyCategory } from './propertyCategory';
 import { PropertyFacility } from './propertyFacility';
 import { PropertyImage } from './propertyImage';
 import { Review } from './review';
@@ -8,7 +9,7 @@ export interface Property {
   id: number;
   slug: string;
   title: string;
-  category: Category;
+  propertyCategoryId: number;
   description: string;
   latitude: string;
   longitude: string;
@@ -19,14 +20,9 @@ export interface Property {
   propertyImages: PropertyImage[];
   propertyFacilities: PropertyFacility[];
   reviews: Review[];
-  tenant: Tenant;
   rooms: Room[];
-}
-
-enum Category {
-  HOTEL = 'HOTEL',
-  APARTMENT = 'APARTMENT',
-  VILLA = 'VILLA',
+  propertycategory: PropertyCategory;
+  tenant: Tenant;
 }
 
 enum StatusProperty {
