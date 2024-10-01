@@ -15,6 +15,9 @@ export class PropertyController {
         sortBy: (req.query.sortBy as string) || 'createdAt',
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
+        guest: Number(req.query.search) || 2,
+        startDate: new Date(req.query.search as string) || undefined,
+        endDate: new Date(req.query.search as string) || undefined,
       };
       const result = await getPropertiesService(query);
       return res.status(200).send(result);

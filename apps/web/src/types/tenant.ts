@@ -1,4 +1,5 @@
 import { Property } from './property';
+import { PropertyCategory } from './propertyCategory';
 
 export interface Tenant {
   id: number;
@@ -13,4 +14,5 @@ export interface Tenant {
   createdAt: Date;
   updatedAt: Date;
   properties: Property[];
+  propertyCategories: PropertyCategory[];
 }

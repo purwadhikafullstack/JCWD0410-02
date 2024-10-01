@@ -53,7 +53,8 @@ model Tenant {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  properties Property[]
+  properties         Property[]
+  propertyCategories PropertyCategory[]
 
   user User @relation(fields: [userId], references: [id])
 
@@ -61,37 +62,44 @@ model Tenant {
 }
 
 model Property {
-  id          Int            @id @default(autoincrement())
-  slug        String
-  title       String
-  category    Category
-  description String         @db.LongText()
-  latitude    String
-  longitude   String
-  status      StatusProperty
-  tenantId    Int
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id                 Int            @id @default(autoincrement())
+  slug               String         @unique
+  title              String
+  propertyCategoryId Int
+  description        String         @db.LongText()
+  latitude           String
+  longitude          String
+  status             StatusProperty
+  tenantId           Int
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   propertyFacilities PropertyFacility[]
   propertyImages     PropertyImage[]
   rooms              Room[]
   reviews            Review[]
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  propertycategory PropertyCategory @relation(fields: [propertyCategoryId], references: [id])
+  tenant           Tenant           @relation(fields: [tenantId], references: [id])
 
   @@map("properties")
-}
-
-enum Category {
-  HOTEL
-  APARTMENT
-  VILLA
 }
 
 enum StatusProperty {
   PUBLISHED
   DRAFT
+}
+
+model PropertyCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  tenantId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  properties Property[]
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
 }
 
 model PropertyFacility {

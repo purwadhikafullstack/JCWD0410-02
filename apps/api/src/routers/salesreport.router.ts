@@ -14,7 +14,11 @@ export class SalesReportRouter {
 
   private initializeRoutes(): void {
     // Endpoint untuk mendapatkan laporan penjualan dengan filter dan sorting
-    this.router.get('/', verifyToken, this.salesReportController.getSalesReport); // Verifikasi token
+    this.router.get(
+      '/',
+      verifyToken,
+      this.salesReportController.getSalesReport,
+    ); // Verifikasi token
   }
 
   // Method untuk mengembalikan instance router

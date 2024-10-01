@@ -9,8 +9,6 @@ interface PropertyDetailPageProps {
 const PropertyDetailList: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
   const { data, isPending } = useGetProperty(propertySlug);
 
-  console.log('saga takon iki opo?????', data);
-
   if (isPending) {
     return <h1>Loading...</h1>;
   }

@@ -1,70 +1,111 @@
-"use client"
+'use client';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { FiHome, FiShoppingCart, FiUser, FiLock, FiChevronDown } from 'react-icons/fi';
-
+import {
+  FiHome,
+  FiShoppingCart,
+  FiUser,
+  FiLock,
+  FiChevronDown,
+} from 'react-icons/fi';
 
 const Sidebar: React.FC = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [propertyDropdownOpen, setPropertyDropdownOpen] = useState(false);
+  const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const router = useRouter();
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const togglePropertyDropdown = () => {
+    setPropertyDropdownOpen(!propertyDropdownOpen);
+  };
+  const toggleReportDropdown = () => {
+    setReportDropdownOpen(!reportDropdownOpen);
   };
 
   return (
     <div className="w-64 bg-white dark:bg-navy-800 text-navy-700 dark:text-white flex flex-col p-6 shadow-lg">
       {/* Brand */}
-      <h1 className="text-3xl font-bold mb-8 text-blue-500">Ease<span className="text-black">Coz</span></h1>
-      
+      <h1 className="text-3xl font-bold mb-8 text-blue-500">
+        Ease<span className="text-black">Coz</span>
+      </h1>
+
       <ul className="space-y-6">
         <li
           className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push('/dashboard')}
         >
           <FiHome />
           <span>MainDashboard</span>
         </li>
-
-        <li
-          className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
-          onClick={() => router.push("/dashboard/property")}
-        >
-          <FiLock />
-          <span>Property</span>
+        <li className="flex flex-col space-y-2">
+          <div
+            className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
+            onClick={togglePropertyDropdown}
+          >
+            <FiLock />
+            <span>Property</span>
+            <FiChevronDown
+              className={`transform ${propertyDropdownOpen ? 'rotate-180' : 'rotate-0'} transition-transform`}
+            />
+          </div>
+          {/* Dropdown menu */}
+          {propertyDropdownOpen && (
+            <ul className="ml-8 space-y-2">
+              <li
+                className="text-base font-normal cursor-pointer"
+                onClick={() => router.push('/dashboard/property-category')}
+              >
+                <span>Category</span>
+              </li>
+              <li
+                className="text-base font-normal cursor-pointer"
+                onClick={() => router.push('/dashboard/property-management')}
+              >
+                <span>Management</span>
+              </li>
+              <li
+                className="text-base font-normal cursor-pointer"
+                onClick={() =>
+                  router.push('/dashboard/property-room-management')
+                }
+              >
+                <span>Room</span>
+              </li>
+            </ul>
+          )}
         </li>
-
         <li
           className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
-          onClick={() => router.push("/dashboard/tenant-transaction")}
+          onClick={() => router.push('/dashboard/tenant-transaction')}
         >
           <FiShoppingCart />
           <span>TenantManagement</span>
         </li>
-        
+
         {/* Dropdown for Report&Analysis */}
         <li className="flex flex-col space-y-2">
           <div
             className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
-            onClick={toggleDropdown}
+            onClick={toggleReportDropdown}
           >
             <FiUser />
             <span>Report&Analysis</span>
-            <FiChevronDown className={`transform ${dropdownOpen ? 'rotate-180' : 'rotate-0'} transition-transform`} />
+            <FiChevronDown
+              className={`transform ${reportDropdownOpen ? 'rotate-180' : 'rotate-0'} transition-transform`}
+            />
           </div>
-          
+
           {/* Dropdown menu */}
-          {dropdownOpen && (
+          {reportDropdownOpen && (
             <ul className="ml-8 space-y-2">
               <li
                 className="text-base font-normal cursor-pointer"
-                onClick={() => router.push("/dashboard/sales-report")}
+                onClick={() => router.push('/dashboard/sales-report')}
               >
                 <span>SalesReport</span>
               </li>
               <li
                 className="text-base font-normal cursor-pointer"
-                onClick={() => router.push("/dashboard/property-report")}
+                onClick={() => router.push('/dashboard/property-report')}
               >
                 <span>PropertyReport</span>
               </li>

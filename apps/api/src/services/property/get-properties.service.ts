@@ -4,11 +4,15 @@ import { Prisma } from '@prisma/client';
 
 interface GetPropertiesQuery extends PaginationQueryParams {
   search: string;
+  startDate: Date;
+  endDate: Date;
+  guest: number;
 }
 
 export const getPropertiesService = async (query: GetPropertiesQuery) => {
   try {
-    const { take, page, sortBy, sortOrder, search } = query;
+    const { take, page, sortBy, sortOrder, search, guest, startDate, endDate } =
+      query;
 
     const whereClause: Prisma.PropertyWhereInput = {};
 
@@ -18,11 +22,17 @@ export const getPropertiesService = async (query: GetPropertiesQuery) => {
       };
     }
 
+    if (guest) {
+      whereClause.rooms = {
+        some: { guest: {} },
+      };
+    }
+
     const properties = await prisma.property.findMany({
       where: whereClause,
       skip: (page - 1) * take,
       take: take,
-      orderBy: { [sortBy]: sortOrder },
+      orderBy: { [sortBy]: sortOrder || 'asc' },
       include: {
         propertyImages: { select: { imageUrl: true } },
         reviews: { select: { rating: true } },

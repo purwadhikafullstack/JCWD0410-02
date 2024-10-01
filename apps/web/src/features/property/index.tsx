@@ -73,7 +73,7 @@ const PropertyDetailPage: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
             </div>
           )}
 
-          <Badge variant="secondary">{data?.category}</Badge>
+          <Badge variant="secondary">{data?.propertycategory.name}</Badge>
           <p>| by {data?.tenant.name}</p>
         </div>
         <div className="border-t-2 mt-5 border-gray-200"></div>
