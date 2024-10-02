@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import useCancelOrder from "@/hooks/api/transaction-tenant/useCancelOrder";
 import { StatusTransaction } from "@/types/transaction"; 
@@ -10,18 +9,12 @@ interface CancelOrderModalProps {
 }
 
 const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeModal, refetch }) => {
-  const cancelOrderMutation = useCancelOrder();
+  const { mutateAsync: cancelOrder } = useCancelOrder();
 
-  const handleCancelOrder = () => {
-    cancelOrderMutation.mutate(
-      { transactionId: transaction.id },
-      {
-        onSuccess: () => {
-          refetch(); 
-          closeModal(); 
-        },
-      }
-    );
+  const handleCancelOrder = async () => {
+    await cancelOrder({ transactionId: transaction.id });
+    refetch(); 
+    closeModal(); 
   };
 
   const canCancelOrder = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;

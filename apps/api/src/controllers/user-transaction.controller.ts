@@ -5,7 +5,6 @@ import { validationResult } from 'express-validator';
 export class UserTransactionController {
   async getUserTransactions(req: Request, res: Response, next: NextFunction) {
     try {
-      // Validasi input
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

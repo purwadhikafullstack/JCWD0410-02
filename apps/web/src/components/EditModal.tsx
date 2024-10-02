@@ -20,7 +20,7 @@ const EditModal: React.FC<EditModalProps> = ({
   closeModal,
   refetch,
 }) => {
-  const confirmPaymentMutation = useConfirmPayment();
+  const { mutateAsync: confirmPayment } = useConfirmPayment();
   const {
     register,
     handleSubmit,
@@ -29,20 +29,12 @@ const EditModal: React.FC<EditModalProps> = ({
     resolver: yupResolver(validationSchema),
   });
 
-
-  const handleConfirm = (data: { confirm: boolean }) => {
-    confirmPaymentMutation.mutate(
-      { transactionId: transaction.id, confirm: data.confirm },
-      {
-        onSuccess: () => {
-          refetch();
-          closeModal(); 
-        },
-      },
-    );
+  const handleConfirm = async (data: { confirm: boolean }) => {
+    await confirmPayment({ transactionId: transaction.id, confirm: data.confirm });
+    refetch();
+    closeModal();
   };
 
-  
   const canConfirmOrDecline =
     transaction.status === StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION;
 
@@ -61,7 +53,6 @@ const EditModal: React.FC<EditModalProps> = ({
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
-         
             {!canConfirmOrDecline && (
               <p className="text-red-500 mt-2">
                 This transaction cannot be modified. It is either already

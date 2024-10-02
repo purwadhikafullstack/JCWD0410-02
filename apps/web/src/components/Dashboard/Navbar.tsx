@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"; 
@@ -12,27 +12,6 @@ const Navbar: React.FC = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-
-    
-      if (target && target.closest && !target.closest(".dropdown-container")) {
-        setDropdownOpen(false); 
-      }
-    };
-
-    if (dropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside); 
-    };
-  }, [dropdownOpen]);
 
   const getBrandText = () => {
     const path = window.location.pathname;
@@ -47,7 +26,6 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="flex justify-between items-center p-4 bg-[rgb(254,255,255)] dark:bg-navy-800 shadow-md rounded-xl mx-4 mt-4">
-
       <div>
         <p className="text-sm font-normal text-navy-700 dark:text-white">
           Pages / <span className="font-bold">{brandText}</span>
@@ -57,11 +35,10 @@ const Navbar: React.FC = () => {
         </h1>
       </div>
 
-
       {session?.user && (
         <div className="relative flex items-center space-x-4 dropdown-container">
           <div
-            onClick={toggleDropdown} // Toggle dropdown on avatar click
+            onClick={toggleDropdown} 
             className="cursor-pointer flex items-center gap-2"
           >
             <Avatar>
@@ -71,7 +48,6 @@ const Navbar: React.FC = () => {
             <p className="font-semibold text-base">{session.user.name}</p>
           </div>
 
-      
           {dropdownOpen && (
             <div
               className="absolute right-0 mt-2 transform translate-y-2 w-48 bg-white dark:bg-gray-700 shadow-lg rounded-lg py-2 z-10"

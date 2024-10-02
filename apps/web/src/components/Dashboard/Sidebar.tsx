@@ -23,7 +23,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="w-64 bg-white dark:bg-navy-800 text-navy-700 dark:text-white flex flex-col p-6 shadow-lg">
-    
       <h1 className="text-3xl font-bold mb-8 text-blue-500">
         Ease<span className="text-black">Coz</span>
       </h1>
@@ -91,8 +90,6 @@ const Sidebar: React.FC = () => {
               className={`transform ${reportDropdownOpen ? 'rotate-180' : 'rotate-0'} transition-transform`}
             />
           </div>
-
-         
           {reportDropdownOpen && (
             <ul className="ml-8 space-y-2">
               <li

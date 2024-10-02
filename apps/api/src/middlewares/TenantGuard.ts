@@ -1,0 +1,9 @@
+import { NextFunction, Request, Response } from 'express';
+
+export const tenantGuard = (req: Request, res: Response, next: NextFunction) => {
+  if (res.locals.user.role !== 'TENANT') {
+    return res.status(400).send('Only admin may access');
+  }
+
+  next();
+};
