@@ -12,12 +12,11 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import useGetSalesReport from '@/hooks/api/salesandanalysis/useGetSalesReport'; // Hook untuk mengambil data dari API
+import useGetSalesReport from '@/hooks/api/salesandanalysis/useGetSalesReport'; 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const LineChartCard: React.FC = () => {
-  // Mengambil data dari API menggunakan useGetSalesReport
   const { data, isLoading, error } = useGetSalesReport({
     startDate: undefined,
     endDate: undefined,
@@ -32,20 +31,19 @@ const LineChartCard: React.FC = () => {
     return <p>Error: {error.message}</p>;
   }
 
-  // Menyiapkan data untuk line chart
   const chartData = {
     labels: data?.map((report) => report.property) || ['Property 1', 'Property 2'],
     datasets: [
       {
         label: 'Total Sales',
-        data: data?.map((report) => report.totalSales) || [100000, 150000], // Data simulasi untuk total sales
+        data: data?.map((report) => report.totalSales) || [100000, 150000], 
         fill: false,
         borderColor: 'rgba(75, 192, 192, 1)',
         tension: 0.1,
       },
       {
         label: 'Total Transactions',
-        data: data?.map((report) => report.transactions) || [50, 30], // Data simulasi untuk transactions
+        data: data?.map((report) => report.transactions) || [50, 30], 
         fill: false,
         borderColor: 'rgba(153, 102, 255, 1)',
         tension: 0.1,

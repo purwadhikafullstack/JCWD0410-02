@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { UserTransactionController } from '@/controllers/user-transaction.controller';
-import { verifyToken } from '@/middlewares/verifyToken'; // Middleware verifikasi token
+import { verifyToken } from '@/middlewares/verifyToken'; 
 
 export class UserTransactionRouter {
   private router: Router;
@@ -13,7 +13,6 @@ export class UserTransactionRouter {
   }
 
   private initializeRoutes(): void {
-    // Endpoint untuk melihat daftar transaksi user dengan verifikasi token
     this.router.get('/', verifyToken, this.userTransactionController.getUserTransactions);
   }
 

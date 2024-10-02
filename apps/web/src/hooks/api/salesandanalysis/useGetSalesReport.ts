@@ -20,8 +20,6 @@ const useGetSalesReport = (queries: GetSalesReportQuery) => {
       });
       return data;
     },
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
   });
 };
 

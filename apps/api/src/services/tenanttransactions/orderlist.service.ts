@@ -11,23 +11,19 @@ interface GetTransactionsService {
   tenantIds: number[];
 }
 
-// Fungsi untuk mendapatkan daftar tenantId berdasarkan userId
-export const getTenantIdsByUserId = async (
-  userId: number,
-): Promise<number[]> => {
+export const getTenantIdsByUserId = async (userId: number): Promise<number[]> => {
   try {
     const tenants = await prisma.tenant.findMany({
       where: { userId },
       select: { id: true },
     });
 
-    return tenants.map((tenant) => tenant.id); // Mengembalikan array tenantId
+    return tenants.map((tenant) => tenant.id); 
   } catch (error) {
     throw new Error('Failed to retrieve tenant IDs');
   }
 };
 
-// Fungsi untuk mendapatkan daftar transaksi berdasarkan tenantIds
 export const getTransactionsService = async (query: GetTransactionsService) => {
   try {
     const { page, take, sortBy, sortOrder, search, status, tenantIds } = query;
@@ -55,10 +51,14 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
       orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
       select: {
         id: true,
+        roomId:true,
         createdAt: true,
         status: true,
         total: true,
         paymentProof: true,
+        startDate: true,
+        endDate:true,
+
         user: {
           select: {
             name: true,
@@ -72,7 +72,11 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
             property: {
               select: {
                 title: true,
-                category: true,
+                propertycategory: { 
+                  select: {
+                    name: true,
+                  },
+                },
                 tenant: {
                   select: {
                     name: true,

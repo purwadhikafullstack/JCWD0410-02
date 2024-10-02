@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, StatusTransaction } from '@prisma/client'; 
 import prisma from '../../prisma';
 
 interface GetSalesReportService {
@@ -17,15 +17,15 @@ export const getSalesReportService = async (query: GetSalesReportService) => {
   const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
   const order = sortOrder === 'asc' ? 'asc' : 'desc';
 
-  // Jika startDate dan endDate sama, maka set endDate ke akhir hari tersebut
   let adjustedEndDate: Date | undefined = endDate;
   if (startDate && endDate && startDate.getTime() === endDate.getTime()) {
     adjustedEndDate = new Date(endDate);
-    adjustedEndDate.setHours(23, 59, 59, 999); // Set ke akhir hari
+    adjustedEndDate.setHours(23, 59, 59, 999); 
   }
 
   try {
     const whereClause: Prisma.TransactionWhereInput = {
+      status: StatusTransaction.PROCESSED, 
       room: {
         property: {
           tenantId: { in: tenantIds },
@@ -62,7 +62,6 @@ export const getSalesReportService = async (query: GetSalesReportService) => {
       },
     });
 
-    // Kelompokkan total penjualan berdasarkan properti
     const salesReport = transactions.reduce((acc: any, transaction) => {
       const propertyTitle = transaction.room.property.title;
 

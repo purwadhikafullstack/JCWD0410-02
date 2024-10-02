@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface DetailModalProps {
-  transaction: any; // Gantilah dengan tipe data yang lebih spesifik sesuai dengan Transaction jika ada
+  transaction: any; 
   closeModal: () => void;
 }
 
@@ -16,7 +16,6 @@ const DetailModal: React.FC<DetailModalProps> = ({
           className="bg-gray-500 bg-opacity-75 fixed inset-0"
           onClick={closeModal}
         ></div>{' '}
-        {/* Background overlay close */}
         <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-20">
           <div className="p-4">
             <h4 className="text-lg font-semibold">Transaction Details</h4>

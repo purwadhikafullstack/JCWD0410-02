@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import useCancelOrder from "@/hooks/api/transaction-tenant/useCancelOrder";
-import { StatusTransaction } from "@/types/transaction"; // Import enum StatusTransaction untuk memeriksa status
+import { StatusTransaction } from "@/types/transaction"; 
 
 interface CancelOrderModalProps {
   transaction: any;
@@ -12,20 +12,18 @@ interface CancelOrderModalProps {
 const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeModal, refetch }) => {
   const cancelOrderMutation = useCancelOrder();
 
-  // Handle cancel order
   const handleCancelOrder = () => {
     cancelOrderMutation.mutate(
       { transactionId: transaction.id },
       {
         onSuccess: () => {
-          refetch(); // Refresh data
-          closeModal(); // Close modal after success
+          refetch(); 
+          closeModal(); 
         },
       }
     );
   };
 
-  // Periksa apakah status adalah WAITING_FOR_PAYMENT
   const canCancelOrder = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
 
   return (
@@ -39,7 +37,6 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
-            {/* Jika status bukan WAITING_FOR_PAYMENT, tampilkan pesan peringatan */}
             {!canCancelOrder && (
               <p className="text-red-500 mt-2">
                 Only orders with status &quot;Waiting for Payment&quot; can be cancelled.
@@ -52,7 +49,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
                 className={`px-4 py-2 rounded-md ${
                   canCancelOrder ? "bg-red-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
-                disabled={!canCancelOrder} // Tombol dinonaktifkan jika tidak bisa dibatalkan
+                disabled={!canCancelOrder} 
               >
                 Confirm Cancel
               </button>

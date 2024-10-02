@@ -10,13 +10,11 @@ const useCancelOrder = () => {
 
   return useMutation({
     mutationFn: async ({ transactionId }: CancelOrderInput) => {
-      // Mengirimkan permintaan ke endpoint backend untuk membatalkan pesanan
       const { data } = await axiosInstance.post(`/tenanttransactions/${transactionId}/cancel`);
       return data;
     },
     onSuccess: (data) => {
       console.log('Order cancelled successfully:', data);
-      // Invalidasi cache query agar data transaksi diperbarui
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
     },
     onError: (error) => {

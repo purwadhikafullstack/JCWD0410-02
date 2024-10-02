@@ -1,9 +1,16 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import useConfirmPayment from '@/hooks/api/transaction-tenant/useConfirmPayment';
-import { StatusTransaction } from '@/types/transaction'; // Import enum StatusTransaction
+import { StatusTransaction } from '@/types/transaction'; 
+
+const validationSchema = Yup.object().shape({
+  confirm: Yup.boolean().required('You must confirm or decline the payment'),
+});
 
 interface EditModalProps {
-  transaction: any; // Can be refined based on type
+  transaction: any; 
   closeModal: () => void;
   refetch: () => void;
 }
@@ -14,28 +21,30 @@ const EditModal: React.FC<EditModalProps> = ({
   refetch,
 }) => {
   const confirmPaymentMutation = useConfirmPayment();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
-  // Handle Confirm Payment
-  const handleConfirm = (confirm: boolean) => {
+
+  const handleConfirm = (data: { confirm: boolean }) => {
     confirmPaymentMutation.mutate(
-      { transactionId: transaction.id, confirm },
+      { transactionId: transaction.id, confirm: data.confirm },
       {
         onSuccess: () => {
           refetch();
-          closeModal(); // Close modal after success
+          closeModal(); 
         },
       },
     );
   };
 
-  // Periksa apakah status memungkinkan untuk konfirmasi atau penolakan
+  
   const canConfirmOrDecline =
     transaction.status === StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION;
-
-  // Jika status sudah diubah menjadi PROCESSED atau WAITING_FOR_PAYMENT, nonaktifkan tombol
-  const isProcessedOrWaitingForPayment =
-    transaction.status === StatusTransaction.PROCESSED ||
-    transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -52,7 +61,7 @@ const EditModal: React.FC<EditModalProps> = ({
             <p>Property: {transaction.room.property.title}</p>
             <p>Total: {transaction.total}</p>
 
-            {/* Jika status tidak memungkinkan, tampilkan peringatan */}
+         
             {!canConfirmOrDecline && (
               <p className="text-red-500 mt-2">
                 This transaction cannot be modified. It is either already
@@ -60,33 +69,45 @@ const EditModal: React.FC<EditModalProps> = ({
               </p>
             )}
 
-            <div className="flex justify-between mt-4">
-              {/* Tombol Confirm */}
+            <form onSubmit={handleSubmit(handleConfirm)}>
+              <div className="flex justify-between mt-4">
+                <label>
+                  <input
+                    type="radio"
+                    value="true"
+                    {...register('confirm')}
+                    disabled={!canConfirmOrDecline} 
+                  />
+                  Confirm
+                </label>
+
+                <label>
+                  <input
+                    type="radio"
+                    value="false"
+                    {...register('confirm')}
+                    disabled={!canConfirmOrDecline} 
+                  />
+                  Decline
+                </label>
+              </div>
+
+              {errors.confirm && (
+                <p className="text-red-500 mt-2">{errors.confirm.message}</p>
+              )}
+
               <button
-                onClick={() => handleConfirm(true)}
-                className={`px-4 py-2 rounded-md ${
+                type="submit"
+                className={`px-4 py-2 rounded-md mt-4 ${
                   canConfirmOrDecline
                     ? 'bg-green-500 text-white'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
-                disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
+                disabled={!canConfirmOrDecline} 
               >
-                Confirm
+                Submit
               </button>
-
-              {/* Tombol Decline */}
-              <button
-                onClick={() => handleConfirm(false)}
-                className={`px-4 py-2 rounded-md ${
-                  canConfirmOrDecline
-                    ? 'bg-red-500 text-white'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-                disabled={!canConfirmOrDecline} // Disable tombol jika status tidak memungkinkan
-              >
-                Decline
-              </button>
-            </div>
+            </form>
 
             <button
               onClick={closeModal}

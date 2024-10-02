@@ -11,16 +11,15 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import useGetSalesReport from '@/hooks/api/salesandanalysis/useGetSalesReport'; // Mengimpor hook untuk mengambil data dari API
+import useGetSalesReport from '@/hooks/api/salesandanalysis/useGetSalesReport'; 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ChartCardTransactions: React.FC = () => {
-  // Mengambil data dari API menggunakan useGetSalesReport
   const { data, isLoading, error } = useGetSalesReport({
-    startDate: undefined, // Kamu bisa menyesuaikan dengan range tanggal jika diperlukan
+    startDate: undefined, 
     endDate: undefined,
-    sortBy: 'transactions', // Mengambil data berdasarkan transactions
+    sortBy: 'transactions', 
   });
 
   if (isLoading) {
@@ -31,13 +30,12 @@ const ChartCardTransactions: React.FC = () => {
     return <p>Error: {error.message}</p>;
   }
 
-  // Menyiapkan data untuk chart terkait Total Transactions
   const chartData = {
     labels: data?.map((report) => report.property) || ['Transactions'],
     datasets: [
       {
         label: 'Total Transactions',
-        data: data?.map((report) => report.transactions || 0) || [3462], // Mengambil data total transactions dari API
+        data: data?.map((report) => report.transactions || 0) || [3462], 
         backgroundColor: ['rgba(153, 102, 255, 0.2)'],
         borderColor: ['rgba(153, 102, 255, 1)'],
         borderWidth: 1,

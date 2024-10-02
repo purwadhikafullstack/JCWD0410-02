@@ -8,27 +8,25 @@ interface GetUserTransactionsQuery {
   take?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-  search?: string; // Filter by search term
-  uuid?: string;   // Filter by UUID (order number)
-  dateFrom?: string; // Start date filter
-  dateTo?: string;   // End date filter
+  search?: string; 
+  uuid?: string;   
+  dateFrom?: string; 
+  dateTo?: string;   
 }
 
 const useGetUserTransactions = (queries: GetUserTransactionsQuery) => {
-  const { axiosInstance } = useAxios(); // Hook to get axios instance with token
+  const { axiosInstance } = useAxios(); 
   return useQuery<IPageableResponse<Transaction>, Error>({
     queryKey: ['userTransactions', queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<IPageableResponse<Transaction>>(
         '/usertransactions',
         {
-          params: queries, // Passing queries like page, take, uuid, date filters, etc.
+          params: queries, 
         }
       );
       return data;
     },
-    staleTime: 1000 * 60 * 5, // Cache the data for 5 minutes
-    refetchOnWindowFocus: false, // Do not refetch on window focus
   });
 };
 
