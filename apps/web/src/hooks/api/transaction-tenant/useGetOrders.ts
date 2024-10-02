@@ -23,12 +23,11 @@ const useGetTransactions = (queries: GetTransactionsQuery) => {
       const { data } = await axiosInstance.get<IPageableResponse<Transaction>>(
         '/tenanttransactions', 
         {
-          params: queries,  // Kirim semua parameter dinamis ke backend
+          params: queries,
         }
       );
       return data;
     },
- 
   });
 };
 

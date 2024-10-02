@@ -1,5 +1,21 @@
-export interface RoomAvailability {
-  map(arg0: (availability: RoomAvailability, index: number) => import("react").JSX.Element): import("react").ReactNode;
+export interface PropertyCategory {
+  categoryId: number;
+  categoryName: string;
+}
+
+export interface PropertyFacility {
+  facilityId: number;
+  facilityTitle: string;
+  facilityDescription: string;
+}
+
+export interface RoomFacility {
+  facilityId: number;
+  facilityTitle: string;
+  facilityDescription: string;
+}
+
+export interface SoldOutDate {
   startDate: Date;
   endDate: Date;
   reason: string;
@@ -8,12 +24,18 @@ export interface RoomAvailability {
 export interface RoomReport {
   roomId: number;
   roomName: string;
-  availability: RoomAvailability;
+  availability: string;
+  soldOutDates: SoldOutDate[];
+  price: number;
+  stock: number;
+  roomFacilities: RoomFacility[];
 }
 
 export interface PropertyReport {
-  rooms: any;
   propertyId: number;
   propertyName: string;
-  room: RoomReport[];
+  propertyDescription: string;
+  propertyCategory: PropertyCategory;
+  propertyFacilities: PropertyFacility[];
+  rooms: RoomReport[];
 }

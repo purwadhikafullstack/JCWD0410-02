@@ -2,16 +2,10 @@ import { cancelOrderService } from '@/services/tenanttransactions/cancelorder.se
 import { confirmPaymentService } from '@/services/tenanttransactions/confirmpayment.service';
 import { getTenantIdsByUserId, getTransactionsService } from '@/services/tenanttransactions/orderlist.service';
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 
 export class TransactionController {
   async getTransactions(req: Request, res: Response, next: NextFunction) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const userId = res.locals.user?.id;
 
       if (!userId) {
@@ -49,11 +43,6 @@ export class TransactionController {
 
   async confirmPayment(req: Request, res: Response, next: NextFunction) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const transactionId = parseInt(req.params.id);
       const confirm = req.body.confirm;
       const result = await confirmPaymentService(transactionId, confirm);
@@ -65,11 +54,6 @@ export class TransactionController {
 
   async cancelOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const transactionId = parseInt(req.params.id);
       const result = await cancelOrderService(transactionId);
       return res.status(200).send(result);
