@@ -28,7 +28,7 @@ export function DatePickerWithRange({
   onDateChange,
 }: DatePickerWithRangeProps) {
   const handleDateChange = (newDate: DateRange | undefined) => {
-    onDateChange({ from: newDate?.from, to: newDate?.to }); // Kirim tanggal ke parent
+    onDateChange({ from: newDate?.from, to: newDate?.to });
   };
 
   return (

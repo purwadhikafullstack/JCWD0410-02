@@ -2,26 +2,24 @@
 import React, { useState, useEffect } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"; // Avatar components from the new file
-import Link from "next/link"; // Import Link for Profile navigation
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"; 
+import Link from "next/link"; 
 
 const Navbar: React.FC = () => {
-  const { data: session } = useSession(); // Check login status
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown, initialized to false
+  const { data: session } = useSession(); 
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
 
-  // Toggle dropdown visibility
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null; // Casting to HTMLElement
+      const target = event.target as HTMLElement | null;
 
-      // Pastikan target tidak null dan memiliki metode closest
+    
       if (target && target.closest && !target.closest(".dropdown-container")) {
-        setDropdownOpen(false); // Close dropdown if clicked outside
+        setDropdownOpen(false); 
       }
     };
 
@@ -32,11 +30,10 @@ const Navbar: React.FC = () => {
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Cleanup listener
+      document.removeEventListener("mousedown", handleClickOutside); 
     };
   }, [dropdownOpen]);
 
-  // Derive the brand text from the current path
   const getBrandText = () => {
     const path = window.location.pathname;
     if (path.includes("property")) return "Property";
@@ -50,7 +47,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="flex justify-between items-center p-4 bg-[rgb(254,255,255)] dark:bg-navy-800 shadow-md rounded-xl mx-4 mt-4">
-      {/* Brand and Title */}
+
       <div>
         <p className="text-sm font-normal text-navy-700 dark:text-white">
           Pages / <span className="font-bold">{brandText}</span>
@@ -60,7 +57,7 @@ const Navbar: React.FC = () => {
         </h1>
       </div>
 
-      {/* Avatar and Dropdown */}
+
       {session?.user && (
         <div className="relative flex items-center space-x-4 dropdown-container">
           <div
@@ -74,7 +71,7 @@ const Navbar: React.FC = () => {
             <p className="font-semibold text-base">{session.user.name}</p>
           </div>
 
-          {/* Dropdown Menu */}
+      
           {dropdownOpen && (
             <div
               className="absolute right-0 mt-2 transform translate-y-2 w-48 bg-white dark:bg-gray-700 shadow-lg rounded-lg py-2 z-10"

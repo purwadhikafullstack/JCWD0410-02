@@ -9,11 +9,11 @@ import express, {
 } from 'express';
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
-// import { TenantTransactionRouter } from './routers/tenant-transaction.router';
+import { TenantTransactionRouter } from './routers/tenant-transaction.router';
 import { UserTransactionRouter } from './routers/user-transaction.router';
 import { PropertyRouter } from './routers/property.router';
-// import { SalesReportRouter } from './routers/salesreport.router';
 import { CategoryRouter } from './routers/category.router';
+import { SalesPropertyRouter } from './routers/salesreport.router';
 // import { SampleRouter } from './routers/auth.router';
 
 export default class App {
@@ -57,10 +57,10 @@ export default class App {
 
   private routes(): void {
     const authRouter = new AuthRouter();
-    // const tenantTransactionRouter = new TenantTransactionRouter();
-    // const userTransactionRouter = new UserTransactionRouter();
+    const tenantTransactionRouter = new TenantTransactionRouter();
+    const userTransactionRouter = new UserTransactionRouter();
     const propertyRouter = new PropertyRouter();
-    // const salesReportRouter = new SalesReportRouter();
+    const salesPropertyRouter = new SalesPropertyRouter();
     const categoryRouter = new CategoryRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
@@ -68,14 +68,14 @@ export default class App {
     });
 
     this.app.use('/api/auth', authRouter.getRouter());
-    // this.app.use(
-    //   '/api/tenanttransactions',
-    //   tenantTransactionRouter.getRouter(),
-    // );
-    // this.app.use('/api/usertransactions', userTransactionRouter.getRouter());
+    this.app.use(
+      '/api/tenanttransactions',
+      tenantTransactionRouter.getRouter(),
+    );
+    this.app.use('/api/usertransactions', userTransactionRouter.getRouter());
     this.app.use('/api/property', propertyRouter.getRouter());
     this.app.use('/api/category', categoryRouter.getRouter());
-    // this.app.use('/api/reportanalysis', salesReportRouter.getRouter());
+    this.app.use('/api/reportanalysis', salesPropertyRouter.getRouter());
   }
 
   public start(): void {

@@ -16,7 +16,6 @@ import useGetSalesReport from "@/hooks/api/salesandanalysis/useGetSalesReport";
 import { format } from "date-fns";
 import { DatePickerWithRange } from "@/components/Dashboard/DateRange";
 
-// Registrasi elemen chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const SalesReportChart = () => {
@@ -28,11 +27,9 @@ const SalesReportChart = () => {
   const [sortBy, setSortBy] = useState<string>("totalSales");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Konversi DateRange menjadi format string untuk backend
   const startDate = dateRange.from ? format(dateRange.from, "yyyy-MM-dd") : undefined;
   const endDate = dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined;
 
-  // Panggil data berdasarkan state
   const { data, isLoading, error } = useGetSalesReport({
     propertyTitle,
     startDate,
@@ -40,32 +37,29 @@ const SalesReportChart = () => {
     sortBy,
   });
 
-  // Cek jika data kosong
   const noData = !data || data.length === 0;
 
-  // Toggle dropdown visibility
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Select property and close dropdown
+
   const selectProperty = (title: string | undefined) => {
-    setPropertyTitle(title); // Set the selected property title or reset it to undefined for all properties
-    setDropdownOpen(false); // Close dropdown after selection
+    setPropertyTitle(title); 
+    setDropdownOpen(false); 
   };
 
-  // Handle date range changes from DatePickerWithRange
+  
   const handleDateRangeChange = (range: { from: Date | undefined; to: Date | undefined }) => {
     if (range.from !== dateRange.from || range.to !== dateRange.to) {
-      setDateRange(range); // Update the state with the selected date range
+      setDateRange(range); 
     }
   };
 
-  // Close dropdown when clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!(event.target as HTMLElement).closest(".dropdown-container")) {
-        setDropdownOpen(false); // Close dropdown if clicked outside
+        setDropdownOpen(false); 
       }
     };
 
@@ -76,31 +70,27 @@ const SalesReportChart = () => {
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Cleanup listener on unmount
+      document.removeEventListener("mousedown", handleClickOutside); 
     };
   }, [dropdownOpen]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  // Daftar property untuk dropdown
   const propertyList = data?.map((report: SalesReport) => report.property) || [];
 
-  // Menyiapkan data untuk chart
   const filteredData = propertyTitle
     ? data?.filter((report: SalesReport) => report.property === propertyTitle)
-    : data; // If propertyTitle is set, filter data by property, otherwise show all
-
-  // Mengatur datasets berdasarkan pilihan sortBy
+    : data;
   const chartData = {
-    labels: filteredData?.map((report: SalesReport) => report.property) || [], // Nama properti
+    labels: filteredData?.map((report: SalesReport) => report.property) || [], 
     datasets: [
       {
         label: sortBy === "totalSales" ? "Transactions" : "Total Sales",
         data:
           sortBy === "totalSales"
-            ? filteredData?.map((report: SalesReport) => report.totalSales) || [] // Total penjualan
-            : filteredData?.map((report: SalesReport) => report.transactions) || [], // Jumlah transaksi
+            ? filteredData?.map((report: SalesReport) => report.totalSales) || [] 
+            : filteredData?.map((report: SalesReport) => report.transactions) || [], 
         backgroundColor:
           sortBy === "totalSales" ? "rgba(75, 192, 192, 0.2)" : "rgba(153, 102, 255, 0.2)",
         borderColor:
@@ -126,7 +116,6 @@ const SalesReportChart = () => {
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
       <div className="flex space-x-4 mb-6">
-        {/* Dropdown untuk menampilkan Property Title */}
         <div className="relative dropdown-container">
           <button
             className="border-gray-300 rounded-lg shadow-sm px-4 py-2 bg-white"
@@ -138,7 +127,7 @@ const SalesReportChart = () => {
             <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md">
               <li
                 className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                onClick={() => selectProperty(undefined)} // Reset filter when "All" is clicked
+                onClick={() => selectProperty(undefined)}
               >
                 All Properties
               </li>
@@ -155,7 +144,6 @@ const SalesReportChart = () => {
           )}
         </div>
 
-        {/* Gunakan DatePickerWithRange dari DateRangePicker.tsx */}
         <DatePickerWithRange
           className="w-64"
           onDateChange={(range) => handleDateRangeChange(range)}

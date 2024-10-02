@@ -1,27 +1,31 @@
 import { Router } from 'express';
-import { verifyToken } from '@/middlewares/verifyToken'; // Middleware untuk verifikasi token
-import { SalesReportController } from '@/controllers/salesreport.controller';
+import { verifyToken } from '@/middlewares/verifyToken'; 
+import { SalesPropertyController } from '@/controllers/salesreport.controller';
 
-export class SalesReportRouter {
+export class SalesPropertyRouter {
   private router: Router;
-  private salesReportController: SalesReportController;
+  private salesPropertyController: SalesPropertyController;
 
   constructor() {
-    this.salesReportController = new SalesReportController();
+    this.salesPropertyController= new SalesPropertyController();
     this.router = Router();
     this.initializeRoutes();
   }
 
   private initializeRoutes(): void {
-    // Endpoint untuk mendapatkan laporan penjualan dengan filter dan sorting
     this.router.get(
       '/',
       verifyToken,
-      this.salesReportController.getSalesReport,
-    ); // Verifikasi token
+      this.salesPropertyController.getSalesReport,
+    ); 
+
+    this.router.get(
+      '/propertyreport',
+      verifyToken,
+      this.salesPropertyController.getPropertyReport, 
+    );
   }
 
-  // Method untuk mengembalikan instance router
   getRouter(): Router {
     return this.router;
   }
