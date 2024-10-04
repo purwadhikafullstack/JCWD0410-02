@@ -1,5 +1,6 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import {
   FiHome,
@@ -13,6 +14,10 @@ const Sidebar: React.FC = () => {
   const [propertyDropdownOpen, setPropertyDropdownOpen] = useState(false);
   const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  if (pathname === '/dashboard/register') {
+    return null;
+  }
 
   const togglePropertyDropdown = () => {
     setPropertyDropdownOpen(!propertyDropdownOpen);
@@ -23,11 +28,14 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="w-64 bg-white dark:bg-navy-800 text-navy-700 dark:text-white flex flex-col p-6 shadow-lg">
-      <h1 className="text-3xl font-bold mb-8 text-blue-500">
-        Ease<span className="text-black">Coz</span>
-      </h1>
+      <Link href="/dashboard">
+        <div className="flex">
+          <p className="text-3xl font-bold">Ease</p>
+          <p className="text-3xl font-bold text-[#366ce7]">Coz</p>
+        </div>
+      </Link>
 
-      <ul className="space-y-6">
+      <ul className="space-y-6 mt-8">
         <li
           className="flex items-center space-x-4 text-lg font-medium cursor-pointer"
           onClick={() => router.push('/dashboard')}
@@ -50,20 +58,20 @@ const Sidebar: React.FC = () => {
             <ul className="ml-8 space-y-2">
               <li
                 className="text-base font-normal cursor-pointer"
-                onClick={() => router.push('/dashboard/property-category')}
+                onClick={() => router.push('/dashboard/property/category')}
               >
                 <span>Category</span>
               </li>
               <li
                 className="text-base font-normal cursor-pointer"
-                onClick={() => router.push('/dashboard/property-management')}
+                onClick={() => router.push('/dashboard/property/management')}
               >
                 <span>Management</span>
               </li>
               <li
                 className="text-base font-normal cursor-pointer"
                 onClick={() =>
-                  router.push('/dashboard/property-room-management')
+                  router.push('/dashboard/property/room/management')
                 }
               >
                 <span>Room</span>
@@ -90,6 +98,7 @@ const Sidebar: React.FC = () => {
               className={`transform ${reportDropdownOpen ? 'rotate-180' : 'rotate-0'} transition-transform`}
             />
           </div>
+
           {reportDropdownOpen && (
             <ul className="ml-8 space-y-2">
               <li

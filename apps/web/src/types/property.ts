@@ -9,11 +9,12 @@ export interface Property {
   id: number;
   slug: string;
   title: string;
-  propertyCategoryId: number;
   description: string;
   latitude: string;
   longitude: string;
   status: StatusProperty;
+  isDeleted: boolean;
+  propertyCategoryId: number;
   tenantId: number;
   createdAt: Date;
   updatedAt: Date;

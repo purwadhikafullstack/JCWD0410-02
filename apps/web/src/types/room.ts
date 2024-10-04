@@ -10,6 +10,7 @@ export interface Room {
   stock: number;
   price: number;
   guest: number;
+  isDeleted: boolean;
   propertyId: number;
   createdAt: Date;
   updatedAt: Date;

@@ -1,7 +1,7 @@
 'use client';
 
 import useAxios from '@/hooks/useAxios';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ interface UpdateCategoryPayload {
 const useUpdateCategory = () => {
   const router = useRouter();
   const { axiosInstance } = useAxios();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: UpdateCategoryPayload) => {
@@ -24,6 +25,7 @@ const useUpdateCategory = () => {
       return data;
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['categorylist'] });
       toast.success('Update Category success');
     },
     onError: (error: AxiosError<any>) => {

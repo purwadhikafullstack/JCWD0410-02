@@ -9,10 +9,14 @@ import useCreateCategory from '@/hooks/api/category/useCreateCategory';
 import useDeleteCategory from '@/hooks/api/category/useDeleteCategory';
 import { useFormik } from 'formik';
 import { useSession } from 'next-auth/react';
-import PropertyCategoryList from './components/PropertyCategoryList';
 import { PropertyCategorySchema } from './schemas/PropertyCategorySchema';
+import PropertyCategoryList from './components/PropertyCategoryList';
 
-const CategoryPage = () => {
+interface CreatePropertyPageProps {
+  propertyCategoryId: number;
+}
+
+const CategoryPage = ({ propertyCategoryId }: CreatePropertyPageProps) => {
   const session = useSession();
   const { mutateAsync: createCategory, isPending } = useCreateCategory(
     Number(session.data?.user.id),
@@ -30,14 +34,7 @@ const CategoryPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
       <div className="flex flex-col flex-grow bg-gray-100 dark:bg-gray-900">
-        {/* Navbar */}
-        <Navbar />
-
         {/* Main Dashboard Content */}
         <section className="p-6 container max-w-7xl mx-auto space-y-10">
           <div>
@@ -65,7 +62,7 @@ const CategoryPage = () => {
             </form>
           </div>
           <div>
-            <PropertyCategoryList />
+            <PropertyCategoryList propertyCategoryId={propertyCategoryId} />
           </div>
         </section>
       </div>
