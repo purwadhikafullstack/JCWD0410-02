@@ -14,6 +14,7 @@ export class UserTransactionRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', verifyToken, this.userTransactionController.getUserTransactions);
+    this.router.post('/create-transaction', verifyToken, this.userTransactionController.createBookingTransaction);
   }
 
   getRouter(): Router {
