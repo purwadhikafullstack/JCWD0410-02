@@ -1,6 +1,5 @@
-'use client';
-
-import React, { useState } from 'react';
+"use client"
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import {
   PropertyReport,
@@ -11,14 +10,24 @@ import {
 } from '@/types/propertyreport';
 import { DatePickerWithRange } from '@/components/Dashboard/DateRange';
 import useGetPropertyReport from '@/hooks/api/salesandanalysis/useGetPropertyReport';
+
 const PropertyReportFeature = () => {
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
   }>({
-    from: new Date(),
-    to: new Date(),
+    from: undefined,
+    to: undefined,
   });
+
+  const [availabilityFilter, setAvailabilityFilter] = useState('All');
+
+  useEffect(() => {
+    setDateRange({
+      from: new Date(),
+      to: new Date(),
+    });
+  }, []);
 
   const startDate = dateRange.from
     ? format(dateRange.from, 'yyyy-MM-dd')
@@ -37,8 +46,24 @@ const PropertyReportFeature = () => {
     setDateRange(range);
   };
 
+  const handleAvailabilityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAvailabilityFilter(e.target.value);
+  };
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
+  const filteredData =
+    availabilityFilter === 'All'
+      ? data
+      : data?.map((property) => ({
+          ...property,
+          rooms: property.rooms.filter(
+            (room) =>
+              (availabilityFilter === 'Available' && room.availability === 'Available') ||
+              (availabilityFilter === 'Non Available' && room.availability === 'Non Available')
+          ),
+        })).filter((property) => property.rooms.length > 0);
 
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
@@ -49,15 +74,25 @@ const PropertyReportFeature = () => {
           from={dateRange.from}
           to={dateRange.to}
         />
+
+        <select
+          className="border p-2 rounded"
+          value={availabilityFilter}
+          onChange={handleAvailabilityChange}
+        >
+          <option value="All">All</option>
+          <option value="Available">Available</option>
+          <option value="Non Available">Non Available</option>
+        </select>
       </div>
 
-      {data?.length === 0 ? (
+      {filteredData?.length === 0 ? (
         <p className="text-center text-gray-500">
-          No data available for the selected date range.
+          No data available for the selected date range and filter.
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          {data?.map((property: PropertyReport) => (
+          {filteredData?.map((property: PropertyReport) => (
             <div
               key={property.propertyId}
               className="border p-4 rounded-lg shadow-sm"
