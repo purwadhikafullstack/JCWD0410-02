@@ -35,7 +35,7 @@ const PropertyDetailCard: FC<PropertyDetailCardProps> = ({
         <div className="grid grid-cols-2 gap-x-3">
           {roomFacilities.map((facilities) => {
             return (
-              <div>
+              <div key={facilities.id}>
                 <p>{facilities.title}</p>
               </div>
             );
