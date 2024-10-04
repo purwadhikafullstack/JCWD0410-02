@@ -41,6 +41,14 @@ const TableTransaction = () => {
     setIsCancelOpen(false);
   };
 
+  const toggleDropdown = (transactionId: number) => {
+    if (dropdownOpen === transactionId) {
+      setDropdownOpen(null);
+    } else {
+      setDropdownOpen(transactionId);
+    }
+  };
+
   const renderDropdown = (transaction: Transaction) => (
     <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-10">
       {["Detail", "Edit", "Cancel Order"].map((action, index) => (
@@ -119,7 +127,7 @@ const TableTransaction = () => {
                 <td className="px-6 py-4 border-b border-gray-200 relative">
                   <FiMoreVertical
                     className="cursor-pointer text-gray-600 hover:text-gray-800"
-                    onClick={() => setDropdownOpen(dropdownOpen === transaction.id ? null : transaction.id)}
+                    onClick={() => toggleDropdown(transaction.id)}
                   />
                   {dropdownOpen === transaction.id && renderDropdown(transaction)}
                 </td>
