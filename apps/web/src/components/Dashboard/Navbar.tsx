@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation"; // Import usePathname to detect path changes
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -9,17 +10,20 @@ const Navbar: React.FC = () => {
   const { data: session } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [brandText, setBrandText] = useState("Main Dashboard");
+  const pathname = usePathname(); // Use usePathname to get the current path
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   useEffect(() => {
-   const path = window.location.pathname;
-    if (path.includes("property")) setBrandText("Property");
-    else if (path.includes("tenant-transaction")) setBrandText("Tenant Management");
-    else if (path.includes("sales-report")) setBrandText("Sales Report");
-    else if (path.includes("property-report")) setBrandText("Property Report");
+    // Check current path and update brandText accordingly
+    if (pathname.includes("property-category")) setBrandText("Property Category");
+    else if (pathname.includes("property-management")) setBrandText("Property Management");
+    else if (pathname.includes("property-room-management")) setBrandText("Property Room");
+    else if (pathname.includes("tenant-transaction")) setBrandText("Tenant Management");
+    else if (pathname.includes("sales-report")) setBrandText("Sales Report");
+    else if (pathname.includes("property-report")) setBrandText("Property Report");
     else setBrandText("Main Dashboard");
-  }, []);
+  }, [pathname]); // Add pathname as a dependency
 
   return (
     <nav className="flex justify-between items-center p-4 bg-white shadow-md mx-4 mt-4 rounded-lg">
