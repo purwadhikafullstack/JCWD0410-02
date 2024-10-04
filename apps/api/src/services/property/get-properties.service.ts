@@ -16,17 +16,17 @@ export const getPropertiesService = async (query: GetPropertiesQuery) => {
 
     const whereClause: Prisma.PropertyWhereInput = {};
 
-    if (search) {
-      whereClause.title = {
-        contains: search,
-      };
-    }
+    // if (search) {
+    //   whereClause.title = {
+    //     contains: search,
+    //   };
+    // }
 
-    if (guest) {
-      whereClause.rooms = {
-        some: { guest: {} },
-      };
-    }
+    // if (guest) {
+    //   whereClause.rooms = {
+    //     some: { guest: {} },
+    //   };
+    // }
 
     const properties = await prisma.property.findMany({
       where: whereClause,

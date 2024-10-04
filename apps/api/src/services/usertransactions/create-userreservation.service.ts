@@ -1,0 +1,143 @@
+import prisma from '@/prisma';
+import { StatusTransaction } from '@prisma/client';
+
+// Helper function to check if the date range overlaps
+const isDateInRange = (
+  start: Date,
+  end: Date,
+  checkStart: Date,
+  checkEnd: Date,
+) => {
+  return (
+    (checkStart >= start && checkStart <= end) ||
+    (checkEnd >= start && checkEnd <= end)
+  );
+};
+
+// Validate booking dates and calculate total price
+export const getValidBookingDatesAndPrices = async (
+  roomId: number,
+  startDate: Date,
+  endDate: Date,
+) => {
+  try {
+    const room = await prisma.room.findUnique({
+      where: { id: roomId },
+      include: {
+        transactions: true,
+        roomNonAvailabilities: true,
+        peakSeasonRates: true,
+      },
+    });
+
+    if (!room) {
+      throw new Error('Room not found');
+    }
+
+    // Check if the selected dates are already booked
+    for (const transaction of room.transactions) {
+      if (
+        isDateInRange(
+          transaction.startDate,
+          transaction.endDate,
+          startDate,
+          endDate,
+        )
+      ) {
+        throw new Error(
+          'Tanggal yang dipilih sudah dibooking oleh orang lain.',
+        );
+      }
+    }
+
+    // Check if the selected dates fall within non-availability dates
+    for (const nonAvailability of room.roomNonAvailabilities) {
+      if (
+        isDateInRange(
+          nonAvailability.startDate,
+          nonAvailability.endDate,
+          startDate,
+          endDate,
+        )
+      ) {
+        throw new Error(
+          'Tanggal yang dipilih berada dalam periode non-availability.',
+        );
+      }
+    }
+
+    // Calculate price considering peak season rates
+    let totalPrice = 0;
+    let peakRatePrice = room.price;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const nights = Math.round(
+      (endDate.getTime() - startDate.getTime()) / oneDay,
+    );
+
+    for (let i = 0; i < nights; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(currentDate.getDate() + i);
+
+      // Check if current date is in peak season
+      for (const peakSeason of room.peakSeasonRates) {
+        if (
+          currentDate >= peakSeason.startDate &&
+          currentDate <= peakSeason.endDate
+        ) {
+          peakRatePrice = peakSeason.price;
+        }
+      }
+      totalPrice += peakRatePrice;
+    }
+
+    return { isValid: true, totalPrice };
+  } catch (error) {
+    throw Error;
+  }
+};
+
+// Create booking transaction with Prisma Transaction
+export const createBookingTransaction = async (
+  roomId: number,
+  startDate: Date,
+  endDate: Date,
+  userId: number,
+) => {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const { isValid, totalPrice } = await getValidBookingDatesAndPrices(
+        roomId,
+        startDate,
+        endDate,
+      );
+
+      if (!isValid) {
+        throw new Error('Tanggal booking tidak valid.');
+      }
+
+      // Create transaction entry in database
+      const transaction = await tx.transaction.create({
+        data: {
+          userId,
+          roomId,
+          status: StatusTransaction.WAITING_FOR_PAYMENT,
+          total: totalPrice,
+          startDate,
+          endDate,
+        },
+      });
+
+      // Decrease room stock atomically within the same transaction
+      await tx.room.update({
+        where: { id: roomId },
+        data: {
+          stock: { decrement: 1 },
+        },
+      });
+
+      return transaction;
+    });
+  } catch (error) {
+    throw Error;
+  }
+};
