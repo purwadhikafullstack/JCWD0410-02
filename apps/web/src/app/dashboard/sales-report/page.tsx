@@ -1,27 +1,14 @@
-import React from 'react';
-import Navbar from '@/components/Dashboard/Navbar';
-import Sidebar from '@/components/Dashboard/Sidebar';
 import SalesReportChart from '@/features/dashboard/salesreport';
-
+import React from 'react';
 
 const SalesReport: React.FC = () => {
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex flex-col flex-grow bg-gray-100 dark:bg-gray-900">
-        {/* Navbar */}
-        <Navbar />
-
-        {/* Main Dashboard Content */}
-        <div className="p-6">
-          {/* Contoh Konten Utama */}
-          <SalesReportChart />
-        </div>
-      </div>
-    </div>
+    <div>
+    {/* Main Dashboard Content */}
+    <section className="p-6 container max-w-7xl mx-auto space-y-10">
+      <SalesReportChart/>
+    </section>
+  </div>
   );
 };
 

@@ -18,17 +18,6 @@ const Navbar: React.FC = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const getBrandText = () => {
-    const path = window.location.pathname;
-    if (path.includes('property')) return 'Property';
-    if (path.includes('tenant-transaction')) return 'Tenant Management';
-    if (path.includes('sales-report')) return 'Sales Report';
-    if (path.includes('property-report')) return 'Property Report';
-    return 'Main Dashboard';
-  };
-
-  const brandText = getBrandText();
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
@@ -46,9 +35,19 @@ const Navbar: React.FC = () => {
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('mousedown', handleClickOutside); // Cleanup listener
     };
   }, [dropdownOpen]);
+
+  const getBrandText = () => {
+    const path = window.location.pathname;
+    if (path.includes('property')) return 'Property';
+    if (path.includes('tenant-transaction')) return 'Tenant Management';
+    if (path.includes('sales-report')) return 'Sales Report';
+    if (path.includes('property-report')) return 'Property Report';
+    return 'Main Dashboard';
+  };
+
+  const brandText = getBrandText();
 
   return (
     <nav className="flex justify-between items-center p-4 bg-[rgb(254,255,255)] dark:bg-navy-800 shadow-md rounded-xl mx-4 mt-4">
@@ -64,7 +63,7 @@ const Navbar: React.FC = () => {
       {session?.user && (
         <div className="relative flex items-center space-x-4 dropdown-container">
           <div
-            onClick={toggleDropdown} // Toggle dropdown on avatar click
+            onClick={toggleDropdown}
             className="cursor-pointer flex items-center gap-2"
           >
             <Avatar>

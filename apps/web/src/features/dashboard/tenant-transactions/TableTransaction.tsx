@@ -7,7 +7,7 @@ import useGetTransactions from "@/hooks/api/transaction-tenant/useGetOrders";
 import EditModal from "@/components/EditModal";
 import DetailModal from "@/components/DetailModal";
 import CancelOrderModal from "@/components/CancelOrderModal";
-import Image from "next/image"; // Import Image from next/image
+import Image from "next/image";
 
 const TableTransaction = () => {
   const [selectedStatus, setSelectedStatus] = useState<StatusTransaction | "ALL">("ALL");
@@ -101,7 +101,7 @@ const TableTransaction = () => {
                     <Image
                       src={transaction.paymentProof}
                       alt="Payment Proof"
-                      width={128} // Sesuaikan ukuran gambar
+                      width={128} 
                       height={128}
                       className="object-cover rounded-lg"
                     />
