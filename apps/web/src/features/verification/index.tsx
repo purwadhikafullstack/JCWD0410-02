@@ -70,7 +70,7 @@ const VerificationPage: FC<VerificationPageProps> = ({ token }) => {
                     <Label htmlFor="confirmPassword">Password</Label>
                     <Input
                       name="confirmPassword"
-                      type="confirmPassword"
+                      type="password"
                       placeholder="Confirm Your Password"
                       value={formik.values.confirmPassword}
                       onChange={formik.handleChange}

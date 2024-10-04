@@ -65,11 +65,12 @@ model Property {
   id                 Int            @id @default(autoincrement())
   slug               String         @unique
   title              String
-  propertyCategoryId Int
   description        String         @db.LongText()
   latitude           String
   longitude          String
   status             StatusProperty
+  isDeleted          Boolean        @default(false)
+  propertyCategoryId Int
   tenantId           Int
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
@@ -106,6 +107,7 @@ model PropertyFacility {
   id          Int      @id @default(autoincrement())
   title       String
   description String
+  isDeleted   Boolean  @default(false)
   propertyId  Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -118,6 +120,7 @@ model PropertyFacility {
 model PropertyImage {
   id         Int      @id @default(autoincrement())
   imageUrl   String?
+  isDeleted  Boolean  @default(false)
   propertyId Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -132,10 +135,11 @@ model Room {
   name       String
   stock      Int      @default(0)
   price      Int
+  guest      Int
+  isDeleted  Boolean  @default(false)
   propertyId Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  guest      Int
 
   roomFacilities        RoomFacility[]
   roomImages            RoomImage[]
@@ -152,6 +156,7 @@ model RoomFacility {
   id          Int      @id @default(autoincrement())
   title       String
   description String
+  isDeleted   Boolean  @default(false)
   roomId      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -164,6 +169,7 @@ model RoomFacility {
 model RoomImage {
   id        Int      @id @default(autoincrement())
   imageUrl  String
+  isDeleted Boolean  @default(false)
   roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -177,8 +183,9 @@ model RoomNonAvailability {
   id        Int      @id @default(autoincrement())
   startDate DateTime
   endDate   DateTime
-  roomId    Int
+  isDeleted Boolean  @default(false)
   reason    String?
+  roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -192,6 +199,7 @@ model PeakSeasonRate {
   price     Int
   startDate DateTime
   endDate   DateTime
+  isDeleted Boolean  @default(false)
   roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

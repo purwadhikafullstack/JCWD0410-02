@@ -1,5 +1,4 @@
-import DashboardPage from "@/features/dashboard";
-
+import DashboardPage from '@/features/dashboard';
 
 const Dashboard = () => {
   return <DashboardPage />;

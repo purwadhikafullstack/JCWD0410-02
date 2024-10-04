@@ -12,14 +12,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useUpdateCategory from '@/hooks/api/category/useUpdateCategory';
 import { useFormik } from 'formik';
+import { FC, useState } from 'react';
 import { PropertyCategorySchema } from '../schemas/PropertyCategorySchema';
-import { FC } from 'react';
 
 interface EditCategoryButton {
   id: number;
 }
 
 export const EditCategoryButton: FC<EditCategoryButton> = ({ id }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync: updateCategory, isPending: pendingUpdate } =
     useUpdateCategory();
   const formik = useFormik({
@@ -30,19 +31,22 @@ export const EditCategoryButton: FC<EditCategoryButton> = ({ id }) => {
     validationSchema: PropertyCategorySchema,
     onSubmit: async (values) => {
       await updateCategory(values);
+      setIsOpen(false);
     },
   });
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button variant="outline" onClick={() => setIsOpen(true)}>
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>Edit Category</DialogTitle>
             <DialogDescription>
-              Make changes to your category here. Click save when you're done.
+              Make changes to your category here. Click save when youre done.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

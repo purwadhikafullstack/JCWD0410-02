@@ -20,7 +20,7 @@ const ThanksPage = () => {
         <div className="w-full lg:w-1/2 p-8">
           <div className="flex w-full flex-col items-center">
             <h1 className="text-3xl font-medium">Congratulations! 🎉🎉🎉</h1>
-            <p>You're one step closer!</p>
+            <p>Youre one step closer!</p>
             <p className="mt-[50px] text-l text-[#0f172a]">
               Please check your email to verify.
             </p>

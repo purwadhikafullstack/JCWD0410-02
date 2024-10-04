@@ -51,7 +51,7 @@ const PropertyList = () => {
               rating={property.reviews[0]?.rating}
               description={property.description}
               price={property.rooms[0]?.price}
-              category={property.propertycategory.name}
+              category={property.propertycategory?.name}
             />
           );
         })}

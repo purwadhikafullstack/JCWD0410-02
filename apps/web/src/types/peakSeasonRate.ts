@@ -3,6 +3,7 @@ export interface PeakSeasonRate {
   price: number;
   startDate: Date;
   endDate: Date;
+  isDeleted: boolean;
   roomId: number;
   createdAt: Date;
   updatedAt: Date;

@@ -1,18 +1,13 @@
 import { JWT_SECRET } from '@/config';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import { TokenExpiredError, verify } from 'jsonwebtoken';
 
 const secretKey = JWT_SECRET!;
 
-interface PayloadToken extends Pick<User, 'id'> {}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: PayloadToken | null;
-    }
-  }
+interface PayloadToken {
+  id: number;
+  role: Role;
 }
 
 export const verifyToken = (

@@ -1,4 +1,6 @@
 import { PropertyController } from '@/controllers/property.controller';
+import { uploader } from '@/lib/multer';
+import { tenantGuard } from '@/middlewares/TenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -14,7 +16,31 @@ export class PropertyRouter {
 
   private initializeRoutes(): void {
     this.router.get('/:slug', this.propertyController.getPropertyController);
+    this.router.get(
+      '/management/:id',
+      this.propertyController.getPropertyTenantController,
+    );
+    this.router.patch(
+      '/management/:id',
+      verifyToken,
+      tenantGuard,
+      uploader().single('imageUrl'),
+      this.propertyController.updatePropertyController,
+    );
     this.router.get('/', this.propertyController.getPropertiesController);
+    this.router.post(
+      '/',
+      verifyToken,
+      tenantGuard,
+      uploader().single('imageUrl'),
+      this.propertyController.createPropertyController,
+    );
+    this.router.patch(
+      '/:id',
+      verifyToken,
+      tenantGuard,
+      this.propertyController.deletePropertyController,
+    );
   }
 
   getRouter(): Router {
