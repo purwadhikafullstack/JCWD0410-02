@@ -54,7 +54,7 @@ const PropertyCard: FC<PropertyCardProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-1">
-                <GoStarFill className="text-[#fbae2c]" />
+                <GoStarFill className="text-slate-200" />
                 <p className="text-sm font-medium">0</p>
               </div>
             )}

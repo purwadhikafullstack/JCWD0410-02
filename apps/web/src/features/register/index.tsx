@@ -83,8 +83,13 @@ const RegisterPage = () => {
                     ) : null}
                   </div>
                 </div>
-
-                <Button className="mt-7 w-full" disabled={isPending}>
+                <Link
+                  href="/dashboard/register"
+                  className="mt-7 flex justify-center text-sm"
+                >
+                  Be a Tenant?
+                </Link>
+                <Button className="mt-3 w-full" disabled={isPending}>
                   {isPending ? 'Loading...' : 'Join'}
                 </Button>
               </form>

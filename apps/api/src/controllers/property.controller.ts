@@ -1,5 +1,9 @@
+import { createPropertyService } from '@/services/property/create-property.service';
+import { deletePropertyService } from '@/services/property/delete-property.service';
 import { getPropertiesService } from '@/services/property/get-properties.service';
+import { getPropertyTenantService } from '@/services/property/get-property-tenant.service';
 import { getPropertyService } from '@/services/property/get-property.service';
+import { updatePropertyService } from '@/services/property/update-property.service';
 import { NextFunction, Request, Response } from 'express';
 
 export class PropertyController {
@@ -28,6 +32,70 @@ export class PropertyController {
   async getPropertyController(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await getPropertyService(req.params.slug);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getPropertyTenantController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await getPropertyTenantService(Number(req.params.id));
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async createPropertyController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await createPropertyService(
+        req.body,
+        req.file!,
+        Number(res.locals.user.id),
+      );
+      return res.status(200).send(result);
+    } catch (error) {
+      console.log('ERORNYA' + Number(req.params.id));
+
+      next(error);
+    }
+  }
+  async deletePropertyController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await deletePropertyService(
+        Number(req.params.id),
+        Number(res.locals.user.id),
+      );
+      return res
+        .status(200)
+        .send({ message: 'Delete property success', result });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updatePropertyController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updatePropertyService(
+        Number(res.locals.user.id),
+        Number(req.params.id),
+        req.body,
+        req.file!,
+      );
       return res.status(200).send(result);
     } catch (error) {
       next(error);

@@ -28,15 +28,3 @@ export const useGetProperties = (queries: GetPropertyQueries) => {
     },
   });
 };
-
-export const useGetSearchProperties = (queries: GetPropertyQueries) => {
-  const { axiosInstance } = useAxios();
-
-  return useQuery({
-    queryKey: ['properties', queries],
-    queryFn: async () => {
-      const { data } = await axiosInstance.get(`/property/search?${queries}`);
-      return data;
-    },
-  });
-};

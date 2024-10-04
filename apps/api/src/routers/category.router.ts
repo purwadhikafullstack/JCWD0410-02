@@ -1,4 +1,5 @@
 import { CategoryController } from '@/controllers/category.controller';
+import { tenantGuard } from '@/middlewares/TenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -17,6 +18,7 @@ export class CategoryRouter {
     this.router.post(
       '/:id',
       verifyToken,
+      tenantGuard,
       this.categoryController.createCategoryController,
     );
     this.router.delete('/:id', this.categoryController.deleteCategory);

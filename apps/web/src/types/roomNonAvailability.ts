@@ -2,8 +2,9 @@ export interface RoomNonAvailability {
   id: number;
   startDate: Date;
   endDate: Date;
-  roomId: number;
+  isDeleted: boolean;
   reason: string;
+  roomId: number;
   createdAt: Date;
   updatedAt: Date;
 }

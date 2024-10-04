@@ -3,7 +3,7 @@ import prisma from '@/prisma';
 export const getPropertyService = async (slug: string) => {
   try {
     const property = await prisma.property.findFirst({
-      where: { slug },
+      where: { slug, isDeleted: false },
       include: {
         tenant: true,
         rooms: { include: { roomImages: true, roomFacilities: true } },
