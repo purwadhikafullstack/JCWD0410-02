@@ -44,7 +44,7 @@ export class UserTransactionController {
     }
   }
 
-  // Controller untuk membuat transaksi booking dengan menggunakan user dari JWT token
+ 
   async createBookingTransaction(req: Request, res: Response, next: NextFunction) {
     try {
       const { roomId, startDate, endDate } = req.body;
@@ -54,7 +54,7 @@ export class UserTransactionController {
         return res.status(400).json({ message: 'User ID is missing or invalid' });
       }
 
-      // Convert string dates to actual Date objects (if they are in string form)
+   
       const start = new Date(startDate);
       const end = new Date(endDate);
 
