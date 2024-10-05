@@ -14,23 +14,29 @@ const isDateInRange = (
 };
 
 export const getValidBookingDatesAndPrices = async (
-  roomId: number,
+  slug: string,
   startDate: Date,
   endDate: Date,
 ) => {
   try {
-    const room = await prisma.room.findUnique({
-      where: { id: roomId },
+    const property = await prisma.property.findUnique({
+      where: { slug },
       include: {
-        transactions: true,
-        roomNonAvailabilities: true,
-        peakSeasonRates: true,
-      },
+        rooms: {
+          include: {
+            transactions: true,
+            roomNonAvailabilities: true,
+            peakSeasonRates: true,
+          }
+        }
+      }
     });
 
-    if (!room) {
+    if (!property || property.rooms.length === 0) {
       throw new Error('Room not found');
     }
+
+    const room = property.rooms[0]; // Assuming one room per property, adjust if needed
 
     for (const transaction of room.transactions) {
       if (
@@ -41,9 +47,7 @@ export const getValidBookingDatesAndPrices = async (
           endDate,
         )
       ) {
-        throw new Error(
-          'Tanggal yang dipilih sudah dibooking oleh orang lain.',
-        );
+        throw new Error('Tanggal yang dipilih sudah dibooking oleh orang lain.');
       }
     }
 
@@ -56,9 +60,7 @@ export const getValidBookingDatesAndPrices = async (
           endDate,
         )
       ) {
-        throw new Error(
-          'Tanggal yang dipilih berada dalam periode non-availability.',
-        );
+        throw new Error('Tanggal yang dipilih berada dalam periode non-availability.');
       }
     }
 
@@ -84,22 +86,22 @@ export const getValidBookingDatesAndPrices = async (
       totalPrice += peakRatePrice;
     }
 
-    return { isValid: true, totalPrice };
+    return { isValid: true, totalPrice, room };
   } catch (error) {
-    throw Error;
+    throw Error
   }
 };
 
 export const createBookingTransaction = async (
-  roomId: number,
+  slug: string,
   startDate: Date,
   endDate: Date,
-  userId: number,
+  userId: number,  // userId passed from res.locals.user
 ) => {
   try {
     return await prisma.$transaction(async (tx) => {
-      const { isValid, totalPrice } = await getValidBookingDatesAndPrices(
-        roomId,
+      const { isValid, totalPrice, room } = await getValidBookingDatesAndPrices(
+        slug,
         startDate,
         endDate,
       );
@@ -110,8 +112,8 @@ export const createBookingTransaction = async (
 
       const transaction = await tx.transaction.create({
         data: {
-          userId,
-          roomId,
+          userId,  // Using userId from res.locals.user
+          roomId: room.id,
           status: StatusTransaction.WAITING_FOR_PAYMENT,
           total: totalPrice,
           startDate,
@@ -120,7 +122,7 @@ export const createBookingTransaction = async (
       });
 
       await tx.room.update({
-        where: { id: roomId },
+        where: { id: room.id },
         data: {
           stock: { decrement: 1 },
         },
@@ -129,6 +131,6 @@ export const createBookingTransaction = async (
       return transaction;
     });
   } catch (error) {
-    throw Error;
+    throw Error
   }
 };

@@ -1,16 +1,11 @@
 import { createBookingTransaction } from '@/services/usertransactions/create-userreservation.service';
 import { getUserTransactionsService } from '@/services/usertransactions/orderlist-user.service';
+
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
 
 export class UserTransactionController {
   async getUserTransactions(req: Request, res: Response, next: NextFunction) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const userId = res.locals.user?.id;
 
       if (!userId) {
@@ -44,26 +39,25 @@ export class UserTransactionController {
     }
   }
 
- 
-  async createBookingTransaction(req: Request, res: Response, next: NextFunction) {
+  // Method untuk pemesanan kamar (createBooking)
+  async createBooking(req: Request, res: Response, next: NextFunction) {
+    const { slug } = req.params;
+    const { startDate, endDate } = req.body;
+    const userId = res.locals.user?.id;  // Menggunakan res.locals.user untuk mendapatkan userId dari token
+
+    if (!slug || !startDate || !endDate) {
+      return res.status(400).json({ error: 'Semua field harus diisi' });
+    }
+
     try {
-      const { roomId, startDate, endDate } = req.body;
-      const userId = res.locals.user?.id;
+      const transaction = await createBookingTransaction(
+        slug,
+        new Date(startDate),
+        new Date(endDate),
+        userId,  // userId dari res.locals.user
+      );
 
-      if (!userId) {
-        return res.status(400).json({ message: 'User ID is missing or invalid' });
-      }
-
-   
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        return res.status(400).json({ message: 'Invalid date format' });
-      }
-
-      const transaction = await createBookingTransaction(roomId, start, end, userId);
-      return res.status(201).json(transaction);
+      return res.status(201).json({ success: true, transaction });
     } catch (error) {
       next(error);
     }

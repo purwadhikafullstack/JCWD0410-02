@@ -13,8 +13,11 @@ export class UserTransactionRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/', verifyToken, this.userTransactionController.getUserTransactions);
-    this.router.post('/create-transaction', verifyToken, this.userTransactionController.createBookingTransaction);
+    // Route untuk mendapatkan transaksi pengguna
+    this.router.get('/', verifyToken, this.userTransactionController.getUserTransactions.bind(this.userTransactionController));
+
+    // Route untuk membuat booking kamar (pemesanan)
+    this.router.post('/booking/:slug', verifyToken, this.userTransactionController.createBooking.bind(this.userTransactionController));
   }
 
   getRouter(): Router {
