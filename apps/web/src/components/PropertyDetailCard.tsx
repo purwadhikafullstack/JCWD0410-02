@@ -4,6 +4,7 @@ import { DatePickerWithRange } from './DateRangePicker';
 import { Button } from './ui/button';
 import { Card, CardHeader } from './ui/card';
 import { RoomFacility } from '@/types/roomFacility';
+import { FaSquareCheck } from 'react-icons/fa6';
 
 interface PropertyDetailCardProps {
   name: string;
@@ -32,17 +33,27 @@ const PropertyDetailCard: FC<PropertyDetailCardProps> = ({
           ></Image>
         </div>
         <h5 className="font-semibold text-base">Room Facilities</h5>
-        <div className="grid grid-cols-2 gap-x-3">
+        <div className="grid gap-x-3">
           {roomFacilities.map((facilities) => {
             return (
               <div key={facilities.id}>
-                <p>{facilities.title}</p>
+                <div className="flex items-center gap-3 ">
+                  <div>
+                    <FaSquareCheck className="text-green-500" />
+                  </div>
+                  <h5 className="font-medium line-clamp-1">
+                    {facilities.title}
+                  </h5>
+                </div>
+                <p className="pl-7 text-justify line-clamp-3">
+                  {facilities.description}
+                </p>
               </div>
             );
           })}
         </div>
       </CardHeader>
-      <CardHeader className="justify-between my-20">
+      <CardHeader className="justify-between my-28">
         <div>
           <h4 className="font-semibold text-base text-center">
             Price/room/night

@@ -14,6 +14,7 @@ import { UserTransactionRouter } from './routers/user-transaction.router';
 import { PropertyRouter } from './routers/property.router';
 import { CategoryRouter } from './routers/category.router';
 import { SalesPropertyRouter } from './routers/salesreport.router';
+import { RoomRouter } from './routers/room.router';
 // import { SampleRouter } from './routers/auth.router';
 
 export default class App {
@@ -62,6 +63,7 @@ export default class App {
     const propertyRouter = new PropertyRouter();
     const salesPropertyRouter = new SalesPropertyRouter();
     const categoryRouter = new CategoryRouter();
+    const roomRouter = new RoomRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Hello! Welcome to EaseCoz API!`);
@@ -74,6 +76,7 @@ export default class App {
     );
     this.app.use('/api/usertransactions', userTransactionRouter.getRouter());
     this.app.use('/api/property', propertyRouter.getRouter());
+    this.app.use('/api/room', roomRouter.getRouter());
     this.app.use('/api/category', categoryRouter.getRouter());
     this.app.use('/api/reportanalysis', salesPropertyRouter.getRouter());
   }

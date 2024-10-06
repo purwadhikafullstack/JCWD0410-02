@@ -1,7 +1,7 @@
 import UpdatePropertyPage from '@/features/dashboard/property/update';
 
-const updateProperty = () => {
-  return <UpdatePropertyPage />;
+const UpdateProperty = ({ params }: { params: { id: number } }) => {
+  return <UpdatePropertyPage propertyId={params.id} />;
 };
 
-export default updateProperty;
+export default UpdateProperty;

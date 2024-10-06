@@ -1,4 +1,4 @@
-import CreateRoomPage from '@/features/dashboard/room-create';
+import CreateRoomPage from '@/features/dashboard/property/room/create';
 
 const CreateRoom = () => {
   return <CreateRoomPage />;
