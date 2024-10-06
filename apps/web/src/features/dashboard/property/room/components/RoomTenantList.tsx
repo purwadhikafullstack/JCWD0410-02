@@ -1,14 +1,13 @@
 'use client';
 import Pagination from '@/components/Pagination';
-import PropertyCard from '@/components/PropertyCard';
-import { Card } from '@/components/ui/card';
+import RoomCard from '@/components/RoomTenantCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
+import { useGetRooms } from '@/hooks/api/room/useGetRooms';
 import { useState } from 'react';
 
-const PropertyList = () => {
+const RoomTenantList = () => {
   const [page, setPage] = useState(1);
-  const { data, isPending } = useGetProperties({
+  const { data, isPending } = useGetRooms({
     page,
     take: 4,
   });
@@ -33,26 +32,24 @@ const PropertyList = () => {
   }
 
   if (!data) {
-    return <h1>Property tidak ditemukan</h1>;
+    return <h1>Room tidak ditemukan</h1>;
   }
-
   return (
     <>
       <h3 className="container max-w-7xl mx-auto font-semibold text-2xl mb-3 text-center md:text-left">
-        Property
+        Room
       </h3>
       <section className="container max-w-7xl mx-auto md:grid grid-cols-4 gap-5">
-        {data?.data.map((property, index) => {
+        {data?.data.map((room, index) => {
           return (
-            <PropertyCard
-              slug={property.slug}
+            <RoomCard
               key={index}
-              imageUrl={property.propertyImages[0]?.imageUrl}
-              title={property.title}
-              rating={property.reviews[0]?.rating}
-              description={property.description}
-              price={property.rooms[0]?.price}
-              category={property.propertycategory?.name}
+              id={room.id}
+              guest={room.guest}
+              imageUrl={room.roomImages?.[0]?.imageUrl}
+              name={room.name}
+              stock={room.stock}
+              price={room.price}
             />
           );
         })}
@@ -69,4 +66,4 @@ const PropertyList = () => {
   );
 };
 
-export default PropertyList;
+export default RoomTenantList;

@@ -1,19 +1,18 @@
 'use client';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { BiLogOutCircle } from 'react-icons/bi';
+import { IoPersonCircleOutline } from 'react-icons/io5';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
-import { signOut, useSession } from 'next-auth/react';
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './ui/navigation-menu';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { IoPersonCircleOutline } from 'react-icons/io5';
-import { BiLogOutCircle } from 'react-icons/bi';
 
 export const Header = () => {
   const pathname = usePathname();

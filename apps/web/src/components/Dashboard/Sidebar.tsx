@@ -70,9 +70,7 @@ const Sidebar: React.FC = () => {
               </li>
               <li
                 className="text-base font-normal cursor-pointer"
-                onClick={() =>
-                  router.push('/dashboard/property/room/management')
-                }
+                onClick={() => router.push('/dashboard/property/room')}
               >
                 <span>Room</span>
               </li>

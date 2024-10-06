@@ -17,18 +17,22 @@ const PropertyDetailList: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
   }
   return (
     <>
-      {data.rooms.map((room, index) => {
-        return (
-          <PropertyDetailCard
-            key={index}
-            name={room.name}
-            imageUrl={room.roomImages[index]?.imageUrl!}
-            guest={room.guest}
-            price={room.price}
-            roomFacilities={room.roomFacilities}
-          />
-        );
-      })}
+      {data.rooms
+        .filter((room) => !room.isDeleted)
+        .map((room, index) => {
+          return (
+            <PropertyDetailCard
+              key={index}
+              name={room.name}
+              imageUrl={
+                room.roomImages.length > 0 ? room.roomImages[0].imageUrl : ''
+              }
+              guest={room.guest}
+              price={room.price}
+              roomFacilities={room.roomFacilities}
+            />
+          );
+        })}
     </>
   );
 };
