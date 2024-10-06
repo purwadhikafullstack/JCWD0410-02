@@ -50,13 +50,13 @@ const Sidebar: React.FC = () => {
             <ul className="ml-8 mt-2">
               <li
                 className="cursor-pointer"
-                onClick={() => router.push('/dashboard/property-category')}
+                onClick={() => router.push('/dashboard/property/category')}
               >
                 Category
               </li>
               <li
                 className="cursor-pointer"
-                onClick={() => router.push('/dashboard/property-management')}
+                onClick={() => router.push('/dashboard/property/management')}
               >
                 Management
               </li>
@@ -65,6 +65,14 @@ const Sidebar: React.FC = () => {
                 onClick={() => router.push('/dashboard/property/room')}
               >
                 Room
+              </li>
+              <li
+                className="text-base font-normal cursor-pointer"
+                onClick={() =>
+                  router.push('/dashboard/property/peak-season-rate')
+                }
+              >
+                Peak Season Rate
               </li>
             </ul>
           )}

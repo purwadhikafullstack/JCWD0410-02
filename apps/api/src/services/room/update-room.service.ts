@@ -42,7 +42,7 @@ export const updateRoomService = async (
       ...(body.stock && { stock: Number(body.stock) }),
       ...(body.price && { price: Number(body.price) }),
       ...(body.guest && { guest: Number(body.guest) }),
-      ...(body.propertyId && { guest: Number(body.propertyId) }),
+      ...(body.propertyId && { propertyId: Number(body.propertyId) }),
     };
 
     return await prisma.$transaction(
