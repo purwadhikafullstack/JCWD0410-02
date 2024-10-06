@@ -16,6 +16,8 @@ export const Footer = () => {
     pathname === '/register/thanks' ||
     pathname === '/forgot-password' ||
     pathname === '/reset-password' ||
+    pathname === '/change-email' ||
+    pathname === '/verify-email' ||
     pathname.startsWith('/verification') ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')

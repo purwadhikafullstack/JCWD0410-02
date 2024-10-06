@@ -1,7 +1,6 @@
 import React from 'react';
 import TableTransaction from '@/features/dashboard/tenant-transactions/TableTransaction';
 
-
 const TenantManagement: React.FC = () => {
   return (
     <div>
