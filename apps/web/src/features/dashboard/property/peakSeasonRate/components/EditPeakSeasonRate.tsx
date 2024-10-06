@@ -1,0 +1,88 @@
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useUpdatePeakSeason from '@/hooks/api/peakSeasonRate/useUpdatePeakSeasonRate';
+import { useFormik } from 'formik';
+import { FC, useState } from 'react';
+import { PeakSeasonRateSchema } from '../schemas/PeakSeasonRateSchema';
+import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
+import { useSession } from 'next-auth/react';
+import FormInput from '@/components/FormInput';
+
+interface EditPeakSeasonButton {
+  id: number;
+}
+
+export const EditPeakSeasonButton: FC<EditPeakSeasonButton> = ({ id }) => {
+  const session = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+  const { mutateAsync: updateCategory, isPending: pendingUpdate } =
+    useUpdatePeakSeason();
+  const { data, isPending } = useGetPeakSeasons({
+    userId: session.data?.user.id,
+    take: 10,
+  });
+  const formik = useFormik({
+    initialValues: {
+      id,
+      price: 0,
+    },
+    validationSchema: PeakSeasonRateSchema,
+    onSubmit: async (values) => {
+      const dataToSubmit = {
+        ...values,
+        price: Number(values.price),
+      };
+      await updateCategory(dataToSubmit);
+      setIsOpen(false);
+    },
+  });
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" onClick={() => setIsOpen(true)}>
+          Edit
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={formik.handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+            <DialogDescription>
+              Make changes to your category here. Click save when youre done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <FormInput
+                name="price"
+                label="Price"
+                type="text"
+                placeholder="Price for Peak Season"
+                value={formik.values.price}
+                isError={!!formik.touched.price && !!formik.errors.price}
+                error={formik.errors.price}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" disabled={pendingUpdate}>
+              {pendingUpdate ? 'Updating...' : 'Save'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

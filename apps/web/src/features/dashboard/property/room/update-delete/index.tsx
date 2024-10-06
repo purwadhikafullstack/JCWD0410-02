@@ -5,43 +5,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import useGetPropertyTenant from '@/hooks/api/property/useGetPropertyTenant';
-import useUpdateProperty from '@/hooks/api/property/useUpdateProperty';
+import useGetRoom from '@/hooks/api/room/useGetRoom';
+import useUpdateRoom from '@/hooks/api/room/useUpdateRoom';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { ChangeEvent, FC, useRef, useState } from 'react';
-import { EditPropertyCategorySelect } from '../management/components/EditPropertyCategorySelect';
-import useDeleteProperty from '@/hooks/api/property/useDeleteProperty';
+import { PropertyIdSelect } from '../create/components/PropertyIdSelect';
+import useDeleteRoom from '@/hooks/api/room/useDeleteRoom';
 
-interface PropertyDetailPageProps {
-  propertyId: number;
+interface RoomDetailPageProps {
+  roomId: number;
 }
 
-const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
-  const { mutateAsync: updateProperty, isPending } =
-    useUpdateProperty(propertyId);
-  const { mutateAsync: deleteProperty, isPending: deletePending } =
-    useDeleteProperty();
-  const { data, isPending: dataIsPending } = useGetPropertyTenant(propertyId);
+const UpdateRoomPage: FC<RoomDetailPageProps> = ({ roomId }) => {
+  const { mutateAsync: updateRoom, isPending } = useUpdateRoom(roomId);
+  const { mutateAsync: deleteRoom, isPending: deletePending } = useDeleteRoom();
+  const { data, isPending: dataIsPending } = useGetRoom(roomId);
   const [selectedImage, setSelectedImage] = useState('');
   const imageRef = useRef<HTMLInputElement>(null);
 
-  console.log('data?.title', data?.title);
-
   const formik = useFormik({
     initialValues: {
-      title: data?.title || '',
-      slug: data?.slug || '',
-      description: data?.description || '',
-      latitude: data?.latitude || '',
-      longitude: data?.longitude || '',
+      name: data?.name || '',
+      stock: data?.stock || 0,
+      price: data?.price || 0,
+      guest: data?.guest || 0,
+      propertyId: data?.propertyId || null,
       imageUrl: null,
-      propertyCategoryId: data?.propertycategory.id || null,
+      title: data?.roomFacilities[0]?.title || '',
+      description: data?.roomFacilities?.[0]?.description || '',
+      room_facilities: [{ title: '', description: '' }],
     },
     onSubmit: async (values) => {
-      await updateProperty({
+      await updateRoom({
         ...values,
-        propertyCategoryId: Number(values.propertyCategoryId),
+        propertyId: Number(values.propertyId),
       });
     },
     enableReinitialize: true,
@@ -63,16 +61,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
     }
   };
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value;
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9 ]/g, '')
-      .replace(/\s+/g, '-');
-    formik.setFieldValue('title', title);
-    formik.setFieldValue('slug', slug);
-  };
-
   if (dataIsPending) {
     return (
       <div className="p-6 container max-w-7xl mx-auto space-y-6">
@@ -85,7 +73,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   if (!data) {
     return (
       <div className="p-6 container max-w-7xl mx-auto space-y-6">
-        Error: Property data not found
+        Error: Room data not found
       </div>
     );
   }
@@ -112,7 +100,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
               </>
             ) : null}
             <div className="max-w-xs mx-auto">
-              <Label>Property Image</Label>
+              <Label>Room Image</Label>
               <Input
                 type="file"
                 accept="image/*"
@@ -121,33 +109,68 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
               />
             </div>
           </div>
+          <div className="grid md:grid-cols-5 w-full gap-7 items-end">
+            <FormInput
+              name="name"
+              label="Room Name"
+              type="text"
+              placeholder="Room Name"
+              value={formik.values.name}
+              isError={!!formik.touched.name && !!formik.errors.name}
+              error={formik.errors.name}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+            />
+            <FormInput
+              name="stock"
+              label="Stock"
+              placeholder="Stock room available"
+              type="number"
+              value={formik.values.stock}
+              isError={!!formik.touched.stock && !!formik.errors.stock}
+              error={formik.errors.stock}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+            />
+            <FormInput
+              name="price"
+              label="Price"
+              type="number"
+              placeholder="price"
+              value={formik.values.price}
+              isError={!!formik.touched.price && !!formik.errors.price}
+              error={formik.errors.price}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+            />
+            <FormInput
+              name="guest"
+              label="Guest"
+              type="number"
+              placeholder="guest"
+              value={formik.values.guest}
+              isError={!!formik.touched.guest && !!formik.errors.guest}
+              error={formik.errors.guest}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+            />
+            <PropertyIdSelect setFieldValue={formik.setFieldValue} />
+          </div>
           <FormInput
             name="title"
-            label="Property Name"
+            label="Room Facility Name"
             type="text"
-            placeholder="Property Name"
+            placeholder="Room Facility Name"
             value={formik.values.title}
             isError={!!formik.touched.title && !!formik.errors.title}
             error={formik.errors.title}
             onBlur={formik.handleBlur}
-            onChange={(formik.handleChange, handleTitleChange)}
-          />
-          <FormInput
-            name="slug"
-            label="Slug"
-            placeholder=""
-            type="text"
-            value={formik.values.slug}
-            isError={!!formik.touched.slug && !!formik.errors.slug}
-            error={formik.errors.slug}
-            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            readOnly={true}
           />
           <FormTextarea
             name="description"
-            label="Description"
-            placeholder="Description"
+            label="Description of Room Facility"
+            placeholder="Description of Room Facility"
             value={formik.values.description}
             isError={
               !!formik.touched.description && !!formik.errors.description
@@ -156,31 +179,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-          <div className="grid grid-cols-3 w-full gap-7 items-end">
-            <FormInput
-              name="latitude"
-              label="latitude"
-              type="text"
-              placeholder="latitude"
-              value={formik.values.latitude}
-              isError={!!formik.touched.latitude && !!formik.errors.latitude}
-              error={formik.errors.latitude}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-            />
-            <FormInput
-              name="longitude"
-              label="longitude"
-              type="text"
-              placeholder="longitude"
-              value={formik.values.longitude}
-              isError={!!formik.touched.longitude && !!formik.errors.longitude}
-              error={formik.errors.longitude}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-            />
-            <EditPropertyCategorySelect setFieldValue={formik.setFieldValue} />
-          </div>
           <div className="flex justify-end">
             <Button disabled={isPending}>
               {isPending ? 'Updating...' : 'Update'}
@@ -192,7 +190,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
             disabled={deletePending}
             variant={'destructive'}
             onClick={async () => {
-              await deleteProperty(propertyId);
+              await deleteRoom(roomId);
             }}
           >
             {deletePending ? 'Deleting...' : 'Delete'}
@@ -203,4 +201,4 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   );
 };
 
-export default UpdatePropertyPage;
+export default UpdateRoomPage;

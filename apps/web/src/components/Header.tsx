@@ -1,19 +1,18 @@
 'use client';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { BiLogOutCircle } from 'react-icons/bi';
+import { IoPersonCircleOutline } from 'react-icons/io5';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
-import { signOut, useSession } from 'next-auth/react';
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './ui/navigation-menu';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { IoPersonCircleOutline } from 'react-icons/io5';
-import { BiLogOutCircle } from 'react-icons/bi';
 
 export const Header = () => {
   const pathname = usePathname();
@@ -26,6 +25,8 @@ export const Header = () => {
     pathname === '/ubah-password' ||
     pathname === '/register/thanks' ||
     pathname === '/forgot-password' ||
+    pathname === '/change-email' ||
+    pathname === '/verify-email' ||
     pathname.startsWith('/verification') ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')
@@ -63,23 +64,10 @@ export const Header = () => {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-full px-11 py-3">
                     <div className="items-center gap-1 hover:text-[#366ce7]">
-                      {session.data.user.role !== 'USER' ? (
-                        <Link
-                          href="/dashboard/profile"
-                          className="flex items-center gap-1"
-                        >
-                          <IoPersonCircleOutline size={21} />
-                          <p>Profile</p>
-                        </Link>
-                      ) : (
-                        <Link
-                          href="/profile"
-                          className="flex items-center gap-1"
-                        >
-                          <IoPersonCircleOutline size={21} />
-                          <p>Profile</p>
-                        </Link>
-                      )}
+                      <Link href="/profile" className="flex items-center gap-1">
+                        <IoPersonCircleOutline size={21} />
+                        <p>Profile</p>
+                      </Link>
                     </div>
                     <div
                       className="flex items-center gap-1 mt-3 hover:text-[#366ce7] cursor-pointer"

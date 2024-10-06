@@ -1,26 +1,31 @@
 'use client';
 
 import useAxios from '@/hooks/useAxios';
-import { PropertyCategory } from '@/types/propertyCategory';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-const useDeleteProperty = () => {
+interface CreatePeakSeasonRatePayload {
+  price: number;
+  startDate: Date;
+  endDate: Date;
+  roomId: number;
+}
+
+const useCreatePeakSeasonRate = () => {
   const router = useRouter();
   const { axiosInstance } = useAxios();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.patch(`/property/${id}`);
+    mutationFn: async (payload: CreatePeakSeasonRatePayload) => {
+      const { data } = await axiosInstance.post(`/peakSeasonRate/`, payload);
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['property'] });
-      toast.success('Delete Property success');
-      router.push('/dashboard/property/management');
+      queryClient.invalidateQueries({ queryKey: ['peakSeasonRate'] });
+      toast.success('Create Peak Season Rate success');
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);
@@ -28,4 +33,4 @@ const useDeleteProperty = () => {
   });
 };
 
-export default useDeleteProperty;
+export default useCreatePeakSeasonRate;

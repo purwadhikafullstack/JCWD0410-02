@@ -1,65 +1,40 @@
 'use client';
 
-import Image from 'next/image';
-import { FC } from 'react';
-import { Card, CardHeader } from './ui/card';
-import { RoomFacility } from '@/types/roomFacility';
-import ReservationForm from '@/features/reservation-room';
+import PropertyDetailCard from '@/components/PropertyDetailCard';
+import useGetProperty from '@/hooks/api/property/useGetProperty';
+import React, { FC } from 'react';
 
-interface PropertyDetailCardProps {
-  roomId: number;
-  name: string;
-  imageUrl: string;
-  roomFacilities: RoomFacility[];
-  price: number;
-  guest: number;
-  transactionId?: number;  
+interface PropertyDetailPageProps {
+  propertySlug: string;
 }
 
-const PropertyDetailCard: FC<PropertyDetailCardProps> = ({
-  roomId,
-  name,
-  imageUrl,
-  roomFacilities,
-  price,
-  guest,
-  transactionId,
-}) => {
+const PropertyDetailList: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
+  const { data, isPending } = useGetProperty(propertySlug);
+  if (isPending) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (!data) {
+    return <h1>Property Room tidak ditemukan</h1>;
+  }
+
   return (
-    <Card className="grid md:grid-cols-2">
-      <CardHeader>
-        <h4 className="font-semibold text-lg">{name}</h4>
-        <div className="relative h-[300px] overflow-hidden rounded-lg">
-          <Image src={imageUrl} alt="RoomImage" fill className="object-cover" />
-        </div>
-        <h5 className="font-semibold text-base">Room Facilities</h5>
-        <div className="grid grid-cols-2 gap-x-3">
-          {roomFacilities.map((facilities) => (
-            <div key={facilities.id}>
-              <p>{facilities.title}</p>
-            </div>
-          ))}
-        </div>
-      </CardHeader>
-      <CardHeader className="justify-between my-20">
-        <div>
-          <h4 className="font-semibold text-base text-center">Price/room/night</h4>
-          <p className="text-[#396ee4] font-medium text-xl text-center">
-            {new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            }).format(price)}
-          </p>
-          <p className="text-center">Room for {guest} people</p>
-        </div>
-        <div>
-          <ReservationForm roomId={roomId} price={price} transactionId={transactionId} />
-        </div>
-      </CardHeader>
-    </Card>
+    <>
+      {data.rooms
+        .filter((room) => !room.isDeleted)
+        .map((room) => (
+          <PropertyDetailCard
+            key={room.id}
+            roomId={room.id}
+            name={room.name}
+            imageUrl={room.roomImages[0]?.imageUrl || ''}
+            guest={room.guest}
+            price={room.price}
+            roomFacilities={room.roomFacilities}
+          />
+        ))}
+    </>
   );
 };
 
-export default PropertyDetailCard;
+export default PropertyDetailList;

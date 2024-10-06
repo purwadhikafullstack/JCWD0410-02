@@ -1,26 +1,25 @@
 'use client';
 
 import useAxios from '@/hooks/useAxios';
-import { PropertyCategory } from '@/types/propertyCategory';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-const useDeleteProperty = () => {
+const useDeleteRoom = () => {
   const router = useRouter();
   const { axiosInstance } = useAxios();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.patch(`/property/${id}`);
+      const { data } = await axiosInstance.patch(`/room/delete/${id}`);
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['property'] });
-      toast.success('Delete Property success');
-      router.push('/dashboard/property/management');
+      queryClient.invalidateQueries({ queryKey: ['room'] });
+      toast.success('Delete Room success');
+      router.push('/dashboard/property/room');
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);
@@ -28,4 +27,4 @@ const useDeleteProperty = () => {
   });
 };
 
-export default useDeleteProperty;
+export default useDeleteRoom;
