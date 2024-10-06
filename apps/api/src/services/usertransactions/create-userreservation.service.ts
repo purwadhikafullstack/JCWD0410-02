@@ -1,132 +1,158 @@
 import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
+import schedule from 'node-schedule';
 
-const isDateInRange = (
-  start: Date,
-  end: Date,
-  checkStart: Date,
-  checkEnd: Date,
-) => {
-  return (
-    (checkStart >= start && checkStart <= end) ||
-    (checkEnd >= start && checkEnd <= end)
-  );
-};
+interface CreateTransactionBody {
+  roomId: number;
+  startDate: Date;
+  endDate: Date;
+  userId: number;
+}
 
-export const getValidBookingDatesAndPrices = async (
-  roomId: number,
-  startDate: Date,
-  endDate: Date,
-) => {
+export const createTransactionService = async (body: CreateTransactionBody) => {
+  const { roomId, startDate, endDate, userId } = body;
+
   try {
-    const room = await prisma.room.findUnique({
-      where: { id: roomId },
-      include: {
-        transactions: true,
-        roomNonAvailabilities: true,
-        peakSeasonRates: true,
-      },
-    });
-
-    if (!room) {
-      throw new Error('Room not found');
-    }
-
-    for (const transaction of room.transactions) {
-      if (
-        isDateInRange(
-          transaction.startDate,
-          transaction.endDate,
-          startDate,
-          endDate,
-        )
-      ) {
-        throw new Error(
-          'Tanggal yang dipilih sudah dibooking oleh orang lain.',
-        );
-      }
-    }
-
-    for (const nonAvailability of room.roomNonAvailabilities) {
-      if (
-        isDateInRange(
-          nonAvailability.startDate,
-          nonAvailability.endDate,
-          startDate,
-          endDate,
-        )
-      ) {
-        throw new Error(
-          'Tanggal yang dipilih berada dalam periode non-availability.',
-        );
-      }
-    }
-
-    let totalPrice = 0;
-    let peakRatePrice = room.price;
-    const oneDay = 1000 * 60 * 60 * 24;
-    const nights = Math.round(
-      (endDate.getTime() - startDate.getTime()) / oneDay,
-    );
-
-    for (let i = 0; i < nights; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(currentDate.getDate() + i);
-
-      for (const peakSeason of room.peakSeasonRates) {
-        if (
-          currentDate >= peakSeason.startDate &&
-          currentDate <= peakSeason.endDate
-        ) {
-          peakRatePrice = peakSeason.price;
-        }
-      }
-      totalPrice += peakRatePrice;
-    }
-
-    return { isValid: true, totalPrice };
-  } catch (error) {
-    throw Error;
-  }
-};
-
-export const createBookingTransaction = async (
-  roomId: number,
-  startDate: Date,
-  endDate: Date,
-  userId: number,
-) => {
-  try {
-    return await prisma.$transaction(async (tx) => {
-      const { isValid, totalPrice } = await getValidBookingDatesAndPrices(
-        roomId,
-        startDate,
-        endDate,
-      );
-
-      if (!isValid) {
-        throw new Error('Tanggal booking tidak valid.');
-      }
-
-      const transaction = await tx.transaction.create({
-        data: {
-          userId,
+    return await prisma.$transaction(async (prismaTransaction) => {
+      console.log(`Checking RoomNonAvailability for roomId ${roomId}`);
+      const nonAvailableDates = await prismaTransaction.roomNonAvailability.findFirst({
+        where: {
           roomId,
-          status: StatusTransaction.WAITING_FOR_PAYMENT,
-          total: totalPrice,
+          isDeleted: false,
+          AND: [
+            { startDate: { lte: endDate } },
+            { endDate: { gte: startDate } },
+          ],
+        },
+      });
+
+      if (nonAvailableDates) {
+        console.log(`Room not available due to RoomNonAvailability: ${nonAvailableDates}`);
+        throw new Error('Room is not available on the selected dates');
+      }
+
+      console.log(`Checking active transactions for roomId ${roomId}`);
+      const overlappingTransactions = await prismaTransaction.transaction.findMany({
+        where: {
+          roomId,
+          status: {
+            in: [
+              StatusTransaction.WAITING_FOR_PAYMENT,
+              StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION,
+              StatusTransaction.PROCESSED,
+            ],
+          },
+          AND: [
+            { startDate: { lt: endDate } },
+            { endDate: { gt: startDate } },
+          ],
+        },
+      });
+
+      if (overlappingTransactions.length > 0) {
+        console.log(`Room is not available due to overlapping transactions: ${overlappingTransactions}`);
+        throw new Error('Room is not available on the selected dates. Another transaction is pending.');
+      }
+
+      const room = await prismaTransaction.room.findUnique({
+        where: { id: roomId, isDeleted: false },
+      });
+
+      if (!room) {
+        console.log(`Room not found with roomId ${roomId}`);
+        throw new Error('Room not found');
+      }
+
+      let remainingStock = room.stock;
+      if (remainingStock <= 0) {
+        console.log(`Insufficient stock for roomId ${roomId}`);
+        throw new Error('Room is not available on the selected dates.');
+      }
+
+      let totalAmount = 0;
+      let currentDate = new Date(startDate);
+      let peakSeasonPrices: { date: string; price: number }[] = [];
+
+      console.log(`Calculating price for room ${roomId} from ${startDate} to ${endDate}`);
+
+
+      while (currentDate < endDate) {
+        console.log(`Checking rate for currentDate: ${currentDate}`);
+        let dayEnd = new Date(currentDate);
+        dayEnd.setDate(dayEnd.getDate() + 1);
+
+        const peakSeasonRate = await prismaTransaction.peakSeasonRate.findFirst({
+          where: {
+            roomId,
+            isDeleted: false,
+            AND: [
+              { startDate: { lte: currentDate } },
+              { endDate: { gte: currentDate } },
+            ],
+          },
+        });
+
+    
+        if (peakSeasonRate) {
+          console.log(`Peak season rate found: ${peakSeasonRate.price} for date: ${currentDate}`);
+          totalAmount += peakSeasonRate.price;
+          peakSeasonPrices.push({ date: currentDate.toISOString().split('T')[0], price: peakSeasonRate.price });
+        } else {
+          console.log(`No peak season rate, using normal price: ${room.price} for date: ${currentDate}`);
+          totalAmount += room.price;
+        }
+
+        currentDate = dayEnd;
+        console.log(`Moving to next day: ${currentDate}`);
+      }
+
+      console.log(`Total calculated price: ${totalAmount}`);
+
+      const transaction = await prismaTransaction.transaction.create({
+        data: {
+          roomId,
+          userId,
+          total: totalAmount,
           startDate,
           endDate,
+          status: StatusTransaction.WAITING_FOR_PAYMENT,
         },
       });
 
-      await tx.room.update({
+      console.log(`Transaction created with ID: ${transaction.id}`);
+
+     
+      await prismaTransaction.room.update({
         where: { id: roomId },
-        data: {
-          stock: { decrement: 1 },
-        },
+        data: { stock: { decrement: 1 } },
       });
 
-      return transaction;
+      remainingStock -= 1; // Update remaining stock setelah pengurangan
+
+     
+      schedule.scheduleJob(Date.now() +  60 * 1000, async () => {
+        const currentTransaction = await prisma.transaction.findUnique({
+          where: { id: transaction.id },
+        });
+
+        if (currentTransaction?.status === StatusTransaction.WAITING_FOR_PAYMENT) {
+          await prisma.transaction.update({
+            where: { id: transaction.id },
+            data: { status: StatusTransaction.CANCELLED },
+          });
+
+       
+          await prisma.room.update({
+            where: { id: roomId },
+            data: { stock: { increment: 1 } },
+          });
+
+          console.log(`Transaction ${transaction.id} cancelled due to timeout.`);
+        }
+      });
+
+
+      return { transaction, peakSeasonPrices, remainingStock };
     });
   } catch (error) {
     throw Error;

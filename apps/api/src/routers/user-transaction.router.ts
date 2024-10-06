@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserTransactionController } from '@/controllers/user-transaction.controller';
-import { verifyToken } from '@/middlewares/verifyToken'; 
+import { verifyToken } from '@/middlewares/verifyToken';
+import { uploader } from '@/lib/multer';
 
 export class UserTransactionRouter {
   private router: Router;
@@ -13,8 +14,38 @@ export class UserTransactionRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/', verifyToken, this.userTransactionController.getUserTransactions);
-    this.router.post('/create-transaction', verifyToken, this.userTransactionController.createBookingTransaction);
+    this.router.get(
+      '/',
+      verifyToken,
+      this.userTransactionController.getOrderListTransactions,
+    );
+
+    this.router.get(
+      '/:id',
+      verifyToken, 
+      this.userTransactionController.getTransactionDetails, 
+    );
+
+  
+    this.router.post(
+      '/:id/create',
+      verifyToken,
+      this.userTransactionController.createTransaction,
+    );
+
+
+    this.router.post(
+      '/:id/upload-proof',
+      verifyToken,
+      uploader().single('paymentProof'),
+      this.userTransactionController.uploadPaymentProof,
+    );
+
+    this.router.get(
+      '/:id/room-details',
+      verifyToken,
+      this.userTransactionController.getRoomDetails
+    );
   }
 
   getRouter(): Router {
