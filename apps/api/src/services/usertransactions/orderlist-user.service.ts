@@ -13,7 +13,7 @@ interface GetUserTransactionsService {
   uuid?: string;
 }
 
-export const getUserTransactionsService = async (query: GetUserTransactionsService) => {
+export const getUserOrderListService = async (query: GetUserTransactionsService) => {
   try {
     const { userId, page, take, sortBy, sortOrder, search, dateFrom, dateTo, uuid } = query;
 

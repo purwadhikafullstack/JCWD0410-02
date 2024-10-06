@@ -133,59 +133,6 @@ const PropertyDetailPage: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
           Available Room Types in {data?.title}
         </h3>
         <div className="grid md:grid-cols-2">
-          {/* <Card className="grid md:grid-cols-2">
-            <CardHeader>
-              <h4 className="font-semibold text-lg">{data?.rooms[0]?.name}</h4>
-              <div className="relative h-[300px] overflow-hidden rounded-lg">
-                <Image
-                  src={data?.rooms[0]?.roomImages[0]?.imageUrl!}
-                  alt="RoomImage"
-                  fill
-                  className="object-cover"
-                ></Image>
-              </div>
-              <div className="grid grid-cols-2 gap-x-3">
-                <div className="flex items-center gap-3">
-                  <FaShower />
-                  <p>{data?.rooms[0]?.roomFacilities[0]?.title!}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MdHotTub />
-                  <p>{data?.rooms[0]?.roomFacilities[1]?.title!}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MdAirlineSeatReclineExtra />
-                  <p>{data?.rooms[0]?.roomFacilities[2]?.title!}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <LuAirVent />
-                  <p>{data?.rooms[0]?.roomFacilities[3]?.title!}</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardHeader className="justify-between my-20">
-              <div>
-                <h4 className="font-semibold text-lg text-center">
-                  Price/room/night
-                </h4>
-                <p className="text-[#396ee4] font-medium text-xl text-center">
-                  {new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  }).format(data?.rooms[0]?.price!)}
-                </p>
-                <p className="text-center">
-                  Room for {data?.rooms[0]?.guest} people
-                </p>
-              </div>
-              <div>
-                <DatePickerWithRange />
-                <Button className="w-full">Choose</Button>
-              </div>
-            </CardHeader>
-          </Card> */}
           <PropertyDetailList propertySlug={propertySlug} />
         </div>
       </section>
