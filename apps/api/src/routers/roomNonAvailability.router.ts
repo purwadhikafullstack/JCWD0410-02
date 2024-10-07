@@ -1,14 +1,15 @@
 import { PeakSeasonRateController } from '@/controllers/peakSeasonRate.controller';
+import { RoomNonAvailabilityController } from '@/controllers/roomNonAvailability.controller';
 import { tenantGuard } from '@/middlewares/TenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
-export class PeakSeasonRateRouter {
+export class RoomNonAvailabilityRouter {
   private router: Router;
-  private peakSeasonRateController: PeakSeasonRateController;
+  private roomNonAvailabilityRouter: RoomNonAvailabilityController;
 
   constructor() {
-    this.peakSeasonRateController = new PeakSeasonRateController();
+    this.roomNonAvailabilityRouter = new RoomNonAvailabilityController();
     this.router = Router();
     this.initializeRoutes();
   }
@@ -16,25 +17,25 @@ export class PeakSeasonRateRouter {
   private initializeRoutes(): void {
     this.router.get(
       '/',
-      this.peakSeasonRateController.getPeakSeasonsController,
+      this.roomNonAvailabilityRouter.getRoomNonAvailabilitiesController,
     );
     this.router.post(
       '/',
       verifyToken,
       tenantGuard,
-      this.peakSeasonRateController.createPeakSeasonRateontroller,
+      this.roomNonAvailabilityRouter.createRoomNonAvailabilityController,
     );
     this.router.patch(
       '/:id',
       verifyToken,
       tenantGuard,
-      this.peakSeasonRateController.updatePeakSeasonRateontroller,
+      this.roomNonAvailabilityRouter.updateRoomNonAvailabilitiyController,
     );
     this.router.delete(
       '/:id',
       verifyToken,
       tenantGuard,
-      this.peakSeasonRateController.deletePeakSeasonRateontroller,
+      this.roomNonAvailabilityRouter.deleteRoomNonAvailabilityController,
     );
   }
 

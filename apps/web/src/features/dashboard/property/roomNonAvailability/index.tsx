@@ -2,38 +2,37 @@
 
 import FormInput from '@/components/FormInput';
 import { Button } from '@/components/ui/button';
-import useCreatePeakSeasonRate from '@/hooks/api/peakSeasonRate/useCreatePeakSeasonRate';
+import useCreateRoomNonAvailability from '@/hooks/api/roomNonAvailability/useCreateRoomNonAvailability';
 import { useFormik } from 'formik';
 import { useSession } from 'next-auth/react';
-import { DatePickerWithRangeForPeakSeason } from './components/DateRangePickerPeakSeason';
-import PeakSeasonsRateList from './components/PeakSeasonRateList';
-import { RoomIdSelect } from './components/RoomIdSelect';
-import { PeakSeasonRateSchema } from './schemas/PeakSeasonRateSchema';
+import { RoomIdSelect } from '../peakSeasonRate/components/RoomIdSelect';
+import { DatePickerWithRangeForRoomNonAvailability } from './components/DateRangeRoomNonAvailability';
+import RoomNonAvailabilityList from './components/RoomNonAvailabilityList';
+import { RoomNonAvailabilitySchema } from './schemas/RoomNonAvailabilitySchema';
 
-interface PeakSeasonsPageProps {
+interface RoomNonAvailabilityPageProps {
   roomId: number;
 }
 
-const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
+const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
   const session = useSession();
-  const { mutateAsync: createPeakSeasonRate, isPending } =
-    useCreatePeakSeasonRate();
+  const { mutateAsync: createRoomNonAvailability, isPending } =
+    useCreateRoomNonAvailability();
 
   const formik = useFormik({
     initialValues: {
-      price: 0,
+      reason: '',
       startDate: new Date(),
       endDate: new Date(),
       roomId: 0,
     },
-    validationSchema: PeakSeasonRateSchema,
+    validationSchema: RoomNonAvailabilitySchema,
     onSubmit: async (values) => {
       const dataToSubmit = {
         ...values,
-        price: Number(values.price),
         roomId: Number(values.roomId),
       };
-      await createPeakSeasonRate(dataToSubmit);
+      await createRoomNonAvailability(dataToSubmit);
     },
   });
 
@@ -47,21 +46,21 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
               <div>
                 {/* Contoh Konten Utama */}
                 <h5 className="font-semibold mb-3 text-center md:text-left">
-                  Add Peak Season Rate
+                  Add Room Non Availability
                 </h5>
                 <div className="grid grid-cols-3 gap-3 items-end">
                   <FormInput
-                    name="price"
-                    label="Price"
-                    type="number"
-                    placeholder="Price of Peak Season Rate"
-                    value={formik.values.price}
-                    isError={!!formik.touched.price && !!formik.errors.price}
-                    error={formik.errors.price}
+                    name="reason"
+                    label="Reason"
+                    type="text"
+                    placeholder="Reason of room non availability"
+                    value={formik.values.reason}
+                    isError={!!formik.touched.reason && !!formik.errors.reason}
+                    error={formik.errors.reason}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
                   />
-                  <DatePickerWithRangeForPeakSeason
+                  <DatePickerWithRangeForRoomNonAvailability
                     setFieldValue={formik.setFieldValue}
                   />
                   <RoomIdSelect setFieldValue={formik.setFieldValue} />
@@ -73,7 +72,7 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
             </form>
           </div>
           <div>
-            <PeakSeasonsRateList roomId={roomId} />
+            <RoomNonAvailabilityList roomId={roomId} />
           </div>
         </section>
       </div>
@@ -81,4 +80,4 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
   );
 };
 
-export default PeakSeasonRatePage;
+export default RoomNonAvailabilityPage;
