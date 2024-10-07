@@ -1,9 +1,10 @@
 import { createTransactionService } from '@/services/usertransactions/create-userreservation.service';
 import { getRoomDetailsService } from '@/services/usertransactions/get-RoomDetail.service';
 import { getUserTransactionService } from '@/services/usertransactions/get-userstransaction.service';
-import { getUserOrderListService } from '@/services/usertransactions/orderlist-user.service';
+import { getUserOrderListService } from '@/services/usertransactions/get-orderlist-user.service';
 import { uploadPaymentProofService } from '@/services/usertransactions/upload-paymentproff.service';
 import { Request, Response, NextFunction } from 'express';
+import { cancelTransactionService } from '@/services/usertransactions/upload-cancelorder.service';
 
 export class UserTransactionController {
   async getOrderListTransactions(
@@ -52,10 +53,8 @@ export class UserTransactionController {
   }
   async getTransactionDetails(req: Request, res: Response, next: NextFunction) {
     try {
-      // Extract userId from res.locals.user, set by authentication middleware
       const userId = res.locals.user?.id;
 
-      // Extract transactionId from the request parameters
       const transactionId = parseInt(req.params.id);
 
       if (!userId) {
@@ -70,7 +69,6 @@ export class UserTransactionController {
           .json({ message: 'Transaction ID is missing or invalid' });
       }
 
-      // Call service to get the transaction details along with stock
       const transactionDetails = await getUserTransactionService({
         userId,
         transactionId,
@@ -78,15 +76,14 @@ export class UserTransactionController {
 
       return res.status(200).json(transactionDetails);
     } catch (error) {
-      // Error handling, pass error to the next middleware
       next(error);
     }
   }
 
   async uploadPaymentProof(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = res.locals.user?.id; 
-      const transactionId = parseInt(req.params.id); 
+      const userId = res.locals.user?.id;
+      const transactionId = parseInt(req.params.id);
 
       if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
@@ -136,33 +133,34 @@ export class UserTransactionController {
 
   async getRoomDetails(req: Request, res: Response, next: NextFunction) {
     try {
-      // Ambil roomId dari parameter URL
-      const roomId = req.params.id; 
-      
-      // Ambil startDate dan endDate dari query parameters
+      const roomId = req.params.id;
+
       const { startDate, endDate } = req.query;
-      
-      // Pastikan bahwa userId diambil dari res.locals setelah otentikasi
+
       const userId = res.locals.user?.id;
-      
-      // Validasi input
+
       if (!roomId || !startDate || !endDate) {
-        return res.status(400).json({ message: 'Missing required parameters: roomId, startDate, and endDate are required' });
+        return res
+          .status(400)
+          .json({
+            message:
+              'Missing required parameters: roomId, startDate, and endDate are required',
+          });
       }
 
       if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized: User ID is required' });
+        return res
+          .status(401)
+          .json({ message: 'Unauthorized: User ID is required' });
       }
 
-  
       const roomDetails = await getRoomDetailsService({
-        roomId: parseInt(roomId, 10), // Konversi roomId menjadi angka
-        startDate: new Date(startDate as string), // Konversi startDate menjadi Date object
-        endDate: new Date(endDate as string), // Konversi endDate menjadi Date object
+        roomId: parseInt(roomId),
+        startDate: new Date(startDate as string),
+        endDate: new Date(endDate as string),
         userId,
       });
 
- 
       if (!roomDetails.isAvailable) {
         return res.status(200).json({
           isAvailable: false,
@@ -170,17 +168,36 @@ export class UserTransactionController {
         });
       }
 
-      
       return res.status(200).json({
         isAvailable: true,
         totalAmount: roomDetails.totalAmount,
         peakSeasonPrices: roomDetails.peakSeasonPrices,
         remainingStock: roomDetails.remainingStock,
       });
-
     } catch (error) {
       console.error('Error in getRoomDetails:', error);
-      next(error); // Pass error to the next middleware for handling
+      next(error);
+    }
+  }
+
+  async cancelTransaction(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = res.locals.user?.id; 
+      const transactionId = parseInt(req.params.id); 
+
+      if (!userId) {
+        return res.status(400).json({ message: 'User ID is missing or invalid' });
+      }
+
+      if (!transactionId) {
+        return res.status(400).json({ message: 'Transaction ID is missing or invalid' });
+      }
+
+      const result = await cancelTransactionService(userId, transactionId);
+
+      return res.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
   }
 }

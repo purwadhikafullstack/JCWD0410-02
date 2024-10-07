@@ -8,7 +8,7 @@ import ReservationForm from '@/features/reservation-room';
 import { FaSquareCheck } from 'react-icons/fa6';
 
 interface PropertyDetailCardProps {
-  roomId: number; // Pastikan roomId ada di sini
+  roomId: number; 
   name: string;
   imageUrl: string;
   roomFacilities: RoomFacility[];

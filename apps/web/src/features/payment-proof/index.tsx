@@ -2,19 +2,33 @@
 
 import { useState } from 'react';
 import useUploadPaymentProof from '@/hooks/api/transaction-user/useUploadPaymentProof';
+import useCancelTransaction from '@/hooks/api/transaction-user/useCancelTransaction';
 import { Button } from '@/components/ui/button';
 import useGetTransactionDetails from '@/hooks/api/transaction-user/useGetDetailTransaction';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
+import { useRouter } from 'next/navigation';
 
 interface UploadPaymentProofFeatureProps {
   transactionId: number;
 }
 
-const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ transactionId }) => {
+const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({
+  transactionId,
+}) => {
   const [file, setFile] = useState<File | null>(null);
+  const router = useRouter(); // Inisialisasi useRouter untuk navigasi
+
+  // Menggunakan hook untuk upload bukti pembayaran
   const { mutate: uploadProof } = useUploadPaymentProof();
 
-  const { data: transactionDetails, isLoading, error } = useGetTransactionDetails(transactionId);
+  // Menggunakan hook untuk cancel transaksi
+  const { mutate: cancelTransaction } = useCancelTransaction();
+
+  const {
+    data: transactionDetails,
+    isLoading,
+    error,
+  } = useGetTransactionDetails(transactionId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -24,12 +38,31 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ t
 
   const handleUpload = () => {
     if (file) {
-      uploadProof({ transactionId, file });
+      uploadProof({ transactionId, file }, {
+        onSuccess: () => {
+          router.push('/'); // Navigasi ke halaman "/" setelah sukses upload
+        },
+      });
     }
   };
 
-  const renderCountdown = ({ hours, minutes, seconds, completed }: CountdownRenderProps) => {
+  // Fungsi untuk handle cancel order
+  const handleCancelOrder = () => {
+    cancelTransaction({ transactionId }, {
+      onSuccess: () => {
+        router.push('/'); // Navigasi ke halaman "/" setelah sukses cancel
+      },
+    });
+  };
+
+  const renderCountdown = ({
+    hours,
+    minutes,
+    seconds,
+    completed,
+  }: CountdownRenderProps) => {
     if (completed) {
+      router.push('/'); // Navigasi ke halaman "/" setelah countdown selesai
       return <span className="text-red-500">Transaction expired</span>;
     } else {
       return (
@@ -41,7 +74,7 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ t
   };
 
   if (isLoading) {
-    return <p>Loading transaction details...</p>;
+    return <p>Loading...</p>;
   }
 
   if (error) {
@@ -52,7 +85,9 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ t
     return <p>No transaction details found</p>;
   }
 
-  const countdownDate = new Date(new Date(transactionDetails.createdAt).getTime() + 60 * 60 * 1000);
+  const countdownDate = new Date(
+    new Date(transactionDetails.createdAt).getTime() + 60 * 1000,
+  );
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -69,16 +104,26 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ t
             }).format(transactionDetails.totalAmount)}
           </p>
           <div className="space-y-1">
-            <p><strong>Bank Name:</strong> {transactionDetails.bankName}</p>
-            <p><strong>Bank Account Number:</strong> {transactionDetails.bankNumber}</p>
-            <p><strong>Buyer Name:</strong> {transactionDetails.buyerName}</p>
+            <p>
+              <strong>Bank Name:</strong> {transactionDetails.bankName}
+            </p>
+            <p>
+              <strong>Bank Account Number:</strong>{' '}
+              {transactionDetails.bankNumber}
+            </p>
+            <p>
+              <strong>Buyer Name:</strong> {transactionDetails.buyerName}
+            </p>
           </div>
         </div>
 
         <div className="p-4 bg-gray-100 rounded-lg">
-          <p className="font-medium">Please upload the payment proof before the timer runs out:</p>
+          <p className="font-medium">
+            Please upload the payment proof before the timer runs out:
+          </p>
           <Countdown date={countdownDate} renderer={renderCountdown} />
         </div>
+
         <div className="space-y-4">
           <input
             type="file"
@@ -88,6 +133,16 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({ t
           />
           <Button onClick={handleUpload} disabled={!file} className="w-full">
             Upload Payment Proof
+          </Button>
+        </div>
+
+        {/* Cancel Order Button */}
+        <div className="space-y-4">
+          <Button
+            onClick={handleCancelOrder}
+            className="w-full bg-red-500 text-white"
+          >
+            Cancel Order
           </Button>
         </div>
       </div>
