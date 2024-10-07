@@ -1,6 +1,5 @@
 import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
-import schedule from 'node-schedule';
 
 export const uploadPaymentProofService = async (
   userId: number,
@@ -30,40 +29,6 @@ export const uploadPaymentProofService = async (
         status: StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION,
       },
     });
-
-    
-    const cancelTransactionTime = new Date(Date.now() + 60 * 60 * 1000);
-
-    schedule.scheduleJob(cancelTransactionTime, async () => {
-      console.log(`Checking transaction status for ID: ${transactionId} after 1 hour`);
-
-    
-      const currentTransaction = await prisma.transaction.findFirst({
-        where: { id: transactionId, userId },
-      });
-
-      if (!currentTransaction) {
-        console.error('Transaction not found during schedule job');
-        return;
-      }
-
-      console.log('Current transaction status:', currentTransaction.status);
-
-      if (
-        currentTransaction.status ===
-        StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION &&
-        !currentTransaction.paymentProof
-      ) {
-        await prisma.transaction.update({
-          where: { id: transactionId },
-          data: {
-            status: StatusTransaction.CANCELLED,
-          },
-        });
-        console.log('Transaction cancelled due to no payment proof uploaded after 1 hour');
-      }
-    });
-
     return { message: 'Payment proof uploaded successfully, awaiting confirmation.' };
 
   } catch (error) {

@@ -27,11 +27,9 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
       });
 
       if (nonAvailableDates) {
-        console.log(`Room not available due to RoomNonAvailability: ${nonAvailableDates}`);
         throw new Error('Room is not available on the selected dates');
       }
 
-      console.log(`Checking active transactions for roomId ${roomId}`);
       const overlappingTransactions = await prismaTransaction.transaction.findMany({
         where: {
           roomId,
@@ -65,15 +63,12 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
 
       let remainingStock = room.stock;
       if (remainingStock <= 0) {
-        console.log(`Insufficient stock for roomId ${roomId}`);
         throw new Error('Room is not available on the selected dates.');
       }
 
       let totalAmount = 0;
       let currentDate = new Date(startDate);
       let peakSeasonPrices: { date: string; price: number }[] = [];
-
-      console.log(`Calculating price for room ${roomId} from ${startDate} to ${endDate}`);
 
 
       while (currentDate < endDate) {
@@ -94,19 +89,15 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
 
     
         if (peakSeasonRate) {
-          console.log(`Peak season rate found: ${peakSeasonRate.price} for date: ${currentDate}`);
           totalAmount += peakSeasonRate.price;
           peakSeasonPrices.push({ date: currentDate.toISOString().split('T')[0], price: peakSeasonRate.price });
         } else {
-          console.log(`No peak season rate, using normal price: ${room.price} for date: ${currentDate}`);
           totalAmount += room.price;
         }
 
         currentDate = dayEnd;
-        console.log(`Moving to next day: ${currentDate}`);
       }
 
-      console.log(`Total calculated price: ${totalAmount}`);
 
       const transaction = await prismaTransaction.transaction.create({
         data: {
@@ -119,7 +110,6 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
         },
       });
 
-      console.log(`Transaction created with ID: ${transaction.id}`);
 
      
       await prismaTransaction.room.update({
@@ -127,7 +117,7 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
         data: { stock: { decrement: 1 } },
       });
 
-      remainingStock -= 1; // Update remaining stock setelah pengurangan
+      remainingStock -= 1; 
 
      
       schedule.scheduleJob(Date.now() +  60 * 1000, async () => {
@@ -146,8 +136,6 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
             where: { id: roomId },
             data: { stock: { increment: 1 } },
           });
-
-          console.log(`Transaction ${transaction.id} cancelled due to timeout.`);
         }
       });
 

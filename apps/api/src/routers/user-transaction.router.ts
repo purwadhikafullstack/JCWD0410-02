@@ -22,17 +22,15 @@ export class UserTransactionRouter {
 
     this.router.get(
       '/:id',
-      verifyToken, 
-      this.userTransactionController.getTransactionDetails, 
+      verifyToken,
+      this.userTransactionController.getTransactionDetails,
     );
 
-  
     this.router.post(
       '/:id/create',
       verifyToken,
       this.userTransactionController.createTransaction,
     );
-
 
     this.router.post(
       '/:id/upload-proof',
@@ -44,7 +42,13 @@ export class UserTransactionRouter {
     this.router.get(
       '/:id/room-details',
       verifyToken,
-      this.userTransactionController.getRoomDetails
+      this.userTransactionController.getRoomDetails,
+    );
+
+    this.router.patch(
+      '/:id/cancel',
+      verifyToken,
+      this.userTransactionController.cancelTransaction,
     );
   }
 
