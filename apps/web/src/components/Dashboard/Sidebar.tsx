@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import {
@@ -22,9 +23,12 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="w-64 bg-white flex flex-col p-6 shadow-lg">
-      <h1 className="text-3xl font-bold mb-8 text-blue-500">
-        Ease<span className="text-black">Coz</span>
-      </h1>
+      <Link href="/dashboard">
+        <div className="flex mb-8">
+          <p className="text-4xl font-bold">Ease</p>
+          <p className="text-4xl font-bold text-[#366ce7]">Coz</p>
+        </div>
+      </Link>
 
       <ul className="space-y-6">
         <li
@@ -55,24 +59,32 @@ const Sidebar: React.FC = () => {
                 Category
               </li>
               <li
-                className="cursor-pointer"
+                className="cursor-pointer mt-2"
                 onClick={() => router.push('/dashboard/property/management')}
               >
                 Management
               </li>
               <li
-                className="text-base font-normal cursor-pointer"
+                className="cursor-pointer mt-2"
                 onClick={() => router.push('/dashboard/property/room')}
               >
                 Room
               </li>
               <li
-                className="text-base font-normal cursor-pointer"
+                className="cursor-pointer mt-2"
                 onClick={() =>
                   router.push('/dashboard/property/peak-season-rate')
                 }
               >
                 Peak Season Rate
+              </li>
+              <li
+                className="cursor-pointer mt-2"
+                onClick={() =>
+                  router.push('/dashboard/property/room-non-availability')
+                }
+              >
+                Room Non Availability
               </li>
             </ul>
           )}
@@ -106,7 +118,7 @@ const Sidebar: React.FC = () => {
                 Sales Report
               </li>
               <li
-                className="cursor-pointer"
+                className="cursor-pointer mt-2"
                 onClick={() => router.push('/dashboard/property-report')}
               >
                 Property Report

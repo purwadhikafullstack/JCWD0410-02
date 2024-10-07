@@ -1,3 +1,4 @@
+import FormInput from '@/components/FormInput';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -8,41 +9,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useUpdatePeakSeason from '@/hooks/api/peakSeasonRate/useUpdatePeakSeasonRate';
+import useRoomNonAvailabilities from '@/hooks/api/roomNonAvailability/useGetRoomNonAvailability';
+import useUpdateRoomNonAvailability from '@/hooks/api/roomNonAvailability/useUpdateRoomNonAvailability';
 import { useFormik } from 'formik';
-import { FC, useState } from 'react';
-import { PeakSeasonRateSchema } from '../schemas/PeakSeasonRateSchema';
-import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
 import { useSession } from 'next-auth/react';
-import FormInput from '@/components/FormInput';
+import { FC, useState } from 'react';
+import { RoomNonAvailabilitySchema } from '../schemas/RoomNonAvailabilitySchema';
 
-interface EditPeakSeasonButton {
+interface RoomNonAvailabilityButton {
   id: number;
 }
 
-export const EditPeakSeasonButton: FC<EditPeakSeasonButton> = ({ id }) => {
+export const EditRoomNonAvailabilityButton: FC<RoomNonAvailabilityButton> = ({
+  id,
+}) => {
   const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const { mutateAsync: updateCategory, isPending: pendingUpdate } =
-    useUpdatePeakSeason();
-  const { data, isPending } = useGetPeakSeasons({
+  const { mutateAsync: updateRoomNonAvailability, isPending: pendingUpdate } =
+    useUpdateRoomNonAvailability();
+  const { data, isPending } = useRoomNonAvailabilities({
     userId: session.data?.user.id,
     take: 10,
   });
   const formik = useFormik({
     initialValues: {
       id,
-      price: 0,
+      reason: '',
     },
-    validationSchema: PeakSeasonRateSchema,
+    validationSchema: RoomNonAvailabilitySchema,
     onSubmit: async (values) => {
       const dataToSubmit = {
         ...values,
-        price: Number(values.price),
       };
-      await updateCategory(dataToSubmit);
+      await updateRoomNonAvailability(dataToSubmit);
       setIsOpen(false);
     },
   });
@@ -56,22 +55,22 @@ export const EditPeakSeasonButton: FC<EditPeakSeasonButton> = ({ id }) => {
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Edit Peak Season Rate</DialogTitle>
+            <DialogTitle>Edit Room Non Availability</DialogTitle>
             <DialogDescription>
-              Make changes to your Peak Season Rate here. Click save when youre
-              done.
+              Make changes to your Room Non Availability here. Click save when
+              youre done.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
               <FormInput
-                name="price"
-                label="Price"
-                type="number"
-                placeholder="Price for Peak Season"
-                value={formik.values.price}
-                isError={!!formik.touched.price && !!formik.errors.price}
-                error={formik.errors.price}
+                name="reason"
+                label="Reason"
+                type="text"
+                placeholder="Reason of Room Non Availability"
+                value={formik.values.reason}
+                isError={!!formik.touched.reason && !!formik.errors.reason}
+                error={formik.errors.reason}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
               />
