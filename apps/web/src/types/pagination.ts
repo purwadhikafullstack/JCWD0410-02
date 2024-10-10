@@ -31,8 +31,8 @@ export interface IPageableResponse<T> {
 export interface PaginationQueries {
   take?: number;
   page?: number;
-  sortBy?: number;
-  sortOrder?: number;
+  sortBy?: string;
+  sortOrder?: 'desc' | 'asc';
 }
 
 export interface PaginationMeta {

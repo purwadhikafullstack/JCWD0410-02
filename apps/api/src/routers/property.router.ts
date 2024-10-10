@@ -15,6 +15,10 @@ export class PropertyRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.get(
+      '/search',
+      this.propertyController.getPropertiesByQueryController,
+    );
     this.router.get('/:slug', this.propertyController.getPropertyController);
     this.router.get(
       '/management/:id',

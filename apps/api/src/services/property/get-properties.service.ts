@@ -14,7 +14,9 @@ export const getPropertiesService = async (query: GetPropertiesQuery) => {
     const { take, page, sortBy, sortOrder, search, guest, startDate, endDate } =
       query;
 
-    const whereClause: Prisma.PropertyWhereInput = {};
+    const whereClause: Prisma.PropertyWhereInput = {
+      isDeleted: false,
+    };
 
     const properties = await prisma.property.findMany({
       where: whereClause,

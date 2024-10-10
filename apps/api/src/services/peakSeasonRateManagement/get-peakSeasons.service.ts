@@ -24,7 +24,7 @@ export const getPeakSeasonsService = async (query: GetPeakSeasonsQuery) => {
       roomId,
     } = query;
 
-    const whereClause: Prisma.PeakSeasonRateWhereInput = {};
+    const whereClause: Prisma.PeakSeasonRateWhereInput = { isDeleted: false };
 
     const properties = await prisma.peakSeasonRate.findMany({
       where: whereClause,

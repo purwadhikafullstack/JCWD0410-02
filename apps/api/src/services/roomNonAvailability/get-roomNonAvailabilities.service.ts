@@ -26,7 +26,9 @@ export const getRoomNonAvailabilitiesService = async (
       roomId,
     } = query;
 
-    const whereClause: Prisma.RoomNonAvailabilityWhereInput = {};
+    const whereClause: Prisma.RoomNonAvailabilityWhereInput = {
+      isDeleted: false,
+    };
 
     const roomNonAvailabilities = await prisma.roomNonAvailability.findMany({
       where: whereClause,

@@ -1,5 +1,6 @@
 import { createCategoryService } from '@/services/category/create-category.service';
 import { deleteCategoryService } from '@/services/category/delete-category.service';
+import { getAllCategoriesService } from '@/services/category/get-allCategory.service';
 import { getCategoriesService } from '@/services/category/get-category.service';
 import { updateCategoryService } from '@/services/category/update-category.service';
 import { NextFunction, Request, Response } from 'express';
@@ -22,6 +23,24 @@ export class CategoryController {
         query,
         Number(res.locals.user.id),
       );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllCategoryList(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = {
+        take: parseInt(req.query.take as string) || 7,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'createdAt',
+        sortOrder: (req.query.sortOrder as string) || 'asc',
+        search: (req.query.search as string) || '',
+        propertyCategoryId:
+          parseInt(req.query.propertyCategoryId as string) || 1,
+      };
+
+      const result = await getAllCategoriesService(query);
       return res.status(200).send(result);
     } catch (error) {
       next(error);
