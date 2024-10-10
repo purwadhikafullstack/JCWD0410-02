@@ -33,7 +33,14 @@ const PropertyList = () => {
   }
 
   if (!data) {
-    return <h1>Property tidak ditemukan</h1>;
+    return (
+      <div className="container max-w-7xl mx-auto">
+        <h1 className='font-semibold text-2xl mb-3 text-center md:text-left"'>
+          Property not found
+        </h1>
+        ;
+      </div>
+    );
   }
 
   return (
