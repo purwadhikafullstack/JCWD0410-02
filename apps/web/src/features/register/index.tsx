@@ -84,7 +84,7 @@ const RegisterPage = () => {
                   </div>
                 </div>
                 <Link
-                  href="/dashboard/register"
+                  href="/register-tenant"
                   className="mt-7 flex justify-center text-sm"
                 >
                   Be a Tenant?

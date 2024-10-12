@@ -28,6 +28,7 @@ export const Header = () => {
     pathname === '/change-email' ||
     pathname === '/verify-email' ||
     pathname === '/change-password' ||
+    pathname === '/register-tenant' ||
     pathname.startsWith('/verification') ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')

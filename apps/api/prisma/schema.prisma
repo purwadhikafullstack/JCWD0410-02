@@ -48,7 +48,7 @@ model Tenant {
   phone      String?
   userId     Int
   bankName   String
-  bankNumber String
+  bankNumber Int
   balance    Int      @default(0)
   isDeleted  Boolean  @default(false)
   createdAt  DateTime @default(now())

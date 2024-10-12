@@ -12,6 +12,7 @@ import { changeEmailService } from '@/services/auth/change-email.service';
 import { verifyChangeEmailService } from '@/services/auth/verify-change-email.service';
 import { updateTenantService } from '@/services/auth/update-tenant.service';
 import { getTenantService } from '@/services/auth/get-tenant.service';
+import { verifyTenantService } from '@/services/auth/verify-tenant.service';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {
@@ -27,6 +28,21 @@ export class AuthController {
       const userId = Number(res.locals.user.id);
       const password = req.body.password;
       const result = await verifyService(userId, password);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async verifyTenantController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(res.locals.user.id);
+      const password = req.body.password;
+      const result = await verifyTenantService(userId, password, req.body);
 
       return res.status(200).send(result);
     } catch (error) {
