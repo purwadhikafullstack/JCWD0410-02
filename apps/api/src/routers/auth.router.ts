@@ -1,5 +1,6 @@
 import { AuthController } from '@/controllers/auth.controller';
 import { uploader } from '@/lib/multer';
+import { tenantGuard } from '@/middlewares/TenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -49,7 +50,22 @@ export class AuthRouter {
       this.authController.changeEmailVerificationController,
     );
     this.router.patch(
+      '/tenant/:id',
+      verifyToken,
+      tenantGuard,
+      uploader().single('imageUrl'),
+      this.authController.updateTenantController,
+    );
+    this.router.get(
+      '/tenant/',
+      verifyToken,
+      tenantGuard,
+      this.authController.getTenantController,
+    );
+    this.router.get('/:id', verifyToken, this.authController.getUserController);
+    this.router.patch(
       '/:id',
+      verifyToken,
       uploader().single('imageUrl'),
       this.authController.updateProfileController,
     );

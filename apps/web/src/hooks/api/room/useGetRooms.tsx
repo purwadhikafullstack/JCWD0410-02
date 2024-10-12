@@ -6,6 +6,7 @@ import { Room } from '@/types/room';
 import { useQuery } from '@tanstack/react-query';
 
 interface GetRoomsQueries extends PaginationQueries {
+  propertyId?: number;
   search?: string;
   startDate?: Date;
   endDate?: Date;

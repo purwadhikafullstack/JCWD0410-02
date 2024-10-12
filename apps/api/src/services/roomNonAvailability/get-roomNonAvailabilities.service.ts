@@ -12,6 +12,7 @@ interface GetRoomNonAvailabilitiesQuery extends PaginationQueryParams {
 
 export const getRoomNonAvailabilitiesService = async (
   query: GetRoomNonAvailabilitiesQuery,
+  userId: number,
 ) => {
   try {
     const {
@@ -28,6 +29,7 @@ export const getRoomNonAvailabilitiesService = async (
 
     const whereClause: Prisma.RoomNonAvailabilityWhereInput = {
       isDeleted: false,
+      room: { property: { tenantId: userId } },
     };
 
     const roomNonAvailabilities = await prisma.roomNonAvailability.findMany({

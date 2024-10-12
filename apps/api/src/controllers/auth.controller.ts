@@ -10,6 +10,8 @@ import { updateProfileService } from '@/services/auth/update-user.service';
 import { verifyService } from '@/services/auth/verify.service';
 import { changeEmailService } from '@/services/auth/change-email.service';
 import { verifyChangeEmailService } from '@/services/auth/verify-change-email.service';
+import { updateTenantService } from '@/services/auth/update-tenant.service';
+import { getTenantService } from '@/services/auth/get-tenant.service';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {
@@ -100,6 +102,31 @@ export class AuthController {
         req.body,
         req.file!,
       );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateTenantController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updateTenantService(
+        Number(req.params.id),
+        Number(res.locals.user.id),
+        req.body,
+        req.file!,
+      );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getTenantController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getTenantService(Number(res.locals.user.id));
       return res.status(200).send(result);
     } catch (error) {
       next(error);

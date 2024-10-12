@@ -31,13 +31,17 @@ export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Your Property List</SelectLabel>
-          {data?.data.map((property, index) => {
-            return (
-              <SelectItem key={index} value={String(property.id)}>
-                {property.title}
-              </SelectItem>
-            );
-          })}
+          {data?.data
+            .filter(
+              (property) => property.tenantId === Number(session.data?.user.id),
+            )
+            .map((property, index) => {
+              return (
+                <SelectItem key={index} value={String(property.id)}>
+                  {property.title}
+                </SelectItem>
+              );
+            })}
         </SelectGroup>
       </SelectContent>
     </Select>

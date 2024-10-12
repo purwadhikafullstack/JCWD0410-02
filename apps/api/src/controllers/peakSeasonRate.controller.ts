@@ -68,7 +68,10 @@ export class PeakSeasonRateController {
         startDate: new Date(req.query.search as string) || undefined,
         endDate: new Date(req.query.search as string) || undefined,
       };
-      const result = await getPeakSeasonsService(query);
+      const result = await getPeakSeasonsService(
+        query,
+        Number(res.locals.user.id),
+      );
       return res.status(200).send(result);
     } catch (error) {
       next(error);

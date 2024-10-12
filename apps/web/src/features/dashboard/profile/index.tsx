@@ -8,17 +8,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChangeEvent, useRef, useState } from 'react';
 import { MdOutlineFileUpload } from 'react-icons/md';
-import { ProfileSchema } from './schemas/ProfileSchema';
 import useUpdateProfile from '@/hooks/api/auth/useUpdateProfile';
 import { Input } from '@/components/ui/input';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
 import { FaCircleXmark } from 'react-icons/fa6';
+import { ProfileTenantSchema } from './schemas/ProfileSchema';
 
-const ProfilePage = () => {
+const ProfileTenantPage = () => {
   const session = useSession();
   const isVerified = String(session.data?.user.isVerified);
-
-  console.log(isVerified);
 
   const [iconColor, setIconColor] = useState('#B8BACF');
   const [selectedImage, setSelectedImage] = useState<string>('');
@@ -46,7 +44,7 @@ const ProfilePage = () => {
       name: session.data?.user.name || '',
       email: session.data?.user.email || '',
     },
-    validationSchema: ProfileSchema,
+    validationSchema: ProfileTenantSchema,
     onSubmit: async (values) => {
       await profile(values);
     },
@@ -54,7 +52,7 @@ const ProfilePage = () => {
   });
   return (
     <main className="min-h-screen items-center justify-center p-4">
-      <div className="my-[125px] max-w-6xl mx-auto">
+      <div className="my-[50px] max-w-6xl mx-auto">
         <div className="grid grid-cols-[1fr_3fr]">
           <div className="mx-auto">
             <div
@@ -177,4 +175,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfileTenantPage;

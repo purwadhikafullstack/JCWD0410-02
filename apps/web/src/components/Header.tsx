@@ -27,6 +27,7 @@ export const Header = () => {
     pathname === '/forgot-password' ||
     pathname === '/change-email' ||
     pathname === '/verify-email' ||
+    pathname === '/change-password' ||
     pathname.startsWith('/verification') ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')
@@ -64,10 +65,23 @@ export const Header = () => {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-full px-11 py-3">
                     <div className="items-center gap-1 hover:text-[#366ce7]">
-                      <Link href="/profile" className="flex items-center gap-1">
-                        <IoPersonCircleOutline size={21} />
-                        <p>Profile</p>
-                      </Link>
+                      {session.data.user.role === 'USER' ? (
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-1"
+                        >
+                          <IoPersonCircleOutline size={21} />
+                          <p>Profile</p>
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/dashboard/profile"
+                          className="flex items-center gap-1"
+                        >
+                          <IoPersonCircleOutline size={21} />
+                          <p>Profile</p>
+                        </Link>
+                      )}
                     </div>
                     <div
                       className="flex items-center gap-1 mt-3 hover:text-[#366ce7] cursor-pointer"

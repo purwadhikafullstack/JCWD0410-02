@@ -28,7 +28,12 @@ export class RoomRouter {
       uploader().single('imageUrl'),
       this.roomController.updateRoomController,
     );
-    this.router.get('/', this.roomController.getRoomsController);
+    this.router.get(
+      '/',
+      verifyToken,
+      tenantGuard,
+      this.roomController.getRoomsController,
+    );
     this.router.post(
       '/',
       verifyToken,
