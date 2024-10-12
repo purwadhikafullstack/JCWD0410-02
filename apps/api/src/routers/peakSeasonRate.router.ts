@@ -16,6 +16,8 @@ export class PeakSeasonRateRouter {
   private initializeRoutes(): void {
     this.router.get(
       '/',
+      verifyToken,
+      tenantGuard,
       this.peakSeasonRateController.getPeakSeasonsController,
     );
     this.router.post(

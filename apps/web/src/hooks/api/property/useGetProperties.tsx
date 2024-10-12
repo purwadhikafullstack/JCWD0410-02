@@ -6,6 +6,7 @@ import { Property } from '@/types/property';
 import { useQuery } from '@tanstack/react-query';
 
 interface GetPropertyQueries extends PaginationQueries {
+  tenantId?: number;
   search?: string;
   startDate?: Date;
   endDate?: Date;

@@ -61,7 +61,11 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   }
 
   if (!data) {
-    return <h1>Property tidak ditemukan</h1>;
+    return (
+      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+        Category Not Found
+      </h5>
+    );
   }
   return (
     <>

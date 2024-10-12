@@ -16,6 +16,7 @@ model User {
   name       String
   password   String?
   imageUrl   String?
+  token      String?
   role       Role     @default(USER)
   provider   Provider @default(CREDENTIALS)
   isVerified Boolean  @default(false)

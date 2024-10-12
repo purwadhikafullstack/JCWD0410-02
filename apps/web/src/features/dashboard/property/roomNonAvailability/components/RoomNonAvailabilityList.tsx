@@ -31,6 +31,7 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
     userId: session.data?.user.id,
     take: 10,
   });
+  console.log('ini isi data', data);
 
   const onPageChange = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
@@ -50,7 +51,11 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
   }
 
   if (!data) {
-    return <h1>Room Non Availability not found</h1>;
+    return (
+      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+        Room Non Availability not found
+      </h5>
+    );
   }
   return (
     <>

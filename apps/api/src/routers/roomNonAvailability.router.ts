@@ -17,6 +17,8 @@ export class RoomNonAvailabilityRouter {
   private initializeRoutes(): void {
     this.router.get(
       '/',
+      verifyToken,
+      tenantGuard,
       this.roomNonAvailabilityRouter.getRoomNonAvailabilitiesController,
     );
     this.router.post(

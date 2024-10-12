@@ -14,6 +14,13 @@ import { NextFunction, Request, Response } from 'express';
 export class RoomController {
   async getRoomsController(req: Request, res: Response, next: NextFunction) {
     try {
+      const userId = res.locals.user?.id;
+
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ message: 'User ID is missing or invalid' });
+      }
       const query = {
         take: parseInt(req.query.take as string) || 10,
         page: parseInt(req.query.page as string) || 1,
@@ -24,7 +31,7 @@ export class RoomController {
         startDate: new Date(req.query.search as string) || undefined,
         endDate: new Date(req.query.search as string) || undefined,
       };
-      const result = await getRoomsService(query);
+      const result = await getRoomsService(query, Number(res.locals.user.id));
       return res.status(200).send(result);
     } catch (error) {
       next(error);

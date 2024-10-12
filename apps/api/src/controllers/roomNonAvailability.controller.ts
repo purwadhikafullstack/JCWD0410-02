@@ -68,7 +68,10 @@ export class RoomNonAvailabilityController {
         startDate: new Date(req.query.search as string) || undefined,
         endDate: new Date(req.query.search as string) || undefined,
       };
-      const result = await getRoomNonAvailabilitiesService(query);
+      const result = await getRoomNonAvailabilitiesService(
+        query,
+        Number(res.locals.user.id),
+      );
       return res.status(200).send(result);
     } catch (error) {
       next(error);
