@@ -27,8 +27,8 @@ export const Footer = () => {
     return null;
   }
   return (
-    <main className="bg-[#284693] w-full rounded-t-3xl overflow-hidden">
-      <div className="py-20 grid md:grid-cols-4 gap-7 max-w-7xl mx-auto">
+    <main className="bg-[#0E182F] w-full rounded-t-3xl overflow-hidden">
+      <div className="py-20 grid md:grid-cols-4 gap-7 max-w-7xl mx-auto justify-center md:justify-items-center">
         <div>
           <h1 className="text-2xl text-white font-semibold">About</h1>
           <p className="text-white mt-5 hover:underline cursor-pointer">

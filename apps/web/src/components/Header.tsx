@@ -36,7 +36,7 @@ export const Header = () => {
     return null;
   }
   return (
-    <div className="fixed left-1/2 transform -translate-x-1/2 w-full max-w-7xl flex justify-between items-center z-50 px-6 py-3 bg-white rounded-b-3xl top-0 drop-shadow-md">
+    <div className="fixed left-1/2 transform -translate-x-1/2 w-full max-w-7xl flex justify-between items-center z-50 px-6 py-3 bg-slate-100 rounded-b-3xl top-0 drop-shadow-md">
       <Link href="/">
         <div className="flex">
           <p className="text-2xl font-bold">Ease</p>
@@ -49,13 +49,13 @@ export const Header = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="gap-3">
+                  <NavigationMenuTrigger className="gap-3 bg-slate-100">
                     <div className="flex gap-3 items-center">
                       <Avatar>
                         <AvatarImage
                           src={session.data.user.imageUrl}
                         ></AvatarImage>
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-slate-300">
                           {session.data.user.name}
                         </AvatarFallback>
                       </Avatar>

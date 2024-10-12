@@ -26,33 +26,52 @@ const BestDeals = () => {
 
   return (
     <div className="container max-w-7xl mx-auto">
-      <h2 className="font-semibold text-2xl mb-3 text-center md:text-left">
+      <h2 className="font-semibold text-3xl mb-9 text-center">
         Best deals for a price-less travel!
       </h2>
       <div>
         <Carousel plugins={[plugin.current]} className="mx-auto">
-          <CarouselContent className="mx-auto -ml-1">
-            {imagePaths.map((src, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-1 md:basis-1/2 lg:basis-1/3"
-              >
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="flex h-[200px] items-center justify-center p-6 overflow-hidden">
-                      <Link href="/">
-                        <Image
-                          src={src}
-                          alt={`Deal image ${index + 1}`}
-                          width={500}
-                          height={200}
-                        />
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
+          <CarouselContent className="h-[300px]">
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/BestDeals1.svg"
+                alt="BestDeals1"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/BestDeals2.svg"
+                alt="BestDeals2"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/BestDeals3.svg"
+                alt="BestDeals4"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/BestDeals4.svg"
+                alt="BestDeals4"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/BestDeals5.svg"
+                alt="BestDeals5"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
           </CarouselContent>
           <CarouselPrevious className="left-0" />
           <CarouselNext className="right-0" />

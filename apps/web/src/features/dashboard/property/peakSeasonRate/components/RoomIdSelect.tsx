@@ -7,12 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import useGetCategory from '@/hooks/api/category/useGetCategory';
-import { useSession } from 'next-auth/react';
-import { FormikHandlers } from 'formik';
-import { FC } from 'react';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
 import { useGetRooms } from '@/hooks/api/room/useGetRooms';
+import { useSession } from 'next-auth/react';
+import { FC } from 'react';
 
 interface FormSelectProps {
   setFieldValue: any;

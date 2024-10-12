@@ -1,15 +1,13 @@
 'use client';
 
+import FormInput from '@/components/FormInput';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import useVerificationTenant from '@/hooks/api/auth/useVerificationTenant';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { FC } from 'react';
 import { VerificationTenantSchema } from './schemas/VerificationTenantSchema';
-import FormInput from '@/components/FormInput';
 
 interface VerificationTenantPageProps {
   token: string;
@@ -17,7 +15,6 @@ interface VerificationTenantPageProps {
 
 const VerificationTenantPage: FC<VerificationTenantPageProps> = ({ token }) => {
   const { mutateAsync: verification, isPending } = useVerificationTenant(token);
-  console.log(token);
 
   const formik = useFormik({
     initialValues: {

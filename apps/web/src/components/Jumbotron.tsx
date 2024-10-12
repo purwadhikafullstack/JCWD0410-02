@@ -63,6 +63,38 @@ export const Jumbotron = () => {
                 className="object-cover"
               />
             </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/HeroSection_Image4.svg"
+                alt="HeroSection_Image4"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/HeroSection_Image5.svg"
+                alt="HeroSection_Image5"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/HeroSection_Image6.svg"
+                alt="HeroSection_Image6"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
+            <CarouselItem className="relative w-full overflow-hidden">
+              <Image
+                src="/HeroSection_Image7.svg"
+                alt="HeroSection_Image7"
+                fill
+                className="object-cover"
+              />
+            </CarouselItem>
           </CarouselContent>
         </Carousel>
       </div>

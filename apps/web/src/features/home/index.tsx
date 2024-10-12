@@ -4,7 +4,6 @@ import { DatePickerWithRange } from '@/components/DateRangePicker';
 import { Jumbotron } from '@/components/Jumbotron';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
 import { useGetPropertiesByQuery } from '@/hooks/api/searchProperty/useGetPropertiesByQuery';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -25,7 +24,6 @@ const HomePage = () => {
     startDate: new Date(),
     endDate: new Date(),
     guest: 2,
-    propertycategory: '',
   });
 
   const {
@@ -39,7 +37,6 @@ const HomePage = () => {
     endDate: searchParams.endDate,
     guest: searchParams.guest,
     title: searchParams.title,
-    propertycategory: searchParams.propertycategory,
   });
 
   const formik = useFormik({
@@ -55,14 +52,11 @@ const HomePage = () => {
 
       setSearchParams(newValues);
 
-      console.log('New Search Params:', newValues);
-
       const query = new URLSearchParams({
         startDate: newValues.startDate.toUTCString(),
         endDate: newValues.endDate.toUTCString(),
         guest: String(newValues.guest),
         title: newValues.title,
-        propertyCategory: newValues.propertycategory,
       }).toString();
 
       router.push(`/property/search?${query}`); // Redirect to the search page
@@ -80,9 +74,9 @@ const HomePage = () => {
   return (
     <main>
       <Jumbotron />
-      <div className="grid md:grid-cols-3 bg-white shadow-inner p-2 rounded-xl max-w-7xl mx-auto mt-20 items-center gap-2">
+      <div className="grid md:grid-cols-3 bg-slate-100 border-2 p-2 rounded-xl max-w-7xl mx-auto mt-20 items-center gap-2">
         {/* <SEARCH HOTEL /> */}
-        <div className="bg-white p-1 rounded-xl">
+        <div className="bg-slate-100 p-1 rounded-xl">
           <p className="font-semibold text-center text-[#294791] mb-1">Hotel</p>
           <Input
             name="title"
@@ -98,7 +92,7 @@ const HomePage = () => {
         </div>
         <DatePickerWithRange setFieldValue={formik.setFieldValue} />
         {/* <ADD GUEST /> */}
-        <div className="bg-white p-1 rounded-xl">
+        <div className="bg-slate-100 p-1 rounded-xl">
           <p className="font-semibold text-center text-[#294791] mb-1">Who</p>
           <Input
             name="guest"
@@ -125,7 +119,7 @@ const HomePage = () => {
       <div className="my-20">
         <PropertyList />
       </div>
-      <div className="my-20">
+      <div className="mt-20 pb-20">
         <BestDeals />
       </div>
     </main>

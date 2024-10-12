@@ -1,10 +1,10 @@
 import { createTransactionService } from '@/services/usertransactions/create-userreservation.service';
+import { getUserOrderListService } from '@/services/usertransactions/get-orderlist-user.service';
 import { getRoomDetailsService } from '@/services/usertransactions/get-RoomDetail.service';
 import { getUserTransactionService } from '@/services/usertransactions/get-userstransaction.service';
-import { getUserOrderListService } from '@/services/usertransactions/get-orderlist-user.service';
-import { uploadPaymentProofService } from '@/services/usertransactions/upload-paymentproff.service';
-import { Request, Response, NextFunction } from 'express';
 import { cancelTransactionService } from '@/services/usertransactions/upload-cancelorder.service';
+import { uploadPaymentProofService } from '@/services/usertransactions/upload-paymentproff.service';
+import { NextFunction, Request, Response } from 'express';
 
 export class UserTransactionController {
   async getOrderListTransactions(
@@ -140,12 +140,10 @@ export class UserTransactionController {
       const userId = res.locals.user?.id;
 
       if (!roomId || !startDate || !endDate) {
-        return res
-          .status(400)
-          .json({
-            message:
-              'Missing required parameters: roomId, startDate, and endDate are required',
-          });
+        return res.status(400).json({
+          message:
+            'Missing required parameters: roomId, startDate, and endDate are required',
+        });
       }
 
       if (!userId) {
@@ -182,15 +180,19 @@ export class UserTransactionController {
 
   async cancelTransaction(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = res.locals.user?.id; 
-      const transactionId = parseInt(req.params.id); 
+      const userId = res.locals.user?.id;
+      const transactionId = parseInt(req.params.id);
 
       if (!userId) {
-        return res.status(400).json({ message: 'User ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'User ID is missing or invalid' });
       }
 
       if (!transactionId) {
-        return res.status(400).json({ message: 'Transaction ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'Transaction ID is missing or invalid' });
       }
 
       const result = await cancelTransactionService(userId, transactionId);

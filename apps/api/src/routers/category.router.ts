@@ -1,5 +1,5 @@
 import { CategoryController } from '@/controllers/category.controller';
-import { tenantGuard } from '@/middlewares/TenantGuard';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 

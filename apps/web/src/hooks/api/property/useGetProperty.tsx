@@ -2,12 +2,6 @@
 
 import useAxios from '@/hooks/useAxios';
 import { Property } from '@/types/property';
-import { PropertyCategory } from '@/types/propertyCategory';
-import { PropertyFacility } from '@/types/propertyFacility';
-import { PropertyImage } from '@/types/propertyImage';
-import { Review } from '@/types/review';
-import { Room } from '@/types/room';
-import { Tenant } from '@/types/tenant';
 import { useQuery } from '@tanstack/react-query';
 
 const useGetProperty = (slug: string) => {

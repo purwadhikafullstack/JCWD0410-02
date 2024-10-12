@@ -4,13 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useResetPassword from '@/hooks/api/auth/useResetPassword';
-import { useFormik } from 'formik';
-import Image from 'next/image';
-import { FC } from 'react';
-import { ChangePasswordSchema } from './ChangePasswordSchema';
 import useChangePassword from '@/hooks/api/auth/useChangePassword';
+import { useFormik } from 'formik';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { ChangePasswordSchema } from './ChangePasswordSchema';
 
 const ChangePasswordPage = () => {
   const session = useSession();

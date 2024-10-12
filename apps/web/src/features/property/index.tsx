@@ -1,26 +1,17 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import useGetProperty from '@/hooks/api/property/useGetProperty';
 import Image from 'next/image';
 import { FC } from 'react';
 import { GoStarFill } from 'react-icons/go';
 import { IoIosRestaurant } from 'react-icons/io';
-import { LuAirVent } from 'react-icons/lu';
-import { PiSwimmingPoolFill } from 'react-icons/pi';
-import { TbClock24 } from 'react-icons/tb';
-import { TbParkingCircle } from 'react-icons/tb';
-import { PiElevator } from 'react-icons/pi';
 import { IoWifi } from 'react-icons/io5';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { FaShower } from 'react-icons/fa6';
-import { MdHotTub } from 'react-icons/md';
-import { MdAirlineSeatReclineExtra } from 'react-icons/md';
-import { DatePickerWithRange } from '@/components/DateRangePicker';
-import { Button } from '@/components/ui/button';
+import { LuAirVent } from 'react-icons/lu';
+import { PiElevator, PiSwimmingPoolFill } from 'react-icons/pi';
+import { TbClock24, TbParkingCircle } from 'react-icons/tb';
 import PropertyDetailList from './components/PropertyDetailList';
-import PropertyDetailCard from '@/components/PropertyDetailCard';
-import { Skeleton } from '@/components/ui/skeleton';
 
 interface PropertyDetailPageProps {
   propertySlug: string;
@@ -58,8 +49,7 @@ const PropertyDetailPage: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
             fill
           />
         </div>
-        {/* HEADER */}
-        <h2 className="font-semibold text-2xl mt-5">{data?.title}</h2>
+        <h2 className="font-semibold text-2xl">{data?.title}</h2>
         <div className="flex items-center gap-1 mt-3">
           {data?.reviews[0]?.rating ? (
             <div className="flex items-center gap-1">
@@ -77,46 +67,9 @@ const PropertyDetailPage: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
           <p>| by {data?.tenant.name}</p>
         </div>
         <div className="border-t-2 mt-5 border-gray-200"></div>
-        {/* BODY */}
         <h3 className="font-semibold text-xl mt-5">Description</h3>
         <p className="mt-2 text-justify">{data?.description}</p>
-        <h3 className="font-semibold text-xl mt-5">Main Facilities</h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div>
-            <div className="flex items-center gap-3 mt-2">
-              <LuAirVent />
-              <p>{data?.propertyFacilities[0]?.title}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <IoIosRestaurant />
-              <p>{data?.propertyFacilities[1]?.title}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <PiSwimmingPoolFill />
-              <p>{data?.propertyFacilities[2]?.title}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <TbClock24 />
-              <p>{data?.propertyFacilities[3]?.title}</p>
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <TbParkingCircle />
-              <p>{data?.propertyFacilities[4]?.title}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <PiElevator />
-              <p>{data?.propertyFacilities[5]?.title}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <IoWifi />
-              <p>{data?.propertyFacilities[6]?.title}</p>
-            </div>
-          </div>
-        </div>
       </section>
-      {/* MAPS */}
       <iframe
         src={`https://maps.google.com/maps?q=${lat},${long}&z=${zoom}&output=embed`}
         width="100%"
@@ -127,12 +80,11 @@ const PropertyDetailPage: FC<PropertyDetailPageProps> = ({ propertySlug }) => {
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      {/* ROOM CHOICES */}
       <section className="mt-10 space-y-5">
         <h3 className="font-semibold text-xl">
           Available Room Types in {data?.title}
         </h3>
-        <div className="grid md:grid-cols-2">
+        <div className="grid md:grid-cols-2 gap-10">
           <PropertyDetailList propertySlug={propertySlug} />
         </div>
       </section>

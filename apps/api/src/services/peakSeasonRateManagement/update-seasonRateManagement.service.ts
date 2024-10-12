@@ -1,6 +1,5 @@
 import prisma from '@/prisma';
-import { Prisma, Room } from '@prisma/client';
-import { areIntervalsOverlapping } from 'date-fns';
+import { Room } from '@prisma/client';
 
 interface UpdatePeakSeasonBody extends Room {
   price: number;

@@ -66,8 +66,6 @@ export const updateRoomService = async (
           }
         }
 
-        console.log('ini secure url', secureUrl);
-
         return {
           message: 'Update property success',
           data: newRoom,

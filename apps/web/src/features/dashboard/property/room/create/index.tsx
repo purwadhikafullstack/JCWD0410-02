@@ -1,15 +1,13 @@
 'use client';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useFormik } from 'formik';
 import FormInput from '@/components/FormInput';
 import FormTextarea from '@/components/FormTextArea';
-import { ChangeEvent, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import useCreateProperty from '@/hooks/api/property/useCreateProperty';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import useCreateRoom from '@/hooks/api/room/useCreateRoom';
+import { useFormik } from 'formik';
+import Image from 'next/image';
+import { ChangeEvent, useRef, useState } from 'react';
 import { PropertyIdSelect } from './components/PropertyIdSelect';
 
 const CreateRoomPage = () => {
