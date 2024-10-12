@@ -9,7 +9,7 @@ import { transporter } from '@/lib/nodemailer';
 
 export const registerService = async (body: User) => {
   try {
-    const { email } = body;
+    const { email, role } = body;
 
     const existingUser = await prisma.user.findFirst({
       where: { email },
@@ -52,7 +52,12 @@ export const registerService = async (body: User) => {
       },
     );
 
-    const link = BASE_URL_FE + `/verification/${token}`;
+    let link;
+    if (role === 'USER') {
+      link = BASE_URL_FE + `/verification/${token}`;
+    } else {
+      link = BASE_URL_FE + `/verification-tenant/${token}`;
+    }
 
     const emailTemplatePath = path.join(
       __dirname,

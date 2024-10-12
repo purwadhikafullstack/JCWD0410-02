@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 const loggedOutRoutes = [
   '/login',
   '/register',
+  '/register-tenant',
   '/reset-password',
   '/forgot-password',
 ];

@@ -51,11 +51,11 @@ const RegisterDashboardPage = () => {
               <form onSubmit={formik.handleSubmit}>
                 <div className="grid gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Business Name</Label>
+                    <Label htmlFor="name">Name of the owner</Label>
                     <Input
                       name="name"
                       type="text"
-                      placeholder="Your name"
+                      placeholder="Name of the owner"
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -67,11 +67,11 @@ const RegisterDashboardPage = () => {
                     ) : null}
                   </div>
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">Business email</Label>
                     <Input
                       name="email"
                       type="email"
-                      placeholder="Your email"
+                      placeholder="Your business email"
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}

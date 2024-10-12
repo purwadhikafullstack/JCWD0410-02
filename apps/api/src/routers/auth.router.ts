@@ -21,6 +21,11 @@ export class AuthRouter {
       verifyToken,
       this.authController.verifyController,
     );
+    this.router.patch(
+      '/verification-tenant',
+      verifyToken,
+      this.authController.verifyTenantController,
+    );
     this.router.post('/login', this.authController.login);
     this.router.post(
       '/forgot-password',
