@@ -1,10 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import prisma from '@/prisma';
-import Handlebars from 'handlebars';
-import { hashPassword } from '@/lib/bcrypt';
-import { transporter } from '@/lib/nodemailer';
 import { BASE_URL_FE } from '@/config';
+import { transporter } from '@/lib/nodemailer';
+import prisma from '@/prisma';
+import fs from 'fs';
+import Handlebars from 'handlebars';
+import path from 'path';
 
 export const verifyChangeEmailService = async (userId: number) => {
   try {

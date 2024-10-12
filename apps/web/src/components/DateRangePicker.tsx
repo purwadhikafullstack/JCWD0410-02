@@ -29,13 +29,11 @@ export function DatePickerWithRange({
     if (date?.from && date?.to) {
       setFieldValue('startDate', date.from);
       setFieldValue('endDate', date.to);
-      console.log('Start Date:', date.from);
-      console.log('End Date:', date.to);
     }
   }, [date, setFieldValue]);
 
   return (
-    <div className="bg-white p-1 rounded-xl">
+    <div className="bg-slate-100 p-1 rounded-xl">
       <p className="font-semibold text-center text-[#294791] mb-1">Duration</p>
       <div className={cn('grid gap-2', className)}>
         <Popover>

@@ -1,18 +1,18 @@
-import { NextFunction, Request, Response } from 'express';
+import { changeEmailService } from '@/services/auth/change-email.service';
 import { changePasswordService } from '@/services/auth/change-password.service';
 import { forgotPasswordService } from '@/services/auth/forgot-password.service';
+import { getTenantService } from '@/services/auth/get-tenant.service';
 import { getUserService } from '@/services/auth/get-user.service';
 import { loginWithGoogleService } from '@/services/auth/google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
 import { resetPasswordService } from '@/services/auth/reset-password.service';
-import { updateProfileService } from '@/services/auth/update-user.service';
-import { verifyService } from '@/services/auth/verify.service';
-import { changeEmailService } from '@/services/auth/change-email.service';
-import { verifyChangeEmailService } from '@/services/auth/verify-change-email.service';
 import { updateTenantService } from '@/services/auth/update-tenant.service';
-import { getTenantService } from '@/services/auth/get-tenant.service';
+import { updateProfileService } from '@/services/auth/update-user.service';
+import { verifyChangeEmailService } from '@/services/auth/verify-change-email.service';
 import { verifyTenantService } from '@/services/auth/verify-tenant.service';
+import { verifyService } from '@/services/auth/verify.service';
+import { NextFunction, Request, Response } from 'express';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {

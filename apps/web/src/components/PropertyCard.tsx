@@ -33,19 +33,12 @@ const PropertyCard: FC<PropertyCardProps> = ({
 }) => {
   return (
     <Link href={`/property/${slug}`}>
-      <Card className="space-y-1">
-        <CardHeader>
-          <div className="relative h-[225px] w-full rounded-2xl overflow-hidden">
-            <Image
-              src={imageUrl}
-              alt="thumbnail"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </CardHeader>
+      <Card className="space-y-1 rounded-2xl overflow-hidden">
+        <div className="relative h-[225px] w-full overflow-hidden rounded-b-md">
+          <Image src={imageUrl} alt="thumbnail" fill className="object-cover" />
+        </div>
         <CardContent>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mt-5">
             <CardTitle className="text-base line-clamp-1">{title}</CardTitle>
             {rating ? (
               <div className="flex items-center gap-1">

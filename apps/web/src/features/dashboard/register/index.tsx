@@ -1,15 +1,15 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFormik } from 'formik';
-import { RegisterSchema } from './schemas/RegisterSchema';
 import useRegister from '@/hooks/api/auth/useRegister';
-import Link from 'next/link';
 import { Role } from '@/types/user';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFormik } from 'formik';
 import Image from 'next/image';
+import Link from 'next/link';
+import { RegisterSchema } from './schemas/RegisterSchema';
 
 const RegisterDashboardPage = () => {
   const { mutateAsync: register, isPending } = useRegister();

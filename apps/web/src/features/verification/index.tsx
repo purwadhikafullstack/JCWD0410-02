@@ -16,7 +16,6 @@ interface VerificationPageProps {
 
 const VerificationPage: FC<VerificationPageProps> = ({ token }) => {
   const { mutateAsync: verification, isPending } = useVerification(token);
-  console.log(token);
 
   const formik = useFormik({
     initialValues: {

@@ -1,9 +1,3 @@
-import { createPropertyService } from '@/services/property/create-property.service';
-import { deletePropertyService } from '@/services/property/delete-property.service';
-import { getPropertiesService } from '@/services/property/get-properties.service';
-import { getPropertyTenantService } from '@/services/property/get-property-tenant.service';
-import { getPropertyService } from '@/services/property/get-property.service';
-import { updatePropertyService } from '@/services/property/update-property.service';
 import { createRoomService } from '@/services/room/create-room.service';
 import { deleteRoomService } from '@/services/room/delete-room.service';
 import { getRoomService } from '@/services/room/get-room.service';
@@ -45,18 +39,6 @@ export class RoomController {
       next(error);
     }
   }
-  //   async getPropertyTenantController(
-  //     req: Request,
-  //     res: Response,
-  //     next: NextFunction,
-  //   ) {
-  //     try {
-  //       const result = await getPropertyTenantService(Number(req.params.id));
-  //       return res.status(200).send(result);
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   }
   async createRoomController(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await createRoomService(

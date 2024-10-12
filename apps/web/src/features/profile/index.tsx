@@ -18,8 +18,6 @@ const ProfilePage = () => {
   const session = useSession();
   const isVerified = String(session.data?.user.isVerified);
 
-  console.log(isVerified);
-
   const [iconColor, setIconColor] = useState('#B8BACF');
   const [selectedImage, setSelectedImage] = useState<string>('');
   const photoRef = useRef<HTMLInputElement>(null);

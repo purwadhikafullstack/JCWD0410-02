@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import useDeleteRoom from '@/hooks/api/room/useDeleteRoom';
 import useGetRoom from '@/hooks/api/room/useGetRoom';
 import useUpdateRoom from '@/hooks/api/room/useUpdateRoom';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { ChangeEvent, FC, useRef, useState } from 'react';
 import { PropertyIdSelect } from '../create/components/PropertyIdSelect';
-import useDeleteRoom from '@/hooks/api/room/useDeleteRoom';
 
 interface RoomDetailPageProps {
   roomId: number;

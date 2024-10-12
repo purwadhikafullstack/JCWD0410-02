@@ -1,7 +1,6 @@
 'use client';
 
 import useAxios from '@/hooks/useAxios';
-import { PropertyCategory } from '@/types/propertyCategory';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';

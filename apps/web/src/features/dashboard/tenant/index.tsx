@@ -1,16 +1,16 @@
 'use client';
 
 import FormInput from '@/components/FormInput';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import useGetTenant from '@/hooks/api/auth/useGetTenant';
 import useUpdateTenant from '@/hooks/api/auth/useUpdateTenant';
 import { useFormik } from 'formik';
-import { TenantSchema } from './schemas/TenantSchema';
-import { ChangeEvent, FC, useRef, useState } from 'react';
-import useGetTenant from '@/hooks/api/auth/useGetTenant';
 import { useSession } from 'next-auth/react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
+import { ChangeEvent, useRef, useState } from 'react';
+import { TenantSchema } from './schemas/TenantSchema';
 
 const TenantPage = () => {
   const session = useSession();

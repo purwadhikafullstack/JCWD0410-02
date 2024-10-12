@@ -4,7 +4,7 @@ import RoomCard from '@/components/RoomTenantCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetRooms } from '@/hooks/api/room/useGetRooms';
 import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 const RoomTenantList = () => {
   const session = useSession();
@@ -14,8 +14,6 @@ const RoomTenantList = () => {
     take: 4,
     propertyId: Number(session.data?.user.id),
   });
-
-  console.log('ini isi data room', data);
 
   const onPageChange = ({ selected }: { selected: number }) => {
     setPage(selected + 1);

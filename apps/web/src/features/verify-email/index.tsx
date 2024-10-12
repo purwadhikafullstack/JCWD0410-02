@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import useChangeEmailVerify from '@/hooks/api/auth/useChangeEmailVerify';
 import Image from 'next/image';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 interface VerificationPageProps {
   token: string;
