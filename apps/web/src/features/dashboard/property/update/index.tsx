@@ -165,6 +165,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
               error={formik.errors.latitude}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              readOnly
             />
             <FormInput
               name="longitude"
@@ -176,6 +177,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
               error={formik.errors.longitude}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              readOnly
             />
             <EditPropertyCategorySelect setFieldValue={formik.setFieldValue} />
           </div>

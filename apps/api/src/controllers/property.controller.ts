@@ -21,9 +21,10 @@ export class PropertyController {
         sortBy: (req.query.sortBy as string) || 'createdAt',
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
-        guest: Number(req.query.search) || 2,
-        startDate: new Date(req.query.search as string) || undefined,
-        endDate: new Date(req.query.search as string) || undefined,
+        guest: Number(req.query.guest) || 2,
+        title: (req.query.title as string) || '',
+        startDate: new Date(req.query.startDate as string) || undefined,
+        endDate: new Date(req.query.endDate as string) || undefined,
       };
       const result = await getPropertiesService(query);
       return res.status(200).send(result);
@@ -43,6 +44,10 @@ export class PropertyController {
         sortBy: (req.query.sortBy as string) || 'createdAt',
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
+        guest: Number(req.query.guest) || 2,
+        title: (req.query.title as string) || '',
+        startDate: new Date(req.query.startDate as string) || undefined,
+        endDate: new Date(req.query.endDate as string) || undefined,
       };
       const result = await getTenantPropertiesService(
         query,
