@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/select';
 import useGetCategory from '@/hooks/api/category/useGetCategory';
 import { useSession } from 'next-auth/react';
-import { FormikHandlers } from 'formik';
 import { FC } from 'react';
 
 interface FormSelectProps {

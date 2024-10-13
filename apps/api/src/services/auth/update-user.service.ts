@@ -1,16 +1,15 @@
 import { cloudinaryUpload } from '@/lib/cloudinary';
 import prisma from '@/prisma';
 import { User } from '@prisma/client';
-import fs from 'fs';
 
 export const updateProfileService = async (
-  userId: number,
+  id: number,
   body: Partial<User>,
   file?: Express.Multer.File,
 ) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId },
+      where: { id },
     });
 
     if (!user) {
@@ -32,7 +31,7 @@ export const updateProfileService = async (
     }
 
     const profileUpdate = await prisma.user.update({
-      where: { id: userId },
+      where: { id },
       data: {
         ...body,
       },

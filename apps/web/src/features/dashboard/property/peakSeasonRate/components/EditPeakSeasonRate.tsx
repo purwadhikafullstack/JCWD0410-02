@@ -1,3 +1,4 @@
+import FormInput from '@/components/FormInput';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -8,15 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
 import useUpdatePeakSeason from '@/hooks/api/peakSeasonRate/useUpdatePeakSeasonRate';
 import { useFormik } from 'formik';
+import { useSession } from 'next-auth/react';
 import { FC, useState } from 'react';
 import { PeakSeasonRateSchema } from '../schemas/PeakSeasonRateSchema';
-import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
-import { useSession } from 'next-auth/react';
-import FormInput from '@/components/FormInput';
 
 interface EditPeakSeasonButton {
   id: number;

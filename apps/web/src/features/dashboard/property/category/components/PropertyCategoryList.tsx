@@ -16,17 +16,6 @@ import useGetCategory from '@/hooks/api/category/useGetCategory';
 import useUpdateCategory from '@/hooks/api/category/useUpdateCategory';
 import { useSession } from 'next-auth/react';
 import { FC, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { EditCategoryButton } from './EditCategory';
 
 interface PropertyCategoryPageProps {
@@ -61,7 +50,11 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   }
 
   if (!data) {
-    return <h1>Property tidak ditemukan</h1>;
+    return (
+      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+        Category Not Found
+      </h5>
+    );
   }
   return (
     <>

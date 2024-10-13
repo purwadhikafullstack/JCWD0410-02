@@ -1,15 +1,15 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFormik } from 'formik';
-import { RegisterSchema } from './schemas/RegisterSchema';
 import useRegister from '@/hooks/api/auth/useRegister';
-import Link from 'next/link';
 import { Role } from '@/types/user';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFormik } from 'formik';
 import Image from 'next/image';
+import Link from 'next/link';
+import { RegisterSchema } from './schemas/RegisterSchema';
 
 const RegisterDashboardPage = () => {
   const { mutateAsync: register, isPending } = useRegister();
@@ -51,11 +51,11 @@ const RegisterDashboardPage = () => {
               <form onSubmit={formik.handleSubmit}>
                 <div className="grid gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Business Name</Label>
+                    <Label htmlFor="name">Name of the owner</Label>
                     <Input
                       name="name"
                       type="text"
-                      placeholder="Your name"
+                      placeholder="Name of the owner"
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -67,11 +67,11 @@ const RegisterDashboardPage = () => {
                     ) : null}
                   </div>
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">Business email</Label>
                     <Input
                       name="email"
                       type="email"
-                      placeholder="Your email"
+                      placeholder="Your business email"
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}

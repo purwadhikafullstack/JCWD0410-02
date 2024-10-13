@@ -3,13 +3,16 @@ import Pagination from '@/components/Pagination';
 import RoomCard from '@/components/RoomTenantCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetRooms } from '@/hooks/api/room/useGetRooms';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const RoomTenantList = () => {
+  const session = useSession();
   const [page, setPage] = useState(1);
   const { data, isPending } = useGetRooms({
     page,
     take: 4,
+    propertyId: Number(session.data?.user.id),
   });
 
   const onPageChange = ({ selected }: { selected: number }) => {
@@ -32,7 +35,11 @@ const RoomTenantList = () => {
   }
 
   if (!data) {
-    return <h1>Room tidak ditemukan</h1>;
+    return (
+      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+        Room Not Found
+      </h5>
+    );
   }
   return (
     <>

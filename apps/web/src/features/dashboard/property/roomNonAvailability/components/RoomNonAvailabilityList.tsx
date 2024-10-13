@@ -11,12 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import useDeletePeakSeasons from '@/hooks/api/peakSeasonRate/useDeletePeakSeasonRate';
+import useDeleteRoomNonAvailability from '@/hooks/api/roomNonAvailability/useDeleteRoomNonAvailability';
 import useRoomNonAvailabilities from '@/hooks/api/roomNonAvailability/useGetRoomNonAvailability';
 import { useSession } from 'next-auth/react';
 import { FC, useState } from 'react';
 import { EditRoomNonAvailabilityButton } from './EditRoomNonAvailability';
-import useDeleteRoomNonAvailability from '@/hooks/api/roomNonAvailability/useDeleteRoomNonAvailability';
 
 interface RoomNonAvailabilityPageProps {
   roomId: number;
@@ -50,7 +49,11 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
   }
 
   if (!data) {
-    return <h1>Room Non Availability not found</h1>;
+    return (
+      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+        Room Non Availability not found
+      </h5>
+    );
   }
   return (
     <>

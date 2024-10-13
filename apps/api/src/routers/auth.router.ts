@@ -1,5 +1,11 @@
 import { AuthController } from '@/controllers/auth.controller';
 import { uploader } from '@/lib/multer';
+import { tenantGuard } from '@/middlewares/tenantGuard';
+import {
+  validateLogin,
+  validateRegister,
+  validateVerification,
+} from '@/middlewares/validator';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -14,13 +20,23 @@ export class AuthRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.post('/register', this.authController.registerController);
+    this.router.post(
+      '/register',
+      validateRegister,
+      this.authController.registerController,
+    );
     this.router.patch(
       '/verification',
       verifyToken,
+      validateVerification,
       this.authController.verifyController,
     );
-    this.router.post('/login', this.authController.login);
+    this.router.patch(
+      '/verification-tenant',
+      verifyToken,
+      this.authController.verifyTenantController,
+    );
+    this.router.post('/login', validateLogin, this.authController.login);
     this.router.post(
       '/forgot-password',
       this.authController.forgotPasswordController,
@@ -49,7 +65,22 @@ export class AuthRouter {
       this.authController.changeEmailVerificationController,
     );
     this.router.patch(
+      '/tenant/:id',
+      verifyToken,
+      tenantGuard,
+      uploader().single('imageUrl'),
+      this.authController.updateTenantController,
+    );
+    this.router.get(
+      '/tenant/',
+      verifyToken,
+      tenantGuard,
+      this.authController.getTenantController,
+    );
+    this.router.get('/:id', verifyToken, this.authController.getUserController);
+    this.router.patch(
       '/:id',
+      verifyToken,
       uploader().single('imageUrl'),
       this.authController.updateProfileController,
     );

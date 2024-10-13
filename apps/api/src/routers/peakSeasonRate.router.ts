@@ -1,5 +1,5 @@
 import { PeakSeasonRateController } from '@/controllers/peakSeasonRate.controller';
-import { tenantGuard } from '@/middlewares/TenantGuard';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -16,6 +16,8 @@ export class PeakSeasonRateRouter {
   private initializeRoutes(): void {
     this.router.get(
       '/',
+      verifyToken,
+      tenantGuard,
       this.peakSeasonRateController.getPeakSeasonsController,
     );
     this.router.post(

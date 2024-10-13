@@ -16,14 +16,24 @@ import {
 
 export function DatePickerWithRange({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+  setFieldValue,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  setFieldValue: (field: string, value: any) => void;
+}) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 1),
   });
 
+  React.useEffect(() => {
+    if (date?.from && date?.to) {
+      setFieldValue('startDate', date.from);
+      setFieldValue('endDate', date.to);
+    }
+  }, [date, setFieldValue]);
+
   return (
-    <div className="bg-white p-1 rounded-xl">
+    <div className="bg-slate-100 p-1 rounded-xl">
       <p className="font-semibold text-center text-[#294791] mb-1">Duration</p>
       <div className={cn('grid gap-2', className)}>
         <Popover>

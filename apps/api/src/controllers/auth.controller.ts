@@ -1,15 +1,18 @@
-import { NextFunction, Request, Response } from 'express';
+import { changeEmailService } from '@/services/auth/change-email.service';
 import { changePasswordService } from '@/services/auth/change-password.service';
 import { forgotPasswordService } from '@/services/auth/forgot-password.service';
+import { getTenantService } from '@/services/auth/get-tenant.service';
 import { getUserService } from '@/services/auth/get-user.service';
 import { loginWithGoogleService } from '@/services/auth/google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
 import { resetPasswordService } from '@/services/auth/reset-password.service';
+import { updateTenantService } from '@/services/auth/update-tenant.service';
 import { updateProfileService } from '@/services/auth/update-user.service';
-import { verifyService } from '@/services/auth/verify.service';
-import { changeEmailService } from '@/services/auth/change-email.service';
 import { verifyChangeEmailService } from '@/services/auth/verify-change-email.service';
+import { verifyTenantService } from '@/services/auth/verify-tenant.service';
+import { verifyService } from '@/services/auth/verify.service';
+import { NextFunction, Request, Response } from 'express';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {
@@ -25,6 +28,21 @@ export class AuthController {
       const userId = Number(res.locals.user.id);
       const password = req.body.password;
       const result = await verifyService(userId, password);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async verifyTenantController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(res.locals.user.id);
+      const password = req.body.password;
+      const result = await verifyTenantService(userId, password, req.body);
 
       return res.status(200).send(result);
     } catch (error) {
@@ -100,6 +118,31 @@ export class AuthController {
         req.body,
         req.file!,
       );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateTenantController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updateTenantService(
+        Number(req.params.id),
+        Number(res.locals.user.id),
+        req.body,
+        req.file!,
+      );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getTenantController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getTenantService(Number(res.locals.user.id));
       return res.status(200).send(result);
     } catch (error) {
       next(error);

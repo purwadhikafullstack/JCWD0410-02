@@ -10,7 +10,10 @@ interface GetPeakSeasonsQuery extends PaginationQueryParams {
   roomId: number;
 }
 
-export const getPeakSeasonsService = async (query: GetPeakSeasonsQuery) => {
+export const getPeakSeasonsService = async (
+  query: GetPeakSeasonsQuery,
+  userId: number,
+) => {
   try {
     const {
       take,
@@ -24,7 +27,10 @@ export const getPeakSeasonsService = async (query: GetPeakSeasonsQuery) => {
       roomId,
     } = query;
 
-    const whereClause: Prisma.PeakSeasonRateWhereInput = {};
+    const whereClause: Prisma.PeakSeasonRateWhereInput = {
+      isDeleted: false,
+      room: { property: { tenantId: userId }, id: roomId ? roomId : undefined },
+    };
 
     const properties = await prisma.peakSeasonRate.findMany({
       where: whereClause,
@@ -37,7 +43,10 @@ export const getPeakSeasonsService = async (query: GetPeakSeasonsQuery) => {
     });
 
     const count = await prisma.peakSeasonRate.count({ where: whereClause });
-    return { data: properties, meta: { page, take, total: count } };
+    return {
+      data: properties,
+      meta: { page, take, total: count },
+    };
   } catch (error) {
     throw error;
   }

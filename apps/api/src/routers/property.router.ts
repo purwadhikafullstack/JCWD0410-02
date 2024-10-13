@@ -1,6 +1,6 @@
 import { PropertyController } from '@/controllers/property.controller';
 import { uploader } from '@/lib/multer';
-import { tenantGuard } from '@/middlewares/TenantGuard';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -15,6 +15,10 @@ export class PropertyRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.get(
+      '/search',
+      this.propertyController.getPropertiesByQueryController,
+    );
     this.router.get('/:slug', this.propertyController.getPropertyController);
     this.router.get(
       '/management/:id',

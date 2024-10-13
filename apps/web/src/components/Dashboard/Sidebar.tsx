@@ -9,6 +9,7 @@ import {
   FiLock,
   FiChevronDown,
 } from 'react-icons/fi';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
 
 const Sidebar: React.FC = () => {
   const [propertyDropdownOpen, setPropertyDropdownOpen] = useState(false);
@@ -37,6 +38,15 @@ const Sidebar: React.FC = () => {
         >
           <FiHome />
           <span>Main Dashboard</span>
+        </li>
+        <li
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => router.push('/dashboard/tenant')}
+        >
+          <div className="w-4">
+            <MdOutlineAdminPanelSettings size={20} />
+          </div>
+          <span>Tenant</span>
         </li>
 
         <li className="flex flex-col">

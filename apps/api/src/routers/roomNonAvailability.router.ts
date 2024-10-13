@@ -1,6 +1,5 @@
-import { PeakSeasonRateController } from '@/controllers/peakSeasonRate.controller';
 import { RoomNonAvailabilityController } from '@/controllers/roomNonAvailability.controller';
-import { tenantGuard } from '@/middlewares/TenantGuard';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -17,6 +16,8 @@ export class RoomNonAvailabilityRouter {
   private initializeRoutes(): void {
     this.router.get(
       '/',
+      verifyToken,
+      tenantGuard,
       this.roomNonAvailabilityRouter.getRoomNonAvailabilitiesController,
     );
     this.router.post(

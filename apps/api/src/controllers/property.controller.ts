@@ -1,6 +1,7 @@
 import { createPropertyService } from '@/services/property/create-property.service';
 import { deletePropertyService } from '@/services/property/delete-property.service';
 import { getPropertiesService } from '@/services/property/get-properties.service';
+import { getPropertiesServiceByQuery } from '@/services/property/get-propertiesByQuery.service';
 import { getPropertyTenantService } from '@/services/property/get-property-tenant.service';
 import { getPropertyService } from '@/services/property/get-property.service';
 import { updatePropertyService } from '@/services/property/update-property.service';
@@ -24,6 +25,29 @@ export class PropertyController {
         endDate: new Date(req.query.search as string) || undefined,
       };
       const result = await getPropertiesService(query);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getPropertiesByQueryController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = {
+        take: parseInt(req.query.take as string) || 10,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'createdAt',
+        sortOrder: (req.query.sortOrder as string) || 'desc',
+        search: (req.query.search as string) || '',
+        guest: Number(req.query.guest) || 2,
+        title: (req.query.title as string) || '',
+        startDate: new Date(req.query.startDate as string) || undefined,
+        endDate: new Date(req.query.endDate as string) || undefined,
+      };
+      const result = await getPropertiesServiceByQuery(query);
       return res.status(200).send(result);
     } catch (error) {
       next(error);
@@ -62,8 +86,6 @@ export class PropertyController {
       );
       return res.status(200).send(result);
     } catch (error) {
-      console.log('ERORNYA' + Number(req.params.id));
-
       next(error);
     }
   }

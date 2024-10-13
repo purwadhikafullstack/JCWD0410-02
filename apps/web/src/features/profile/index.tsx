@@ -18,8 +18,6 @@ const ProfilePage = () => {
   const session = useSession();
   const isVerified = String(session.data?.user.isVerified);
 
-  console.log(isVerified);
-
   const [iconColor, setIconColor] = useState('#B8BACF');
   const [selectedImage, setSelectedImage] = useState<string>('');
   const photoRef = useRef<HTMLInputElement>(null);
@@ -54,7 +52,7 @@ const ProfilePage = () => {
   });
   return (
     <main className="min-h-screen items-center justify-center p-4">
-      <div className="my-[70px] max-w-6xl mx-auto">
+      <div className="my-[125px] max-w-6xl mx-auto">
         <div className="grid grid-cols-[1fr_3fr]">
           <div className="mx-auto">
             <div
