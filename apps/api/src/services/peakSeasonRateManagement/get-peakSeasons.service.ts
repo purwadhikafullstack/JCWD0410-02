@@ -27,9 +27,29 @@ export const getPeakSeasonsService = async (
       roomId,
     } = query;
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.role !== 'TENANT') {
+      throw new Error("User don't have access");
+    }
+
+    const tenant = await prisma.tenant.findFirst({
+      where: { userId: user.id, isDeleted: false },
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
+    }
+
     const whereClause: Prisma.PeakSeasonRateWhereInput = {
       isDeleted: false,
-      room: { property: { tenantId: userId }, id: roomId ? roomId : undefined },
+      room: { property: { tenantId: tenant.id } },
     };
 
     const properties = await prisma.peakSeasonRate.findMany({

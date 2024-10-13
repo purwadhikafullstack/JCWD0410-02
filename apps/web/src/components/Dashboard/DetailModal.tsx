@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface DetailModalProps {
-  transaction: any; 
+  transaction: any;
   closeModal: () => void;
 }
 
@@ -15,7 +15,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
         <div
           className="bg-gray-500 bg-opacity-75 fixed inset-0"
           onClick={closeModal}
-        ></div>{' '}
+        ></div>
         <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-20">
           <div className="p-4">
             <h4 className="text-lg font-semibold">Transaction Details</h4>
@@ -46,6 +46,31 @@ const DetailModal: React.FC<DetailModalProps> = ({
               <strong>End Date:</strong>{' '}
               {new Date(transaction.endDate).toLocaleDateString()}
             </p>
+
+            <div className="mt-4">
+              <h5 className="text-lg font-semibold">Transaction Reviews</h5>
+              {transaction.reviews && transaction.reviews.length > 0 ? (
+                transaction.reviews.map((review: any, index: number) => (
+                  <div key={index} className="mt-2 p-2 border rounded-lg">
+                    <p>
+                      <strong>Reviewer:</strong> {review.user.name}
+                    </p>
+                    <p>
+                      <strong>Rating:</strong> {review.rating}/5
+                    </p>
+                    <p>
+                      <strong>Review:</strong> {review.review}
+                    </p>
+                    <p>
+                      <strong>Date:</strong>{' '}
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>No reviews available for this transaction.</p>
+              )}
+            </div>
 
             <button
               onClick={closeModal}

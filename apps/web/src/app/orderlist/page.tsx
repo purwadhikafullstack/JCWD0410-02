@@ -1,6 +1,5 @@
-// pages/transactions.tsx
 
-import TransactionList from "@/features/transactions/OrderListUser";
+import TransactionList from "@/features/transactions";
 
 const TransactionsPage = () => {
   return (

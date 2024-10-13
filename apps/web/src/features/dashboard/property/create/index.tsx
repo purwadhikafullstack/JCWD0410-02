@@ -1,15 +1,14 @@
 'use client';
-import { Input } from '@/components/ui/input';
-import { PropertyCategorySelect } from './components/PropertyCategorySelect';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useFormik } from 'formik';
 import FormInput from '@/components/FormInput';
 import FormTextarea from '@/components/FormTextArea';
-import { ChangeEvent, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import useCreateProperty from '@/hooks/api/property/useCreateProperty';
+import { useFormik } from 'formik';
+import Image from 'next/image';
+import { ChangeEvent, useRef, useState } from 'react';
+import { PropertyCategorySelect } from './components/PropertyCategorySelect';
 
 const CreatePropertyPage = () => {
   const { mutateAsync: createProperty, isPending } = useCreateProperty();
@@ -31,8 +30,6 @@ const CreatePropertyPage = () => {
       });
     },
   });
-
-  console.log(formik.values);
 
   const [selectedImage, setSelectedImage] = useState('');
   const imageRef = useRef<HTMLInputElement>(null);

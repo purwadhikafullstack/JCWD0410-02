@@ -2,7 +2,6 @@ import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
 import { transporter } from '@/lib/nodemailer';
 import schedule from 'node-schedule';
-
 export const confirmPaymentService = async (
   transactionId: number,
   confirm: boolean,
@@ -12,7 +11,13 @@ export const confirmPaymentService = async (
       where: { id: transactionId },
       include: {
         user: { select: { name: true, email: true } },
-        room: { include: { property: true } },
+        room: { 
+          include: { 
+            property: {
+              include: { tenant: true }, 
+            }
+          }
+        },
       },
     });
 
@@ -30,6 +35,31 @@ export const confirmPaymentService = async (
     });
 
     if (confirm) {
+      const tenant = transaction.room?.property?.tenant;
+
+      if (!tenant) {
+        throw new Error('Tenant information is missing.');
+      }
+
+      const tenantId = tenant.id;
+      const transactionTotal = transaction.total;
+
+      const tenantData = await prisma.tenant.findUnique({
+        where: { id: tenantId },
+        select: { balance: true }
+      });
+
+      if (!tenantData) {
+        throw new Error('Tenant data not found.');
+      }
+
+      const updatedBalance = tenantData.balance + transactionTotal;
+
+      await prisma.tenant.update({
+        where: { id: tenantId },
+        data: { balance: updatedBalance }
+      });
+
       await transporter.sendMail({
         to: transaction.user.email,
         subject: 'Payment Confirmation - Your Booking is Processed',
@@ -77,3 +107,4 @@ export const confirmPaymentService = async (
     throw error;
   }
 };
+

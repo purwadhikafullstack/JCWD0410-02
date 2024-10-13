@@ -1,16 +1,12 @@
 'use client';
 
-import Navbar from '@/components/Dashboard/Navbar';
-import Sidebar from '@/components/Dashboard/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import useCreateCategory from '@/hooks/api/category/useCreateCategory';
-import useDeleteCategory from '@/hooks/api/category/useDeleteCategory';
 import { useFormik } from 'formik';
 import { useSession } from 'next-auth/react';
-import { PropertyCategorySchema } from './schemas/PropertyCategorySchema';
 import PropertyCategoryList from './components/PropertyCategoryList';
+import { PropertyCategorySchema } from './schemas/PropertyCategorySchema';
 
 interface CreatePropertyPageProps {
   propertyCategoryId: number;

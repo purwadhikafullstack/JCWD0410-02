@@ -1,5 +1,6 @@
 import { createPropertyService } from '@/services/property/create-property.service';
 import { deletePropertyService } from '@/services/property/delete-property.service';
+import { getTenantPropertiesService } from '@/services/property/get-properties-tenant.service';
 import { getPropertiesService } from '@/services/property/get-properties.service';
 import { getPropertiesServiceByQuery } from '@/services/property/get-propertiesByQuery.service';
 import { getPropertyTenantService } from '@/services/property/get-property-tenant.service';
@@ -25,6 +26,28 @@ export class PropertyController {
         endDate: new Date(req.query.search as string) || undefined,
       };
       const result = await getPropertiesService(query);
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getTenantPropertiesController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = {
+        take: parseInt(req.query.take as string) || 10,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'createdAt',
+        sortOrder: (req.query.sortOrder as string) || 'desc',
+        search: (req.query.search as string) || '',
+      };
+      const result = await getTenantPropertiesService(
+        query,
+        Number(res.locals.user.id),
+      );
       return res.status(200).send(result);
     } catch (error) {
       next(error);
@@ -86,8 +109,6 @@ export class PropertyController {
       );
       return res.status(200).send(result);
     } catch (error) {
-      console.log('ERORNYA' + Number(req.params.id));
-
       next(error);
     }
   }

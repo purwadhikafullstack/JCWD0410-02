@@ -1,14 +1,13 @@
-"use client";
-
+'use client';
 import React, { useState } from "react";
 import { StatusTransaction, Transaction } from "@/types/transaction";
 import { FiMoreVertical } from "react-icons/fi";
 import useGetTransactions from "@/hooks/api/transaction-tenant/useGetOrders";
-import EditModal from "@/components/EditModal";
-import DetailModal from "@/components/DetailModal";
-import CancelOrderModal from "@/components/CancelOrderModal";
+import EditModal from "@/components/Dashboard/EditModal";
+import DetailModal from "@/components/Dashboard/DetailModal";
+import CancelOrderModal from "@/components/Dashboard/CancelOrderModal";
 import Image from "next/image";
-
+import { Skeleton } from "@/components/ui/skeleton";
 const TableTransaction = () => {
   const [selectedStatus, setSelectedStatus] = useState<StatusTransaction | "ALL">("ALL");
   const [page, setPage] = useState<number>(1);
@@ -20,7 +19,7 @@ const TableTransaction = () => {
 
   const take = 5;
   const { data, isLoading, error, refetch } = useGetTransactions({
-    tenantId: 1, 
+    tenantId: 1,
     status: selectedStatus === "ALL" ? undefined : selectedStatus,
     page,
     take,
@@ -32,7 +31,7 @@ const TableTransaction = () => {
     setSelectedTransaction(transaction);
     if (type === "detail") setIsDetailOpen(true);
     else if (type === "edit") setIsEditOpen(true);
-    else setIsCancelOpen(true);
+    else setIsCancelOpen(true);  // Open Cancel Order Modal
   };
 
   const closeModal = () => {
@@ -51,6 +50,7 @@ const TableTransaction = () => {
 
   const renderDropdown = (transaction: Transaction) => (
     <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-10">
+      {/* Detail and Edit options */}
       {["Detail", "Edit", "Cancel Order"].map((action, index) => (
         <button
           key={index}
@@ -66,9 +66,27 @@ const TableTransaction = () => {
     </div>
   );
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+        <Skeleton className="h-10 w-1/3 mb-6" />
+        <div className="overflow-x-auto">
+          <Skeleton className="h-10 w-full mb-4" />
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="flex justify-between items-center py-4 border-b">
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-6 w-1/6" />
+              <Skeleton className="h-6 w-1/12" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
+  if (error) return <p>Error: {error.message}</p>;
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
       <div className="flex items-center justify-between mb-6">
@@ -109,7 +127,7 @@ const TableTransaction = () => {
                     <Image
                       src={transaction.paymentProof}
                       alt="Payment Proof"
-                      width={128} 
+                      width={128}
                       height={128}
                       className="object-cover rounded-lg"
                     />
@@ -160,7 +178,6 @@ const TableTransaction = () => {
           ))}
         </div>
       </div>
-
       {isDetailOpen && selectedTransaction && <DetailModal transaction={selectedTransaction} closeModal={closeModal} />}
       {isEditOpen && selectedTransaction && <EditModal transaction={selectedTransaction} closeModal={closeModal} refetch={refetch} />}
       {isCancelOpen && selectedTransaction && (
@@ -169,5 +186,4 @@ const TableTransaction = () => {
     </div>
   );
 };
-
 export default TableTransaction;

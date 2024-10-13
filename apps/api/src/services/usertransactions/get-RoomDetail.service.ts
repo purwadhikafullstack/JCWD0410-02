@@ -1,14 +1,14 @@
 import prisma from '@/prisma';
+import { StatusTransaction } from '@prisma/client'; 
 
 interface GetRoomDetailsService {
   roomId: number;
   startDate: Date;
   endDate: Date;
-  userId: number;
 }
 
 export const getRoomDetailsService = async (query: GetRoomDetailsService) => {
-  const { roomId, startDate, endDate, userId } = query;
+  const { roomId, startDate, endDate, } = query;
 
   try {
     const nonAvailableDates = await prisma.roomNonAvailability.findFirst({
@@ -32,13 +32,12 @@ export const getRoomDetailsService = async (query: GetRoomDetailsService) => {
     const overlappingTransactions = await prisma.transaction.findMany({
       where: {
         roomId,
-        userId: { not: userId },
         status: {
           in: [
-            'WAITING_FOR_PAYMENT',
-            'WAITING_FOR_PAYMENT_CONFIRMATION',
-            'PROCESSED',
-          ], // Transaksi yang masih aktif
+            StatusTransaction.WAITING_FOR_PAYMENT,
+            StatusTransaction.WAITING_FOR_PAYMENT_CONFIRMATION,
+            StatusTransaction.PROCESSED,
+          ],
         },
         AND: [{ startDate: { lt: endDate } }, { endDate: { gt: startDate } }],
       },
@@ -75,10 +74,7 @@ export const getRoomDetailsService = async (query: GetRoomDetailsService) => {
         where: {
           roomId,
           isDeleted: false,
-          AND: [
-            { startDate: { lte: currentDate } },
-            { endDate: { gte: currentDate } },
-          ],
+          AND: [{ startDate: { lte: currentDate } }, { endDate: { gte: currentDate } }],
         },
       });
 
@@ -89,7 +85,6 @@ export const getRoomDetailsService = async (query: GetRoomDetailsService) => {
           price: peakSeasonRate.price,
         });
       } else {
-        // Jika bukan peak season, gunakan harga normal
         totalAmount += room.price;
       }
 
@@ -103,7 +98,6 @@ export const getRoomDetailsService = async (query: GetRoomDetailsService) => {
       remainingStock: room.stock,
     };
   } catch (error) {
-    console.error('Error in getRoomDetailsService:', error);
-    throw error; // Perbaiki dengan melemparkan error yang sebenarnya
+    throw error;
   }
 };

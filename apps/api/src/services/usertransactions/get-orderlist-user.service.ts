@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import prisma from '../../prisma';
+import prisma from '@/prisma';
 
 interface GetUserTransactionsService {
   userId: number;
@@ -32,7 +32,6 @@ export const getUserOrderListService = async (query: GetUserTransactionsService)
       } : {}),
     };
 
-   
     const transactions = await prisma.transaction.findMany({
       where: whereClause,
       take: take,
@@ -49,9 +48,11 @@ export const getUserOrderListService = async (query: GetUserTransactionsService)
           },
         },
         room: {
-          include: {
+          select: {
+            name: true,
             property: {
               select: {
+                id: true,  
                 title: true,
                 tenant: {
                   select: {
@@ -62,14 +63,24 @@ export const getUserOrderListService = async (query: GetUserTransactionsService)
             },
           },
         },
+        reviews: {
+          where: {
+            transaction: {
+              status: 'PROCESSED', 
+            },
+          },
+          select: {
+            rating: true,
+            review: true,
+            createdAt: true,
+          },
+        },
       },
     });
 
-    
     const total = await prisma.transaction.count({
       where: whereClause,
     });
-
 
     return {
       data: transactions,

@@ -1,6 +1,6 @@
 import { JWT_SECRET } from '@/config';
-import { Role, User } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { Role } from '@prisma/client';
+import { NextFunction, Request, Response } from 'express';
 import { TokenExpiredError, verify } from 'jsonwebtoken';
 
 const secretKey = JWT_SECRET!;

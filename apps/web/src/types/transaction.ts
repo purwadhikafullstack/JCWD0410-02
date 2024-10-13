@@ -5,10 +5,17 @@ export enum StatusTransaction {
   PROCESSED = "PROCESSED",
 }
 
+export interface Review {
+  rating: number;
+  review: string;
+  createdAt: string;
+}
+
 export interface Transaction {
   id: number;
   userId: number;
   roomId: number;
+  uuid: string; 
   total: number;
   status: StatusTransaction;
   startDate: string;
@@ -17,17 +24,19 @@ export interface Transaction {
   createdAt: string;
   updatedAt: string;
   user: {
-      name: string;
-      email: string;
-      imageUrl?: string;
+    name: string;
+    email: string;
+    imageUrl?: string;
   };
   room: {
-      property: {
-          title: string;
-          category: string;
-          tenant: {
-              name: string;
-          };
+    name: string;
+    property: {
+      id: number;
+      title: string;
+      tenant: {
+        name: string;
       };
+    };
   };
+  reviews?: Review[]; 
 }

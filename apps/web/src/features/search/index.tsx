@@ -1,5 +1,6 @@
 'use client';
 
+import Pagination from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import useGetAllCategoryList from '@/hooks/api/category/useGetCategoryList';
 import { useGetPropertiesByQuery } from '@/hooks/api/searchProperty/useGetPropertiesByQuery';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,13 +25,11 @@ const SearchPropertiesPage = () => {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const title = searchParams.get('title') || '';
   const startDate = searchParams.get('startDate') || '';
   const endDate = searchParams.get('endDate') || '';
   const guest = Number(searchParams.get('guest')) || 0;
-  const price = Number(searchParams.get('price')) || 0;
 
   const { data, isPending, refetch } = useGetPropertiesByQuery({
     take: 10,
@@ -42,19 +40,15 @@ const SearchPropertiesPage = () => {
     endDate: endDate ? new Date(endDate) : undefined,
     guest,
     title,
-    price,
-    propertycategory: selectedCategory,
   });
 
-  const {
-    data: dataCategory,
-    isPending: PendingCategory,
-    refetch: refetchCategory,
-  } = useGetAllCategoryList();
+  const onPageChange = ({ selected }: { selected: number }) => {
+    setPage(selected + 1);
+  };
 
   useEffect(() => {
     refetch();
-  }, [sortBy, sortOrder, selectedCategory, searchParams, page, refetch]);
+  }, [sortBy, sortOrder, searchParams, page, refetch]);
 
   const handleSortBy = (value: string) => {
     setSortBy(value);
@@ -64,19 +58,6 @@ const SearchPropertiesPage = () => {
   const handleSortOrder = (value: 'asc' | 'desc') => {
     setSortOrder(value);
     setPage(1);
-  };
-
-  const handleCategoryChange = (propertycategory: string) => {
-    setSelectedCategory(propertycategory);
-    setPage(1);
-    const params = new URLSearchParams(searchParams.toString());
-    if (propertycategory) {
-      params.set('propertycategory', propertycategory);
-    } else {
-      params.delete('propertycategory');
-    }
-
-    router.push(`?${params.toString()}`);
   };
 
   return (
@@ -90,20 +71,6 @@ const SearchPropertiesPage = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="title">Name</SelectItem>
-              <SelectItem value="price">Price</SelectItem>
-            </SelectContent>
-          </Select>
-          <p>Filter by:</p>
-          <Select onValueChange={handleCategoryChange} value={selectedCategory}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {dataCategory?.data?.map((category) => (
-                <SelectItem key={category.id} value={category.name}>
-                  {category.name}
-                </SelectItem>
-              ))}
             </SelectContent>
           </Select>
           <p>Sort order</p>
@@ -185,6 +152,16 @@ const SearchPropertiesPage = () => {
               </Card>
             </Link>
           ))
+        )}
+        {data && (
+          <div className="container max-w-7xl mx-auto flex justify-center mt-10">
+            <Pagination
+              take={data.meta.take}
+              total={data.meta.total}
+              onPageChange={onPageChange}
+              page={page}
+            />
+          </div>
         )}
       </div>
     </main>

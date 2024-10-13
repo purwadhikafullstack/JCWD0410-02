@@ -11,13 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import useDeleteCategory from '@/hooks/api/category/useDeleteCategory';
-import useGetCategory from '@/hooks/api/category/useGetCategory';
-import useUpdateCategory from '@/hooks/api/category/useUpdateCategory';
+import useDeletePeakSeasons from '@/hooks/api/peakSeasonRate/useDeletePeakSeasonRate';
+import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
 import { useSession } from 'next-auth/react';
 import { FC, useState } from 'react';
-import useGetPeakSeasons from '@/hooks/api/peakSeasonRate/useGetPeakSeasonRate';
-import useDeletePeakSeasons from '@/hooks/api/peakSeasonRate/useDeletePeakSeasonRate';
 import { EditPeakSeasonButton } from './EditPeakSeasonRate';
 
 interface PeakSeasonsPageProps {
@@ -32,16 +29,12 @@ const PeakSeasonsRateList: FC<PeakSeasonsPageProps> = ({ roomId }) => {
     take: 10,
   });
 
-  console.log(data);
-
   const onPageChange = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
 
   const { mutateAsync: deletePeakSeason, isPending: pendingPeakSeason } =
     useDeletePeakSeasons();
-  // const { mutateAsync: updateCategory, isPending: pendingUpdate } =
-  //   useUpdateCategory();
 
   if (isPending) {
     return (
@@ -76,8 +69,6 @@ const PeakSeasonsRateList: FC<PeakSeasonsPageProps> = ({ roomId }) => {
           </TableHeader>
           <TableBody>
             {data?.data.map((peakSeasons, index) => {
-              console.log('ini isi peak season price', peakSeasons.price);
-
               return (
                 <TableRow key={peakSeasons.id}>
                   <TableCell className="font-medium">

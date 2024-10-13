@@ -32,6 +32,10 @@ export const updateTenantService = async (
       body.imageUrl = secure_url;
     }
 
+    if (body.bankNumber) {
+      body.bankNumber = Number(body.bankNumber);
+    }
+
     const tenantUpdate = await prisma.tenant.update({
       where: { id: tenantId },
       data: {

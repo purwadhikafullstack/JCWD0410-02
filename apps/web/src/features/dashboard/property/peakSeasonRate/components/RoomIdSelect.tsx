@@ -7,12 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import useGetCategory from '@/hooks/api/category/useGetCategory';
+import { useGetRoomsTenant } from '@/hooks/api/room/useGetRoomsTenant';
 import { useSession } from 'next-auth/react';
-import { FormikHandlers } from 'formik';
 import { FC } from 'react';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
-import { useGetRooms } from '@/hooks/api/room/useGetRooms';
 
 interface FormSelectProps {
   setFieldValue: any;
@@ -20,7 +17,7 @@ interface FormSelectProps {
 
 export const RoomIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
   const session = useSession();
-  const { data, isPending } = useGetRooms({
+  const { data, isPending } = useGetRoomsTenant({
     take: 100,
   });
 

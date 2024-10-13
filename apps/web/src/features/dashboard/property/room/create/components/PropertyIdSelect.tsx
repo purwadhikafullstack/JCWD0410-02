@@ -7,11 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import useGetCategory from '@/hooks/api/category/useGetCategory';
+import { useGetPropertiesTenant } from '@/hooks/api/property/useGetPropertiesTenant';
 import { useSession } from 'next-auth/react';
-import { FormikHandlers } from 'formik';
 import { FC } from 'react';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
 
 interface FormSelectProps {
   setFieldValue: any;
@@ -19,7 +17,7 @@ interface FormSelectProps {
 
 export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
   const session = useSession();
-  const { data, isPending } = useGetProperties({
+  const { data, isPending } = useGetPropertiesTenant({
     take: 100,
   });
 
@@ -31,17 +29,13 @@ export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Your Property List</SelectLabel>
-          {data?.data
-            .filter(
-              (property) => property.tenantId === Number(session.data?.user.id),
-            )
-            .map((property, index) => {
-              return (
-                <SelectItem key={index} value={String(property.id)}>
-                  {property.title}
-                </SelectItem>
-              );
-            })}
+          {data?.data.map((property, index) => {
+            return (
+              <SelectItem key={index} value={String(property.id)}>
+                {property.title}
+              </SelectItem>
+            );
+          })}
         </SelectGroup>
       </SelectContent>
     </Select>

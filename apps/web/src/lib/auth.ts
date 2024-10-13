@@ -32,12 +32,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ account, user }: any) {
       if (account?.provider === 'google') {
         const accessToken = account?.access_token;
-        console.log('Google Access Token', accessToken);
 
         const { data } = await axiosInstance.post('/auth/google', {
           accessToken,
         });
-        console.log(data);
 
         user.id = data.data.id;
         user.name = data.data.name;

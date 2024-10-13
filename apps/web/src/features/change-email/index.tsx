@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useForgotPassword from '@/hooks/api/auth/useForgotPassword';
+import useChangeEmail from '@/hooks/api/auth/useChangeEmail';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChangeEmailSchema } from './schemas/ChangeEmailSchema';
-import useChangeEmail from '@/hooks/api/auth/useChangeEmail';
 
 const ChangeEmailPage = () => {
   const { mutateAsync: forgotPassword, isPending } = useChangeEmail();

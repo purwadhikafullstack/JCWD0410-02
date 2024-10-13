@@ -51,14 +51,13 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
       orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
       select: {
         id: true,
-        roomId:true,
+        roomId: true,
         createdAt: true,
         status: true,
         total: true,
         paymentProof: true,
         startDate: true,
-        endDate:true,
-
+        endDate: true,
         user: {
           select: {
             name: true,
@@ -86,6 +85,19 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
             },
           },
         },
+        reviews: {
+          select: {
+            id: true, 
+            rating: true,
+            review: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            createdAt: true,
+          },
+        },
       },
     });
 
@@ -101,3 +113,4 @@ export const getTransactionsService = async (query: GetTransactionsService) => {
     throw error;
   }
 };
+

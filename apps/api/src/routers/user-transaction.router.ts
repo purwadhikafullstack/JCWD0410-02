@@ -41,7 +41,6 @@ export class UserTransactionRouter {
 
     this.router.get(
       '/:id/room-details',
-      verifyToken,
       this.userTransactionController.getRoomDetails,
     );
 
@@ -49,6 +48,12 @@ export class UserTransactionRouter {
       '/:id/cancel',
       verifyToken,
       this.userTransactionController.cancelTransaction,
+    );
+
+    
+    this.router.get(
+      '/:id/reviews',
+      this.userTransactionController.getPropertyReviews, 
     );
   }
 

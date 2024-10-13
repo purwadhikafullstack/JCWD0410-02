@@ -10,7 +10,7 @@ const CardSalesTransaction: React.FC = () => {
   });
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return 
   }
 
   if (error) {

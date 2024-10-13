@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import useDeleteProperty from '@/hooks/api/property/useDeleteProperty';
 import useGetPropertyTenant from '@/hooks/api/property/useGetPropertyTenant';
 import useUpdateProperty from '@/hooks/api/property/useUpdateProperty';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { ChangeEvent, FC, useRef, useState } from 'react';
 import { EditPropertyCategorySelect } from '../management/components/EditPropertyCategorySelect';
-import useDeleteProperty from '@/hooks/api/property/useDeleteProperty';
 
 interface PropertyDetailPageProps {
   propertyId: number;
@@ -25,8 +25,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const { data, isPending: dataIsPending } = useGetPropertyTenant(propertyId);
   const [selectedImage, setSelectedImage] = useState('');
   const imageRef = useRef<HTMLInputElement>(null);
-
-  console.log('data?.title', data?.title);
 
   const formik = useFormik({
     initialValues: {
