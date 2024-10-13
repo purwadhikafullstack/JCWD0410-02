@@ -1,5 +1,6 @@
 import { PropertyController } from '@/controllers/property.controller';
 import { uploader } from '@/lib/multer';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 

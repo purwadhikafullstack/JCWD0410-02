@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { UserReviewController } from '@/controllers/review.controller';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { createReviewValidation, handleValidationErrors, replyReviewValidation } from '@/validators/reviewValidator';
+import { tenantGuard } from '@/middlewares/tenantGuard';
 
 export class ReviewRouter {
   private router: Router;
@@ -28,6 +29,7 @@ export class ReviewRouter {
       verifyToken,
       replyReviewValidation, 
       handleValidationErrors, 
+      tenantGuard,
       this.reviewController.replyReview
     );
   }
