@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useGetRooms } from '@/hooks/api/room/useGetRooms';
+import { useGetRoomsTenant } from '@/hooks/api/room/useGetRoomsTenant';
 import { useSession } from 'next-auth/react';
 import { FC } from 'react';
 
@@ -17,7 +17,7 @@ interface FormSelectProps {
 
 export const RoomIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
   const session = useSession();
-  const { data, isPending } = useGetRooms({
+  const { data, isPending } = useGetRoomsTenant({
     take: 100,
   });
 

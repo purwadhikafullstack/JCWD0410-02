@@ -16,6 +16,12 @@ export class PropertyRouter {
 
   private initializeRoutes(): void {
     this.router.get(
+      '/tenant',
+      verifyToken,
+      tenantGuard,
+      this.propertyController.getTenantPropertiesController,
+    );
+    this.router.get(
       '/search',
       this.propertyController.getPropertiesByQueryController,
     );

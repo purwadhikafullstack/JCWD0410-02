@@ -12,7 +12,7 @@ interface UpdatePropertyBody extends PropertyCategory {
 }
 
 export const updatePropertyService = async (
-  tenantId: number,
+  userId: number,
   propertyId: number,
   body: Partial<UpdatePropertyBody>,
   file?: Express.Multer.File,
@@ -27,8 +27,28 @@ export const updatePropertyService = async (
       propertyCategoryId,
     } = body;
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.role !== 'TENANT') {
+      throw new Error("User don't have access");
+    }
+
+    const tenant = await prisma.tenant.findFirst({
+      where: { userId: user.id, isDeleted: false },
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
+    }
+
     const currentProperty = await prisma.property.findUnique({
-      where: { id: propertyId, tenantId: tenantId },
+      where: { id: propertyId, tenantId: tenant.id },
     });
 
     if (!currentProperty) {

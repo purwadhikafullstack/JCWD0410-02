@@ -6,13 +6,12 @@ interface GetRoomsQuery extends PaginationQueryParams {
   search: string;
 }
 
-export const getRoomsService = async (query: GetRoomsQuery, userId: number) => {
+export const getRoomsService = async (query: GetRoomsQuery) => {
   try {
     const { take, page, sortBy, sortOrder, search } = query;
 
     const whereClause: Prisma.RoomWhereInput = {
       isDeleted: false,
-      property: { tenantId: userId },
     };
 
     if (search) {

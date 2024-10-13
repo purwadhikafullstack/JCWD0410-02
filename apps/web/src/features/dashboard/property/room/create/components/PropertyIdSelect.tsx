@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useGetProperties } from '@/hooks/api/property/useGetProperties';
+import { useGetPropertiesTenant } from '@/hooks/api/property/useGetPropertiesTenant';
 import { useSession } from 'next-auth/react';
 import { FC } from 'react';
 
@@ -17,7 +17,7 @@ interface FormSelectProps {
 
 export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
   const session = useSession();
-  const { data, isPending } = useGetProperties({
+  const { data, isPending } = useGetPropertiesTenant({
     take: 100,
   });
 
@@ -29,17 +29,13 @@ export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Your Property List</SelectLabel>
-          {data?.data
-            .filter(
-              (property) => property.tenantId === Number(session.data?.user.id),
-            )
-            .map((property, index) => {
-              return (
-                <SelectItem key={index} value={String(property.id)}>
-                  {property.title}
-                </SelectItem>
-              );
-            })}
+          {data?.data.map((property, index) => {
+            return (
+              <SelectItem key={index} value={String(property.id)}>
+                {property.title}
+              </SelectItem>
+            );
+          })}
         </SelectGroup>
       </SelectContent>
     </Select>

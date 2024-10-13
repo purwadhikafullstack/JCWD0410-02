@@ -14,9 +14,6 @@ export const createCategoryService = async (
 
     const user = await prisma.user.findUnique({
       where: { id: Number(userId) },
-      include: {
-        tenants: { select: { userId: true } },
-      },
     });
 
     if (!user) {
@@ -25,6 +22,14 @@ export const createCategoryService = async (
 
     if (user.role !== 'TENANT') {
       throw new Error("User don't have access");
+    }
+
+    const tenant = await prisma.tenant.findFirst({
+      where: { userId: user.id, isDeleted: false },
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
     }
 
     const existingCategory = await prisma.propertyCategory.findFirst({
@@ -38,7 +43,7 @@ export const createCategoryService = async (
     const newCategory = await prisma.propertyCategory.create({
       data: {
         ...body,
-        tenantId: user.tenants[0]?.userId,
+        tenantId: tenant.id,
       },
     });
 

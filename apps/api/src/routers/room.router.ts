@@ -15,19 +15,12 @@ export class RoomRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/:id', this.roomController.getRoomController);
-    this.router.patch(
-      '/:id',
-      verifyToken,
-      tenantGuard,
-      uploader().single('imageUrl'),
-      this.roomController.updateRoomController,
-    );
+    this.router.get('/', this.roomController.getRoomsController);
     this.router.get(
-      '/',
+      '/tenant',
       verifyToken,
       tenantGuard,
-      this.roomController.getRoomsController,
+      this.roomController.getRoomsTenantController,
     );
     this.router.post(
       '/',
@@ -41,6 +34,14 @@ export class RoomRouter {
       verifyToken,
       tenantGuard,
       this.roomController.deleteRoomController,
+    );
+    this.router.get('/:id', this.roomController.getRoomController);
+    this.router.patch(
+      '/:id',
+      verifyToken,
+      tenantGuard,
+      uploader().single('imageUrl'),
+      this.roomController.updateRoomController,
     );
   }
 

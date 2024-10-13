@@ -2,33 +2,19 @@ import prisma from '@/prisma';
 import { PaginationQueryParams } from '@/types/pagination';
 import { Prisma } from '@prisma/client';
 
-interface GetPeakSeasonsQuery extends PaginationQueryParams {
+interface GetPropertiesQuery extends PaginationQueryParams {
   search: string;
-  price: number;
-  startDate: Date;
-  endDate: Date;
-  roomId: number;
 }
 
-export const getPeakSeasonsService = async (
-  query: GetPeakSeasonsQuery,
-  userId: number,
+export const getTenantPropertiesService = async (
+  query: GetPropertiesQuery,
+  UserId: number,
 ) => {
   try {
-    const {
-      take,
-      page,
-      sortBy,
-      sortOrder,
-      search,
-      price,
-      startDate,
-      endDate,
-      roomId,
-    } = query;
+    const { take, page, sortBy, sortOrder, search } = query;
 
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: UserId },
     });
 
     if (!user) {
@@ -47,26 +33,26 @@ export const getPeakSeasonsService = async (
       throw new Error('Tenant not found');
     }
 
-    const whereClause: Prisma.PeakSeasonRateWhereInput = {
+    const whereClause: Prisma.PropertyWhereInput = {
       isDeleted: false,
-      room: { property: { tenantId: tenant.id } },
+      tenantId: tenant.id,
     };
 
-    const properties = await prisma.peakSeasonRate.findMany({
+    const properties = await prisma.property.findMany({
       where: whereClause,
       skip: (page - 1) * take,
       take: take,
       orderBy: { [sortBy]: sortOrder || 'asc' },
       include: {
-        room: true,
+        propertyImages: { select: { imageUrl: true } },
+        reviews: { select: { rating: true } },
+        tenant: { select: { name: true } },
+        rooms: { select: { price: true } },
       },
     });
 
-    const count = await prisma.peakSeasonRate.count({ where: whereClause });
-    return {
-      data: properties,
-      meta: { page, take, total: count },
-    };
+    const count = await prisma.property.count({ where: whereClause });
+    return { data: properties, meta: { page, take, total: count } };
   } catch (error) {
     throw error;
   }
