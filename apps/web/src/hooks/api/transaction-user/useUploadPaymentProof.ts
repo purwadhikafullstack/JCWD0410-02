@@ -14,7 +14,7 @@ const useUploadPaymentProof = () => {
       formData.append('paymentProof', file);
 
       const { data } = await axiosInstance.post(
-        `/usertransactions/${transactionId}/upload-proof`, // Perbaiki URL
+        `/usertransactions/${transactionId}/upload-proof`,
         formData, 
         {
           headers: {

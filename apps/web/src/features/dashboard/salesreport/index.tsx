@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -15,6 +14,7 @@ import { SalesReport } from "@/types/report";
 import useGetSalesReport from "@/hooks/api/salesandanalysis/useGetSalesReport";
 import { format } from "date-fns";
 import { DatePickerWithRange } from "@/components/Dashboard/DateRange";
+import { Skeleton } from "@/components/ui/skeleton";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -43,23 +43,21 @@ const SalesReportChart = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-
   const selectProperty = (title: string | undefined) => {
-    setPropertyTitle(title); 
-    setDropdownOpen(false); 
+    setPropertyTitle(title);
+    setDropdownOpen(false);
   };
 
-  
   const handleDateRangeChange = (range: { from: Date | undefined; to: Date | undefined }) => {
     if (range.from !== dateRange.from || range.to !== dateRange.to) {
-      setDateRange(range); 
+      setDateRange(range);
     }
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!(event.target as HTMLElement).closest(".dropdown-container")) {
-        setDropdownOpen(false); 
+        setDropdownOpen(false);
       }
     };
 
@@ -70,27 +68,42 @@ const SalesReportChart = () => {
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); 
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownOpen]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="flex space-x-4 mb-6">
+          <Skeleton className="w-48 h-10" /> 
+          <Skeleton className="w-64 h-10" /> 
+          <Skeleton className="w-32 h-10" /> 
+        </div>
+        <Skeleton className="h-64 w-full" /> 
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   const propertyList = data?.map((report: SalesReport) => report.property) || [];
 
   const filteredData = propertyTitle
     ? data?.filter((report: SalesReport) => report.property === propertyTitle)
     : data;
+
   const chartData = {
-    labels: filteredData?.map((report: SalesReport) => report.property) || [], 
+    labels: filteredData?.map((report: SalesReport) => report.property) || [],
     datasets: [
       {
         label: sortBy === "totalSales" ? "Transactions" : "Total Sales",
         data:
           sortBy === "totalSales"
-            ? filteredData?.map((report: SalesReport) => report.totalSales) || [] 
-            : filteredData?.map((report: SalesReport) => report.transactions) || [], 
+            ? filteredData?.map((report: SalesReport) => report.totalSales) || []
+            : filteredData?.map((report: SalesReport) => report.transactions) || [],
         backgroundColor:
           sortBy === "totalSales" ? "rgba(75, 192, 192, 0.2)" : "rgba(153, 102, 255, 0.2)",
         borderColor:
@@ -169,4 +182,5 @@ const SalesReportChart = () => {
     </div>
   );
 };
+
 export default SalesReportChart;

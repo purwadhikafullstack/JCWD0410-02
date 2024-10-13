@@ -1,15 +1,16 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+"use client";
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 import {
   PropertyReport,
   RoomReport,
   PropertyFacility,
   RoomFacility,
   SoldOutDate,
-} from '@/types/propertyreport';
-import { DatePickerWithRange } from '@/components/Dashboard/DateRange';
-import useGetPropertyReport from '@/hooks/api/salesandanalysis/useGetPropertyReport';
+} from "@/types/propertyreport";
+import { DatePickerWithRange } from "@/components/Dashboard/DateRange";
+import useGetPropertyReport from "@/hooks/api/salesandanalysis/useGetPropertyReport";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PropertyReportFeature = () => {
   const [dateRange, setDateRange] = useState<{
@@ -20,7 +21,7 @@ const PropertyReportFeature = () => {
     to: undefined,
   });
 
-  const [availabilityFilter, setAvailabilityFilter] = useState('All');
+  const [availabilityFilter, setAvailabilityFilter] = useState("All");
 
   useEffect(() => {
     setDateRange({
@@ -30,9 +31,9 @@ const PropertyReportFeature = () => {
   }, []);
 
   const startDate = dateRange.from
-    ? format(dateRange.from, 'yyyy-MM-dd')
+    ? format(dateRange.from, "yyyy-MM-dd")
     : undefined;
-  const endDate = dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined;
+  const endDate = dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined;
 
   const { data, isLoading, error } = useGetPropertyReport({
     startDate,
@@ -50,18 +51,39 @@ const PropertyReportFeature = () => {
     setAvailabilityFilter(e.target.value);
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="flex space-x-4 mb-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+        <div className="grid grid-cols-1 gap-6">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="border p-4 rounded-lg shadow-sm">
+              <Skeleton className="h-6 w-48 mb-2" />
+              <Skeleton className="h-4 w-32 mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (error) return <p>Error: {error.message}</p>;
-
   const filteredData =
-    availabilityFilter === 'All'
+    availabilityFilter === "All"
       ? data
       : data?.map((property) => ({
           ...property,
           rooms: property.rooms.filter(
             (room) =>
-              (availabilityFilter === 'Available' && room.availability === 'Available') ||
-              (availabilityFilter === 'Non Available' && room.availability === 'Non Available')
+              (availabilityFilter === "Available" &&
+                room.availability === "Available") ||
+              (availabilityFilter === "Non Available" &&
+                room.availability === "Non Available")
           ),
         })).filter((property) => property.rooms.length > 0);
 
@@ -101,7 +123,7 @@ const PropertyReportFeature = () => {
               <p>{property.propertyDescription}</p>
 
               <p>
-                <strong>Category:</strong>{' '}
+                <strong>Category:</strong>{" "}
                 {property.propertyCategory.categoryName}
               </p>
 
@@ -112,7 +134,7 @@ const PropertyReportFeature = () => {
                     <li key={facility.facilityId}>
                       {facility.facilityTitle}: {facility.facilityDescription}
                     </li>
-                  ),
+                  )
                 )}
               </ul>
 
@@ -124,29 +146,28 @@ const PropertyReportFeature = () => {
                     <ul className="list-disc ml-6">
                       {room.roomFacilities.map((facility: RoomFacility) => (
                         <li key={facility.facilityId}>
-                          {facility.facilityTitle}:{' '}
-                          {facility.facilityDescription}
+                          {facility.facilityTitle}: {facility.facilityDescription}
                         </li>
                       ))}
                     </ul>
 
-                    {room.availability === 'Non Available' ? (
+                    {room.availability === "Non Available" ? (
                       <ul className="list-disc ml-6">
                         {room.soldOutDates.map(
                           (dateInfo: SoldOutDate, index: number) => (
                             <li key={index}>
                               {format(
                                 new Date(dateInfo.startDate),
-                                'LLL dd, yyyy',
-                              )}{' '}
-                              -{' '}
+                                "LLL dd, yyyy"
+                              )}{" "}
+                              -{" "}
                               {format(
                                 new Date(dateInfo.endDate),
-                                'LLL dd, yyyy',
+                                "LLL dd, yyyy"
                               )}
                               : {dateInfo.reason}
                             </li>
-                          ),
+                          )
                         )}
                       </ul>
                     ) : (
@@ -164,5 +185,4 @@ const PropertyReportFeature = () => {
     </div>
   );
 };
-
 export default PropertyReportFeature;

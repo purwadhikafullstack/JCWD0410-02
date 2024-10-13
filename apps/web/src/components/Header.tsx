@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { IoPersonCircleOutline } from 'react-icons/io5';
+import { AiOutlineOrderedList } from 'react-icons/ai'; 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import {
@@ -63,12 +64,23 @@ export const Header = () => {
                     </div>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-full px-11 py-3">
+                    {/* Profile Link */}
                     <div className="items-center gap-1 hover:text-[#366ce7]">
                       <Link href="/profile" className="flex items-center gap-1">
                         <IoPersonCircleOutline size={21} />
                         <p>Profile</p>
                       </Link>
                     </div>
+
+                    {/* Order List Link */}
+                    <div className="items-center gap-1 mt-3 hover:text-[#366ce7]">
+                      <Link href="/orderlist" className="flex items-center gap-1">
+                        <AiOutlineOrderedList size={21} />
+                        <p>Order List</p>
+                      </Link>
+                    </div>
+
+                    {/* Logout */}
                     <div
                       className="flex items-center gap-1 mt-3 hover:text-[#366ce7] cursor-pointer"
                       onClick={() => signOut()}
@@ -95,9 +107,3 @@ export const Header = () => {
     </div>
   );
 };
-
-{
-  /* <p onClick={() => signOut()} className="cursor-pointer">
-        sign out
-      </p> */
-}

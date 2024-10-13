@@ -16,11 +16,12 @@ interface GetUserTransactionsQuery {
 
 const useGetUserTransactions = (queries: GetUserTransactionsQuery) => {
   const { axiosInstance } = useAxios(); 
+
   return useQuery<IPageableResponse<Transaction>, Error>({
     queryKey: ['userTransactions', queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<IPageableResponse<Transaction>>(
-        '/usertransactions',
+        '/usertransactions', 
         {
           params: queries, 
         }

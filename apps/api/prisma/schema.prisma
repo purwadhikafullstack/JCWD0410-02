@@ -16,6 +16,7 @@ model User {
   name       String
   password   String?
   imageUrl   String?
+  token      String?
   role       Role     @default(USER)
   provider   Provider @default(CREDENTIALS)
   isVerified Boolean  @default(false)
@@ -47,7 +48,7 @@ model Tenant {
   phone      String?
   userId     Int
   bankName   String
-  bankNumber String
+  bankNumber Int
   balance    Int      @default(0)
   isDeleted  Boolean  @default(false)
   createdAt  DateTime @default(now())
@@ -218,6 +219,7 @@ model Transaction {
   total           Int
   startDate       DateTime
   endDate         DateTime
+  paymentMethode  PaymentMethode    @default(MANUAL)
   paymentProof    String?
   snapToken       String?
   snapRedirectUrl String?
@@ -231,6 +233,11 @@ model Transaction {
   user User @relation(fields: [userId], references: [id])
 
   @@map("transactions")
+}
+
+enum PaymentMethode {
+  MANUAL
+  OTOMATIS
 }
 
 enum StatusTransaction {
