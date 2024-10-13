@@ -15,7 +15,6 @@ const useGetRoomDetails = (query: GetRoomDetailsQuery | undefined) => {
     queryFn: async () => {
       if (!query) return null;
 
-      // Memanggil endpoint `/room-details/:id` di backend
       const { data } = await axiosInstance.get(`/usertransactions/${query.roomId}/room-details`, {
         params: {
           startDate: query.startDate,
@@ -24,7 +23,7 @@ const useGetRoomDetails = (query: GetRoomDetailsQuery | undefined) => {
       });
       return data;
     },
-    enabled: !!query, // Hanya aktif jika query tidak null/undefined
+    enabled: !!query, 
   });
 };
 

@@ -9,6 +9,8 @@ interface CancelOrderModalProps {
 }
 
 const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeModal, refetch }) => {
+  console.log("Transaction data:", transaction);
+
   const { mutateAsync: cancelOrder } = useCancelOrder();
 
   const handleCancelOrder = async () => {
@@ -18,12 +20,13 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
   };
 
   const canCancelOrder = transaction.status === StatusTransaction.WAITING_FOR_PAYMENT;
+  console.log("Can cancel order:", canCancelOrder);
 
   return (
-    <div className="fixed z-10 inset-0 overflow-y-auto">
+    <div className="fixed z-50 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
         <div className="bg-gray-500 bg-opacity-75 fixed inset-0" onClick={closeModal}></div>
-        <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-20">
+        <div className="bg-white rounded-lg overflow-hidden shadow-xl sm:max-w-lg w-full relative z-50">
           <div className="p-4">
             <h3 className="text-lg font-semibold">Cancel Order</h3>
             <p>Are you sure you want to cancel the order for {transaction.user.name}?</p>
@@ -32,7 +35,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({ transaction, closeM
 
             {!canCancelOrder && (
               <p className="text-red-500 mt-2">
-                Only orders with status &quot;Waiting for Payment&quot; can be cancelled.
+                Only orders with status "Waiting for Payment" can be cancelled.
               </p>
             )}
 

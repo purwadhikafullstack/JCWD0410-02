@@ -5,7 +5,6 @@ import {
   getTransactionsService,
 } from '@/services/tenanttransactions/orderlist.service';
 import { NextFunction, Request, Response } from 'express';
-
 export class TransactionController {
   async getTransactions(req: Request, res: Response, next: NextFunction) {
     try {
@@ -50,12 +49,27 @@ export class TransactionController {
 
   async confirmPayment(req: Request, res: Response, next: NextFunction) {
     try {
-      const transactionId = parseInt(req.params.id);
+      const transactionId = parseInt(req.params.id, 10);
       const confirm = req.body.confirm;
+  
+      if (isNaN(transactionId)) {
+        return res.status(400).json({ message: 'Invalid transaction ID format' });
+      }
+  
+      if (typeof confirm !== 'boolean') {
+        return res.status(400).json({ message: 'Invalid confirm value, it should be a boolean' });
+      }
+  
       const result = await confirmPaymentService(transactionId, confirm);
-      return res.status(200).send(result);
+  
+      return res.status(200).json({
+        message: confirm
+          ? 'Payment has been successfully confirmed and processed.'
+          : 'Payment confirmation reverted, awaiting payment.',
+        data: result,
+      });
     } catch (error) {
-      next(error);
+      next(error); 
     }
   }
 

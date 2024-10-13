@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { TransactionController } from '@/controllers/tenant-transaction.controller';
 import { verifyToken } from '@/middlewares/verifyToken';
-import { check } from 'express-validator';
 
 export class TenantTransactionRouter {
   private router: Router;

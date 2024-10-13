@@ -1,9 +1,8 @@
-
 'use client';
 
 import * as React from 'react';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { addDays, format } from 'date-fns';
+import { addDays, differenceInCalendarDays, format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,17 +29,33 @@ export function DatePickerWithRange({
 
   const handleDateChange = (selectedDate: DateRange | undefined) => {
     if (selectedDate?.from) {
-      const formattedStartDate = format(selectedDate.from, 'yyyy-MM-dd');
-      const formattedEndDate = selectedDate.to ? format(selectedDate.to, 'yyyy-MM-dd') : formattedStartDate;
+      const startDate = selectedDate.from;
+      const endDate = selectedDate.to ?? selectedDate.from;
+      const difference = differenceInCalendarDays(endDate, startDate);
 
-      onChange({
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-      });
+      if (difference < 1) {
+        const adjustedEndDate = addDays(startDate, 1);
+        const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+        const formattedEndDate = format(adjustedEndDate, 'yyyy-MM-dd');
+        setDate({ from: startDate, to: adjustedEndDate });
+        onChange({
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        });
+      } else {
+        const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+        const formattedEndDate = format(endDate, 'yyyy-MM-dd');
+
+        setDate(selectedDate);
+        onChange({
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        });
+      }
     } else {
       onChange(null);
+      setDate(undefined);
     }
-    setDate(selectedDate);
   };
 
   return (
