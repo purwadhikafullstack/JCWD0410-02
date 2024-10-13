@@ -2,22 +2,17 @@ import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
 import { transporter } from '@/lib/nodemailer';
 import schedule from 'node-schedule';
+
 export const confirmPaymentService = async (
   transactionId: number,
-  confirm: boolean,
+  confirm: boolean 
 ) => {
   try {
     const transaction = await prisma.transaction.findFirst({
       where: { id: transactionId },
       include: {
         user: { select: { name: true, email: true } },
-        room: { 
-          include: { 
-            property: {
-              include: { tenant: true }, 
-            }
-          }
-        },
+        room: { include: { property: true } },
       },
     });
 
@@ -29,37 +24,13 @@ export const confirmPaymentService = async (
       ? StatusTransaction.PROCESSED
       : StatusTransaction.WAITING_FOR_PAYMENT;
 
+
     const updatedTransaction = await prisma.transaction.update({
       where: { id: transactionId },
       data: { status: newStatus },
     });
 
     if (confirm) {
-      const tenant = transaction.room?.property?.tenant;
-
-      if (!tenant) {
-        throw new Error('Tenant information is missing.');
-      }
-
-      const tenantId = tenant.id;
-      const transactionTotal = transaction.total;
-
-      const tenantData = await prisma.tenant.findUnique({
-        where: { id: tenantId },
-        select: { balance: true }
-      });
-
-      if (!tenantData) {
-        throw new Error('Tenant data not found.');
-      }
-
-      const updatedBalance = tenantData.balance + transactionTotal;
-
-      await prisma.tenant.update({
-        where: { id: tenantId },
-        data: { balance: updatedBalance }
-      });
-
       await transporter.sendMail({
         to: transaction.user.email,
         subject: 'Payment Confirmation - Your Booking is Processed',
@@ -82,29 +53,36 @@ export const confirmPaymentService = async (
       const reminderDate = new Date(transaction.startDate);
       reminderDate.setDate(reminderDate.getDate() - 1);
 
+      console.log(`Scheduling reminder email for: ${reminderDate} (transaction ID: ${transaction.id})`);
+
       schedule.scheduleJob(reminderDate, async () => {
-        await transporter.sendMail({
-          to: transaction.user.email,
-          subject: 'Reminder - Check-in Tomorrow',
-          html: `
-            <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-              <h2 style="color: #56298d;">Check-in Reminder</h2>
-              <p>Dear ${transaction.user.name},</p>
-              <p>This is a friendly reminder that your check-in date is tomorrow.</p>
-              <ul>
-                <li><strong>Property:</strong> ${transaction.room.property.title}</li>
-                <li><strong>Check-in Date:</strong> ${new Date(transaction.startDate).toLocaleDateString()}</li>
-              </ul>
-              <p>We look forward to welcoming you!</p>
-            </div>
-          `,
-        });
+        console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
+        try {
+          await transporter.sendMail({
+            to: transaction.user.email,
+            subject: 'Reminder - Check-in Tomorrow',
+            html: `
+              <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+                <h2 style="color: #56298d;">Check-in Reminder</h2>
+                <p>Dear ${transaction.user.name},</p>
+                <p>This is a friendly reminder that your check-in date is tomorrow.</p>
+                <ul>
+                  <li><strong>Property:</strong> ${transaction.room.property.title}</li>
+                  <li><strong>Check-in Date:</strong> ${new Date(transaction.startDate).toLocaleDateString()}</li>
+                </ul>
+                <p>We look forward to welcoming you!</p>
+              </div>
+            `,
+          });
+        } catch (error) {
+          console.error(`Failed to send reminder email for transaction ID: ${transaction.id}`, error);
+        }
       });
     }
 
     return updatedTransaction;
   } catch (error) {
+    console.error('Error in confirmPaymentService:', error);
     throw error;
   }
 };
-
