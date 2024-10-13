@@ -10,9 +10,8 @@ export const Footer = () => {
   if (
     pathname === '/login' ||
     pathname === '/register' ||
-    pathname === '/lupa-password' ||
+    pathname === '/change-password' ||
     pathname === '/reset-password' ||
-    pathname === '/ubah-password' ||
     pathname === '/register/thanks' ||
     pathname === '/forgot-password' ||
     pathname === '/reset-password' ||
@@ -21,7 +20,6 @@ export const Footer = () => {
     pathname === '/change-password' ||
     pathname === '/register-tenant' ||
     pathname.startsWith('/verification') ||
-    pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')
   ) {
     return null;
@@ -64,7 +62,7 @@ export const Footer = () => {
         </div>
         <div>
           <h1 className="text-2xl text-white font-semibold">Tenant</h1>
-          <Link href="/dashboard/register">
+          <Link href="/register-tenant">
             <p className="text-white mt-5 hover:underline cursor-pointer">
               Be a Tenant
             </p>

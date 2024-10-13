@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { IoPersonCircleOutline } from 'react-icons/io5';
-import { AiOutlineOrderedList } from 'react-icons/ai'; 
+import { AiOutlineOrderedList } from 'react-icons/ai';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import {
@@ -21,15 +21,14 @@ export const Header = () => {
   if (
     pathname === '/login' ||
     pathname === '/register' ||
-    pathname === '/lupa-password' ||
+    pathname === '/change-password' ||
     pathname === '/reset-password' ||
-    pathname === '/ubah-password' ||
     pathname === '/register/thanks' ||
     pathname === '/forgot-password' ||
     pathname === '/change-email' ||
     pathname === '/verify-email' ||
+    pathname === '/register-tenant' ||
     pathname.startsWith('/verification') ||
-    pathname.startsWith('/reset-password') ||
     pathname.startsWith('/dashboard')
   ) {
     return null;
@@ -74,7 +73,10 @@ export const Header = () => {
 
                     {/* Order List Link */}
                     <div className="items-center gap-1 mt-3 hover:text-[#366ce7]">
-                      <Link href="/orderlist" className="flex items-center gap-1">
+                      <Link
+                        href="/orderlist"
+                        className="flex items-center gap-1"
+                      >
                         <AiOutlineOrderedList size={21} />
                         <p>Order List</p>
                       </Link>

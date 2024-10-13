@@ -7,19 +7,32 @@ import { Label } from '@/components/ui/label';
 import useCreateProperty from '@/hooks/api/property/useCreateProperty';
 import { useFormik } from 'formik';
 import Image from 'next/image';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { PropertyCategorySelect } from './components/PropertyCategorySelect';
+import dynamic from 'next/dynamic';
+import useCurrentLocation from '@/hooks/useCurrentLocation';
+import axios from 'axios';
+
+const DynamicMapComponent = dynamic(
+  () => import('../../../../components/Map'),
+  { ssr: false },
+);
 
 const CreatePropertyPage = () => {
   const { mutateAsync: createProperty, isPending } = useCreateProperty();
+  const { currentLat, currentLng, error } = useCurrentLocation();
+  const [selectedPosition, setSelectedPosition] = useState<[string, string]>([
+    '0',
+    '0',
+  ]);
 
   const formik = useFormik({
     initialValues: {
       title: '',
       slug: '',
       description: '',
-      latitude: '',
-      longitude: '',
+      latitude: selectedPosition[0],
+      longitude: selectedPosition[1],
       imageUrl: null,
       propertyCategoryId: null,
     },
@@ -32,6 +45,7 @@ const CreatePropertyPage = () => {
   });
 
   const [selectedImage, setSelectedImage] = useState('');
+
   const imageRef = useRef<HTMLInputElement>(null);
   const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -49,6 +63,45 @@ const CreatePropertyPage = () => {
     }
   };
 
+  const fetchAddress = async (lat: string, lng: string) => {
+    try {
+      const { data } = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json?q=${lat},${lng}&key=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY!}&language=id&pretty=1`,
+      );
+      const results = data.results[0]?.components || {};
+      formik.setValues((prevValues) => ({
+        ...prevValues,
+        address: data.results[0].formatted,
+        city: results.county || results.city,
+        district:
+          results.city_district || results.municipality || results.suburb,
+      }));
+    } catch (err) {
+      console.error('Error fetching address:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (currentLat && currentLng) {
+      setSelectedPosition([currentLat, currentLng]);
+      formik.setValues((prevValues) => ({
+        ...prevValues,
+        latitude: currentLat,
+        longitude: currentLng,
+      }));
+      fetchAddress(currentLat, currentLng);
+    }
+  }, [currentLat, currentLng]);
+
+  const handlePositionChange = (lat: string, lng: string) => {
+    setSelectedPosition([lat, lng]);
+    formik.setValues((prevValues) => ({
+      ...prevValues,
+      latitude: lat,
+      longitude: lng,
+    }));
+  };
+
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
     const slug = title
@@ -61,7 +114,6 @@ const CreatePropertyPage = () => {
 
   return (
     <div>
-      {/* Main Dashboard Content */}
       <section className="p-6 container max-w-7xl mx-auto">
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div className="space-y-5">
@@ -125,6 +177,14 @@ const CreatePropertyPage = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
+          <div className="overflow-hidden rounded-md border-[1px]">
+            <div className="h-[500px] w-full rounded-md">
+              <DynamicMapComponent
+                selectedPosition={selectedPosition}
+                onPositionChange={handlePositionChange}
+              />
+            </div>
+          </div>
           <div className="grid grid-cols-3 w-full gap-7 items-end">
             <FormInput
               name="latitude"
@@ -136,6 +196,7 @@ const CreatePropertyPage = () => {
               error={formik.errors.latitude}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              readOnly
             />
             <FormInput
               name="longitude"
@@ -147,6 +208,7 @@ const CreatePropertyPage = () => {
               error={formik.errors.longitude}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              readOnly
             />
             <PropertyCategorySelect setFieldValue={formik.setFieldValue} />
           </div>

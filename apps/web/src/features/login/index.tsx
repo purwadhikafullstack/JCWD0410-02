@@ -4,19 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// import useLoginByGoogle from '@/hooks/api/auth/useGoogleAuth';
 import useLogin from '@/hooks/api/auth/useLogin';
 import { useFormik } from 'formik';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 import { LoginSchema } from './schemas/LoginSchema';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 
 const LoginPage = () => {
   const { mutateAsync: login, isPending: isLoginPending } = useLogin();
-  // const { mutateAsync: google, isPending: isGoogleLoginPending } =
-  //   useLoginByGoogle();
 
   const formik = useFormik({
     initialValues: {
@@ -84,13 +81,20 @@ const LoginPage = () => {
                     ) : null}
                   </div>
                 </div>
-                <Link
-                  href="/forgot-password"
-                  className=" mt-7 flex justify-center text-sm"
-                >
-                  Forgot password?
-                </Link>
-
+                <div className="flex justify-between">
+                  <Link
+                    href="/register"
+                    className=" mt-7 flex justify-center text-sm"
+                  >
+                    Register?
+                  </Link>
+                  <Link
+                    href="/forgot-password"
+                    className=" mt-7 flex justify-center text-sm"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <Button className="mt-3 w-full" disabled={isLoginPending}>
                   {isLoginPending ? 'Loading...' : 'Log in'}
                 </Button>
