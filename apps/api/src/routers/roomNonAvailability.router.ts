@@ -1,5 +1,4 @@
 import { RoomNonAvailabilityController } from '@/controllers/roomNonAvailability.controller';
-import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 

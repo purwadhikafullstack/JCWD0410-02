@@ -1,5 +1,4 @@
 import { PeakSeasonRateController } from '@/controllers/peakSeasonRate.controller';
-import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 

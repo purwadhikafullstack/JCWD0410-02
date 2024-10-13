@@ -1,6 +1,5 @@
 import { RoomController } from '@/controllers/room.controller';
 import { uploader } from '@/lib/multer';
-import { tenantGuard } from '@/middlewares/tenantGuard';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 

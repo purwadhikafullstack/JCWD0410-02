@@ -1,6 +1,5 @@
 import { AuthController } from '@/controllers/auth.controller';
 import { uploader } from '@/lib/multer';
-import { tenantGuard } from '@/middlewares/tenantGuard';
 import {
   validateLogin,
   validateRegister,
