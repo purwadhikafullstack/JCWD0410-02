@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { FiLogOut, FiUser } from 'react-icons/fi';
 import { signOut, useSession } from 'next-auth/react';
@@ -11,6 +11,7 @@ const Navbar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [brandText, setBrandText] = useState('Main Dashboard');
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -23,11 +24,25 @@ const Navbar: React.FC = () => {
       setBrandText('Property Room');
     else if (pathname.includes('tenant-transaction'))
       setBrandText('Tenant Management');
-    else if (pathname.includes('sales-report')) setBrandText('Sales Report');
+    else if (pathname.includes('sales-report'))
+      setBrandText('Sales Report');
     else if (pathname.includes('property-report'))
       setBrandText('Property Report');
-    else setBrandText('Main Dashboard');
+    else
+      setBrandText('Main Dashboard');
   }, [pathname]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <nav className="flex justify-between items-center p-4 bg-white shadow-md mx-4 mt-4 rounded-lg">
@@ -37,13 +52,9 @@ const Navbar: React.FC = () => {
         </p>
         <h1 className="text-2xl font-bold">{brandText}</h1>
       </div>
-
       {session?.user && (
-        <div className="relative flex items-center">
-          <div
-            onClick={toggleDropdown}
-            className="cursor-pointer flex items-center"
-          >
+        <div className="relative flex items-center" ref={dropdownRef}>
+          <div onClick={toggleDropdown} className="cursor-pointer flex items-center">
             <Avatar>
               <AvatarImage
                 src={session.user.imageUrl || ''}
@@ -53,7 +64,6 @@ const Navbar: React.FC = () => {
             </Avatar>
             <p className="ml-2 font-semibold">{session.user.name}</p>
           </div>
-
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10">
               <Link
@@ -75,5 +85,4 @@ const Navbar: React.FC = () => {
     </nav>
   );
 };
-
 export default Navbar;

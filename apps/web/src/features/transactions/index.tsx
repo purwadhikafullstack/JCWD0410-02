@@ -1,5 +1,4 @@
 "use client";
-
 import { Transaction } from '@/types/transaction';
 import useGetUserTransactions from '@/hooks/api/transaction-user/useGetUserOrders';
 import ReviewModal from '@/components/ReviewModal';
@@ -8,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const TransactionList = () => {
   const router = useRouter();
@@ -15,8 +15,7 @@ const TransactionList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setModalOpen] = useState(false);
   const itemsPerPage = 5;
-
-  const { data, isLoading, error } = useGetUserTransactions({
+  const { data, isLoading } = useGetUserTransactions({
     page: currentPage,
     take: itemsPerPage,
     sortBy: 'createdAt',
@@ -47,9 +46,6 @@ const TransactionList = () => {
   const isProcessedAndPastEndDate = selectedTransaction?.status === 'PROCESSED' && new Date(selectedTransaction?.endDate) <= new Date();
   const hasNoReviews = selectedTransaction?.reviews?.length === 0;
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
   const renderStatusBadge = (status: string) => (
     <Badge className={status === 'PROCESSED' ? 'bg-green-500 text-white' : status === 'CANCELLED' ? 'bg-red-500 text-white' : 'bg-gray-300 text-black'}>
       {status.replace(/_/g, ' ')}
@@ -64,16 +60,24 @@ const TransactionList = () => {
             <CardTitle>Daftar Transaksi</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {data?.data.map((transaction: Transaction) => (
-              <Card key={transaction.id} className={`cursor-pointer border ${selectedTransaction?.id === transaction.id ? 'bg-gray-100' : ''}`} onClick={() => setSelectedTransaction(transaction)}>
-                <CardContent>
-                  <h3 className="font-bold text-lg">{transaction.room.name} - {transaction.room.property.title}</h3>
-                  {renderStatusBadge(transaction.status)}
-                  <p>Total: Rp{transaction.total}</p>
-                  <p>Tanggal: {new Date(transaction.createdAt).toLocaleDateString()}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {isLoading
+              ? [...Array(5)].map((_, index) => (
+                  <Skeleton key={index} className="h-20 w-full" />
+                ))
+              : data?.data.map((transaction: Transaction) => (
+                  <Card
+                    key={transaction.id}
+                    className={`cursor-pointer border ${selectedTransaction?.id === transaction.id ? 'bg-gray-100' : ''}`}
+                    onClick={() => setSelectedTransaction(transaction)}
+                  >
+                    <CardContent>
+                      <h3 className="font-bold text-lg">{transaction.room.name} - {transaction.room.property.title}</h3>
+                      {renderStatusBadge(transaction.status)}
+                      <p>Total: Rp{transaction.total}</p>
+                      <p>Tanggal: {new Date(transaction.createdAt).toLocaleDateString()}</p>
+                    </CardContent>
+                  </Card>
+                ))}
           </CardContent>
           <CardFooter className="flex justify-between items-center">
             <Button variant="outline" onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Previous</Button>
@@ -81,9 +85,10 @@ const TransactionList = () => {
             <Button variant="outline" onClick={() => handlePageChange('next')} disabled={data && currentPage * itemsPerPage >= data.meta.total}>Next</Button>
           </CardFooter>
         </Card>
-
         <Card className="lg:col-span-2">
-          {selectedTransaction ? (
+          {isLoading ? (
+            <Skeleton className="h-64 w-full" />
+          ) : selectedTransaction ? (
             <>
               <CardHeader>
                 <CardTitle>Detail Transaksi</CardTitle>

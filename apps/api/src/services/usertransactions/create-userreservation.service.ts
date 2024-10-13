@@ -104,6 +104,19 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
         data: { stock: { decrement: 1 } },
       });
 
+      schedule.scheduleJob(new Date(endDate), async () => {
+        const currentTransaction = await prisma.transaction.findUnique({
+          where: { id: transaction.id },
+        });
+
+        if (currentTransaction?.status === StatusTransaction.PROCESSED) {
+          await prisma.room.update({
+            where: { id: roomId },
+            data: { stock: { increment: 1 } }, 
+          });
+        }
+      });
+
       schedule.scheduleJob(expiredAt, async () => {
         const currentTransaction = await prisma.transaction.findUnique({
           where: { id: transaction.id },
@@ -122,24 +135,9 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
         }
       });
 
-      schedule.scheduleJob(new Date(endDate), async () => {
-        const currentTransaction = await prisma.transaction.findUnique({
-          where: { id: transaction.id },
-        });
-
-        if (currentTransaction?.status === StatusTransaction.PROCESSED) {
-          await prisma.room.update({
-            where: { id: roomId },
-            data: { stock: { increment: 1 } }, 
-          });
-
-          console.log(`Stock room with ID ${roomId} has been incremented by 1 after the end date.`);
-        }
-      });
-
       return { transaction, peakSeasonPrices, remainingStock: room.stock - 1 };
     });
   } catch (error) {
-    throw Error;
+    throw Error
   }
 };
