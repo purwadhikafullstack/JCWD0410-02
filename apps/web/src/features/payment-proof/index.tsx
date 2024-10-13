@@ -112,7 +112,7 @@ const UploadPaymentProofFeature: React.FC<UploadPaymentProofFeatureProps> = ({
     return <p>No transaction details found</p>;
   }
 
-  const countdownDate = new Date(new Date(transactionDetails.createdAt).getTime() + 5 * 60 * 1000);
+  const countdownDate = new Date(new Date(transactionDetails.createdAt).getTime() + 60 * 60 * 1000);
 
   return (
     <div className="flex justify-center items-center min-h-screen">
