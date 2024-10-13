@@ -3,16 +3,17 @@ import Pagination from '@/components/Pagination';
 import RoomCard from '@/components/RoomTenantCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetRooms } from '@/hooks/api/room/useGetRooms';
+import { useGetRoomsTenant } from '@/hooks/api/room/useGetRoomsTenant';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const RoomTenantList = () => {
   const session = useSession();
   const [page, setPage] = useState(1);
-  const { data, isPending } = useGetRooms({
+  const { data, isPending } = useGetRoomsTenant({
     page,
     take: 4,
-    propertyId: Number(session.data?.user.id),
+    propertyId: session.data?.user.id,
   });
 
   const onPageChange = ({ selected }: { selected: number }) => {

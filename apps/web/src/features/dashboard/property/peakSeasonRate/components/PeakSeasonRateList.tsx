@@ -35,8 +35,6 @@ const PeakSeasonsRateList: FC<PeakSeasonsPageProps> = ({ roomId }) => {
 
   const { mutateAsync: deletePeakSeason, isPending: pendingPeakSeason } =
     useDeletePeakSeasons();
-  // const { mutateAsync: updateCategory, isPending: pendingUpdate } =
-  //   useUpdateCategory();
 
   if (isPending) {
     return (

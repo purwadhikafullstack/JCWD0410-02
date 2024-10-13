@@ -14,7 +14,7 @@ interface CreatePropertyBody extends PropertyCategory {
 export const createPropertyService = async (
   body: CreatePropertyBody,
   file: Express.Multer.File,
-  tenantId: number,
+  userId: number,
 ) => {
   try {
     const {
@@ -32,6 +32,26 @@ export const createPropertyService = async (
 
     if (property) {
       throw new Error('Slug already exist');
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: Number(userId) },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.role !== 'TENANT') {
+      throw new Error("User don't have access");
+    }
+
+    const tenant = await prisma.tenant.findFirst({
+      where: { userId: user.id, isDeleted: false },
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
     }
 
     const { secure_url } = await cloudinaryUpload(file);
@@ -52,7 +72,7 @@ export const createPropertyService = async (
               connect: { id: propertycategoryIdNoNaN },
             },
             tenant: {
-              connect: { id: tenantId },
+              connect: { id: tenant.id },
             },
           },
         });

@@ -8,19 +8,16 @@ import { useQuery } from '@tanstack/react-query';
 interface GetPropertyQueries extends PaginationQueries {
   userId?: number;
   search?: string;
-  startDate?: Date;
-  endDate?: Date;
-  guest?: number;
 }
 
-export const useGetProperties = (queries: GetPropertyQueries) => {
+export const useGetPropertiesTenant = (queries: GetPropertyQueries) => {
   const { axiosInstance } = useAxios();
 
   return useQuery({
     queryKey: ['properties', queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<PageableResponse<Property>>(
-        '/property',
+        '/property/tenant',
         {
           params: queries,
         },
