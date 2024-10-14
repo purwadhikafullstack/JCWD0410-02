@@ -12,10 +12,6 @@ interface UpdateRoomPayload {
   price: number;
   guest: number;
   propertyId: number;
-  imageUrl: File | null;
-  title: string;
-  description: string;
-  room_facilities?: { title: string; description: string }[];
 }
 
 const useUpdateRoom = (id: number) => {
@@ -32,22 +28,6 @@ const useUpdateRoom = (id: number) => {
       editRoomForm.append('price', String(payload.price));
       editRoomForm.append('guest', String(payload.guest));
       editRoomForm.append('propertyId', String(payload.propertyId));
-      editRoomForm.append('imageUrl', payload.imageUrl!);
-      editRoomForm.append('title', payload.title);
-      editRoomForm.append('description', payload.description);
-
-      if (payload.room_facilities && payload.room_facilities.length > 0) {
-        payload.room_facilities.forEach((room_facilities, index) => {
-          editRoomForm.append(
-            `room_facilities[${index}][title]`,
-            room_facilities.title,
-          );
-          editRoomForm.append(
-            `room_facilities[${index}][description]`,
-            room_facilities.description,
-          );
-        });
-      }
 
       const { data } = await axiosInstance.patch(`/room/${id}`, editRoomForm);
       return data;
