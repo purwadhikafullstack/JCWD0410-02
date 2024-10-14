@@ -18,6 +18,7 @@ import { RoomRouter } from './routers/room.router';
 import { PeakSeasonRateRouter } from './routers/peakSeasonRate.router';
 import { RoomNonAvailabilityRouter } from './routers/roomNonAvailability.router';
 import { ReviewRouter } from './routers/review.router';
+import { MidtransRouter } from './routers/midtrans.router';
 
 // import { SampleRouter } from './routers/auth.router';
 
@@ -71,6 +72,7 @@ export default class App {
     const peakSeasonRateRouter = new PeakSeasonRateRouter();
     const roomNonAvailabilityRouter = new RoomNonAvailabilityRouter();
     const reviewRouter = new ReviewRouter()
+    const midtransRouter = new MidtransRouter()
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Hello! Welcome to EaseCoz API!`);
@@ -92,6 +94,7 @@ export default class App {
     );
     this.app.use('/api/reportanalysis', salesPropertyRouter.getRouter());
     this.app.use('/api/review', reviewRouter.getRouter());
+    this.app.use('/api/status', midtransRouter.getRouter());
   }
 
   public start(): void {

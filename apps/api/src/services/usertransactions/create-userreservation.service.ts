@@ -1,6 +1,8 @@
 import prisma from '@/prisma';
 import { StatusTransaction, PaymentMethode } from '@prisma/client';
+import { MidtransClient } from 'midtrans-node-client'; 
 import schedule from 'node-schedule';
+import { format } from 'date-fns';  
 
 interface CreateTransactionBody {
   roomId: number;
@@ -86,6 +88,41 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
 
       const createdAt = new Date();
       const expiredAt = new Date(createdAt.getTime() + 60 * 60 * 1000); 
+      
+      let snapTransaction = null; 
+
+      if (paymentMethode === PaymentMethode.OTOMATIS) {
+        const midtransClient = new MidtransClient.Snap({
+          isProduction: false, 
+          serverKey: process.env.MIDTRANS_SERVER_KEY || 'your-server-key',
+          clientKey: process.env.MIDTRANS_CLIENT_KEY || 'your-client-key',
+        });
+
+        const midtransTransactionDetails = {
+          transaction_details: {
+            order_id: `transaction-${new Date().getTime()}`,
+            gross_amount: totalAmount,
+          },
+          customer_details: {
+            user_id: userId,
+            room_id: roomId,
+            start_date: startDate,
+            end_date: endDate,
+          },
+          expiry: {
+            start_time: format(createdAt, 'yyyy-MM-dd HH:mm:ss XXX'),  
+            unit: 'hour',
+            duration: 1, 
+          },
+        };
+
+        try {
+          snapTransaction = await midtransClient.createTransaction(midtransTransactionDetails);
+        } catch (error: any) {
+          throw new Error('Failed to create transaction with Midtrans: ' + (error.message || error));
+        }
+      }
+
       const transaction = await prismaTransaction.transaction.create({
         data: {
           roomId,
@@ -96,6 +133,8 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
           paymentMethode,
           status: StatusTransaction.WAITING_FOR_PAYMENT,
           expiredAt,
+          snapToken: snapTransaction?.token || null, 
+          snapRedirectUrl: snapTransaction?.redirect_url || null, 
         },
       });
 
@@ -135,7 +174,12 @@ export const createTransactionService = async (body: CreateTransactionBody) => {
         }
       });
 
-      return { transaction, peakSeasonPrices, remainingStock: room.stock - 1 };
+      return {
+        transaction,
+        peakSeasonPrices,
+        remainingStock: room.stock - 1,
+        snapTransaction, 
+      };
     });
   } catch (error) {
     throw Error

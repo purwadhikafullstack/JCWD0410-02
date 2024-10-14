@@ -120,7 +120,7 @@ export class UserTransactionController {
         return res.status(400).json({ error: 'Invalid payment method' });
       }
 
-      const { transaction, peakSeasonPrices, remainingStock } =
+      const { transaction, peakSeasonPrices, remainingStock, snapTransaction } =
         await createTransactionService({
           roomId,
           startDate: new Date(startDate),
@@ -132,6 +132,13 @@ export class UserTransactionController {
       return res
         .status(201)
         .json({ transaction, peakSeasonPrices, remainingStock });
+      return res.status(201).json({
+        transaction,
+        peakSeasonPrices,
+        remainingStock,
+        snapToken: snapTransaction?.token || null,
+        snapRedirectUrl: snapTransaction?.redirect_url || null,
+      });
     } catch (error) {
       next(error);
     }
@@ -197,7 +204,7 @@ export class UserTransactionController {
   }
   async getPropertyReviews(req: Request, res: Response, next: NextFunction) {
     try {
-      const propertyId = parseInt(req.params.id); // Property ID from route params
+      const propertyId = parseInt(req.params.id);
 
       if (!propertyId) {
         return res
