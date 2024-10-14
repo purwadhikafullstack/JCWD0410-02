@@ -1,7 +1,7 @@
 import prisma from '@/prisma';
 import { StatusTransaction } from '@prisma/client';
-import { transporter } from '@/lib/nodemailer';  // Pastikan transporter nodemailer sudah disiapkan
-import schedule from 'node-schedule';  // Pastikan node-schedule sudah terpasang
+import { transporter } from '@/lib/nodemailer';  
+import schedule from 'node-schedule';  
 
 export const processOrderService = async (transactionId: number) => {
   try {
@@ -14,7 +14,6 @@ export const processOrderService = async (transactionId: number) => {
       },
     });
 
-    // Jika transaksi tidak ditemukan atau sudah diproses
     if (!transaction) {
       throw new Error('Transaction not found or already processed.');
     }
@@ -27,7 +26,6 @@ export const processOrderService = async (transactionId: number) => {
       },
     });
 
-    // Mengirimkan bukti pembayaran via email
     await transporter.sendMail({
       to: transaction.user.email,
       subject: 'Payment Confirmation - Your Booking is Processed',
@@ -47,12 +45,10 @@ export const processOrderService = async (transactionId: number) => {
       `,
     });
 
-    // Mengatur pengingat check-in H-1
     const reminderDate = new Date(transaction.startDate);
     reminderDate.setDate(reminderDate.getDate() - 1);  // Reminder satu hari sebelum check-in
     const currentDate = new Date();
 
-    // Jika reminder H-1 sudah terlewat, kirim segera
     if (reminderDate <= currentDate) {
       try {
         await transporter.sendMail({
@@ -75,7 +71,6 @@ export const processOrderService = async (transactionId: number) => {
         console.error(`Failed to send immediate reminder email for transaction ID: ${transaction.id}`, error);
       }
     } else {
-      // Jika reminder belum terlewat, jadwalkan pengiriman email pengingat
       schedule.scheduleJob(reminderDate, async () => {
         console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
         try {
@@ -103,7 +98,6 @@ export const processOrderService = async (transactionId: number) => {
 
     return updatedTransaction;
   } catch (error) {
-    console.error('Error in processOrderService:', error);
     throw error;
   }
 };
