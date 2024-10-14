@@ -8,12 +8,11 @@ interface ReviewModalProps {
   onClose: () => void;
   transactionId?: number;
   propertyId?: number;
+  refetch: () => void;  // Tambahkan prop refetch untuk melakukan update data
 }
 
-const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, transactionId, propertyId }) => {
+const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, transactionId, propertyId, refetch }) => {
   const createReviewMutation = useCreateReview();
-
-  console.log("Modal opened with transactionId: ", transactionId, "propertyId:", propertyId);
 
   const formik = useFormik({
     initialValues: {
@@ -23,13 +22,23 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, transactionI
     validationSchema: ReviewSchema,
     onSubmit: (values) => {
       if (transactionId && propertyId) {
-        console.log('Submitting review with values:', values); 
-        createReviewMutation.mutate({
-          transactionId,
-          propertyId,
-          rating: values.rating,
-          review: values.review,
-        });
+        createReviewMutation.mutate(
+          {
+            transactionId,
+            propertyId,
+            rating: values.rating,
+            review: values.review,
+          },
+          {
+            onSuccess: () => {
+              refetch();  // Refetch data setelah review berhasil dikirim
+              onClose();  // Tutup modal setelah submit berhasil
+            },
+            onError: (error) => {
+              console.error('Error submitting review:', error);
+            }
+          }
+        );
       }
     },
   });
