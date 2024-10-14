@@ -59,7 +59,7 @@ const HomePage = () => {
         title: newValues.title,
       }).toString();
 
-      router.push(`/property/search?${query}`); // Redirect to the search page
+      router.push(`/property/search?${query}`);
     },
   });
 
@@ -75,13 +75,14 @@ const HomePage = () => {
     <main>
       <Jumbotron />
       <div className="grid md:grid-cols-3 bg-slate-100 border-2 p-2 rounded-xl max-w-7xl mx-auto mt-20 items-center gap-2">
-        {/* <SEARCH HOTEL /> */}
         <div className="bg-slate-100 p-1 rounded-xl">
-          <p className="font-semibold text-center text-[#294791] mb-1">Hotel</p>
+          <p className="font-semibold text-center text-[#294791] mb-1">
+            Property
+          </p>
           <Input
             name="title"
             type="text"
-            placeholder="Title"
+            placeholder="Search Property Name"
             value={formik.values.title}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -91,7 +92,6 @@ const HomePage = () => {
           ) : null}
         </div>
         <DatePickerWithRange setFieldValue={formik.setFieldValue} />
-        {/* <ADD GUEST /> */}
         <div className="bg-slate-100 p-1 rounded-xl">
           <p className="font-semibold text-center text-[#294791] mb-1">Who</p>
           <Input

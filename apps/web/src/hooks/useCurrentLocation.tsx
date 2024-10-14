@@ -13,7 +13,6 @@ const useCurrentLocation = () => {
           const lat = position.coords.latitude.toString();
           const long = position.coords.longitude.toString();
 
-          // Update state
           setCurrentLat(lat);
           setCurrentLng(long);
         },

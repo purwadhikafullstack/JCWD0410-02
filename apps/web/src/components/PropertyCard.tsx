@@ -33,7 +33,7 @@ const PropertyCard: FC<PropertyCardProps> = ({
 }) => {
   return (
     <Link href={`/property/${slug}`}>
-      <Card className="space-y-1 rounded-2xl overflow-hidden">
+      <Card className="space-y-1 rounded-2xl overflow-hidden mt-7 md:mt-0">
         <div className="relative h-[225px] w-full overflow-hidden rounded-b-md">
           <Image src={imageUrl} alt="thumbnail" fill className="object-cover" />
         </div>

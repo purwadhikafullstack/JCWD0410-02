@@ -5,19 +5,23 @@ import fs from 'fs';
 import Handlebars from 'handlebars';
 import path from 'path';
 
-export const verifyChangeEmailService = async (userId: number) => {
+export const verifyChangeEmailService = async (
+  userId: number,
+  email: string,
+) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId, isVerified: true },
+      where: { id: userId, isVerified: true, email },
     });
 
-    if (!user) {
+    if (user) {
       throw new Error('Email already verified');
     }
     const verifyChangeEmailUser = await prisma.user.update({
       where: { id: userId },
       data: {
         isVerified: true,
+        email: email,
       },
     });
 
@@ -32,13 +36,13 @@ export const verifyChangeEmailService = async (userId: number) => {
 
     const template = Handlebars.compile(emailTemplateSource);
     const htmlToSend = template({
-      name: user.name,
+      newEmail: email,
       link: link,
     });
 
     await transporter.sendMail({
       from: 'Admin',
-      to: user.email,
+      to: email,
       subject: 'Change Email Verification Successful',
       html: htmlToSend,
     });

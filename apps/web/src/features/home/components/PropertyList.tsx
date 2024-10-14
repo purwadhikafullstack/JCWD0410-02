@@ -37,7 +37,6 @@ const PropertyList = () => {
         <h1 className="font-semibold text-2xl mb-3 text-center">
           Property not found
         </h1>
-        ;
       </div>
     );
   }
