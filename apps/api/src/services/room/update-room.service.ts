@@ -18,9 +18,6 @@ export const updateRoomService = async (
   try {
     const { name, stock, price, guest, propertyId } = body;
 
-    const stockRoom = Number(stock);
-    const priceRoom = Number(price);
-    const guestRoom = Number(guest);
 
     const isRoomId = await prisma.room.findUnique({
       where: { id },
@@ -37,12 +34,22 @@ export const updateRoomService = async (
       secureUrl = secure_url;
     }
 
+    if(body.stock){
+      body.stock = Number (body.stock)
+    }
+
+    if(body.price){
+      body.price= Number (body.price)
+    }
+
+    if(body.guest ){
+      body.guest  = Number (body.guest )
+    }
+    delete body.propertyId
+
     const updatedData = {
       ...body,
-      ...(body.stock && { stock: Number(body.stock) }),
-      ...(body.price && { price: Number(body.price) }),
-      ...(body.guest && { guest: Number(body.guest) }),
-      ...(body.propertyId && { propertyId: Number(body.propertyId) }),
+  
     };
 
     return await prisma.$transaction(
@@ -50,24 +57,11 @@ export const updateRoomService = async (
         const newRoom = await prisma.room.update({
           where: { id },
           data: updatedData,
+          
         });
 
-        if (file && secureUrl) {
-          const existingRoomImage = await prisma.roomImage.findFirst({
-            where: { roomId: newRoom.id },
-          });
-          if (existingRoomImage) {
-            await prisma.roomImage.update({
-              where: { id: existingRoomImage.id },
-              data: {
-                imageUrl: secureUrl,
-              },
-            });
-          }
-        }
-
         return {
-          message: 'Update property success',
+          message: 'Update room success',
           data: newRoom,
         };
       },
