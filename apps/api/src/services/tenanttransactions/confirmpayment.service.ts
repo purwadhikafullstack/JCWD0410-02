@@ -1,11 +1,11 @@
-import prisma from '@/prisma';
-import { StatusTransaction } from '@prisma/client';
-import { transporter } from '@/lib/nodemailer';
-import schedule from 'node-schedule';
+import prisma from '@/prisma';  
+import { StatusTransaction } from '@prisma/client';  
+import { transporter } from '@/lib/nodemailer';  
+import schedule from 'node-schedule';  
 
 export const confirmPaymentService = async (
   transactionId: number,
-  confirm: boolean 
+  confirm: boolean
 ) => {
   try {
     const transaction = await prisma.transaction.findFirst({
@@ -23,7 +23,6 @@ export const confirmPaymentService = async (
     const newStatus = confirm
       ? StatusTransaction.PROCESSED
       : StatusTransaction.WAITING_FOR_PAYMENT;
-
 
     const updatedTransaction = await prisma.transaction.update({
       where: { id: transactionId },
@@ -50,13 +49,12 @@ export const confirmPaymentService = async (
         `,
       });
 
+  
       const reminderDate = new Date(transaction.startDate);
       reminderDate.setDate(reminderDate.getDate() - 1);
+      const currentDate = new Date();
 
-      console.log(`Scheduling reminder email for: ${reminderDate} (transaction ID: ${transaction.id})`);
-
-      schedule.scheduleJob(reminderDate, async () => {
-        console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
+      if (reminderDate <= currentDate) {
         try {
           await transporter.sendMail({
             to: transaction.user.email,
@@ -75,9 +73,33 @@ export const confirmPaymentService = async (
             `,
           });
         } catch (error) {
-          console.error(`Failed to send reminder email for transaction ID: ${transaction.id}`, error);
+          console.error(`Failed to send immediate reminder email for transaction ID: ${transaction.id}`, error);
         }
-      });
+      } else {
+        
+        schedule.scheduleJob(reminderDate, async () => {
+          console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
+          try {
+            await transporter.sendMail({
+              to: transaction.user.email,
+              subject: 'Reminder - Check-in Tomorrow',
+              html: `
+                <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+                  <h2 style="color: #56298d;">Check-in Reminder</h2>
+                  <p>Dear ${transaction.user.name},</p>
+                  <p>This is a friendly reminder that your check-in date is tomorrow.</p>
+                  <ul>
+                    <li><strong>Property:</strong> ${transaction.room.property.title}</li>
+                    <li><strong>Check-in Date:</strong> ${new Date(transaction.startDate).toLocaleDateString()}</li>
+                  </ul>
+                  <p>We look forward to welcoming you!</p>
+                </div>
+              `,
+            });
+          } catch (error) {
+          }
+        });
+      }
     }
 
     return updatedTransaction;
