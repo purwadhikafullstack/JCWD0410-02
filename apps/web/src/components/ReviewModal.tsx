@@ -8,7 +8,7 @@ interface ReviewModalProps {
   onClose: () => void;
   transactionId?: number;
   propertyId?: number;
-  refetch: () => void;  // Tambahkan prop refetch untuk melakukan update data
+  refetch: () => void; 
 }
 
 const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, transactionId, propertyId, refetch }) => {
@@ -31,8 +31,8 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, transactionI
           },
           {
             onSuccess: () => {
-              refetch();  // Refetch data setelah review berhasil dikirim
-              onClose();  // Tutup modal setelah submit berhasil
+              refetch();  
+              onClose();  
             },
             onError: (error) => {
               console.error('Error submitting review:', error);
