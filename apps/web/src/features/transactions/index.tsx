@@ -1,9 +1,9 @@
-"use client";
+"use client"
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Transaction } from '@/types/transaction';
 import useGetUserTransactions from '@/hooks/api/transaction-user/useGetUserOrders';
 import ReviewModal from '@/components/ReviewModal';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,7 @@ const TransactionList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setModalOpen] = useState(false);
   const itemsPerPage = 5;
-  const { data, isLoading } = useGetUserTransactions({
+  const { data, isLoading, refetch } = useGetUserTransactions({
     page: currentPage,
     take: itemsPerPage,
     sortBy: 'createdAt',
@@ -137,7 +137,7 @@ const TransactionList = () => {
           ) : <CardContent>Pilih transaksi dari daftar di kiri untuk melihat detailnya.</CardContent>}
         </Card>
       </div>
-      <ReviewModal isOpen={isModalOpen} onClose={handleCloseModal} transactionId={selectedTransaction?.id} propertyId={selectedPropertyId} />
+      <ReviewModal isOpen={isModalOpen} onClose={handleCloseModal} transactionId={selectedTransaction?.id} propertyId={selectedPropertyId} refetch={refetch} />
     </div>
   );
 };
