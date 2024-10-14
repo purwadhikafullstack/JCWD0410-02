@@ -73,7 +73,6 @@ export const confirmPaymentService = async (
             `,
           });
         } catch (error) {
-          console.error(`Failed to send immediate reminder email for transaction ID: ${transaction.id}`, error);
         }
       } else {
         
@@ -104,7 +103,6 @@ export const confirmPaymentService = async (
 
     return updatedTransaction;
   } catch (error) {
-    console.error('Error in confirmPaymentService:', error);
     throw error;
   }
 };

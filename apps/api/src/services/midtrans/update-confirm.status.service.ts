@@ -5,7 +5,6 @@ import schedule from 'node-schedule';
 
 export const processOrderService = async (transactionId: number) => {
   try {
-    // Mencari transaksi berdasarkan ID dan status
     const transaction = await prisma.transaction.findFirst({
       where: { id: transactionId, status: StatusTransaction.WAITING_FOR_PAYMENT },
       include: {
@@ -18,7 +17,6 @@ export const processOrderService = async (transactionId: number) => {
       throw new Error('Transaction not found or already processed.');
     }
 
-    // Mengubah status transaksi menjadi PROCESSED
     const updatedTransaction = await prisma.transaction.update({
       where: { id: transactionId },
       data: {
@@ -46,7 +44,7 @@ export const processOrderService = async (transactionId: number) => {
     });
 
     const reminderDate = new Date(transaction.startDate);
-    reminderDate.setDate(reminderDate.getDate() - 1);  // Reminder satu hari sebelum check-in
+    reminderDate.setDate(reminderDate.getDate() - 1); 
     const currentDate = new Date();
 
     if (reminderDate <= currentDate) {
@@ -68,11 +66,9 @@ export const processOrderService = async (transactionId: number) => {
           `,
         });
       } catch (error) {
-        console.error(`Failed to send immediate reminder email for transaction ID: ${transaction.id}`, error);
       }
     } else {
       schedule.scheduleJob(reminderDate, async () => {
-        console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
         try {
           await transporter.sendMail({
             to: transaction.user.email,
@@ -91,7 +87,6 @@ export const processOrderService = async (transactionId: number) => {
             `,
           });
         } catch (error) {
-          console.error(`Failed to send scheduled reminder email for transaction ID: ${transaction.id}`, error);
         }
       });
     }

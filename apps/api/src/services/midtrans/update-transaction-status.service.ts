@@ -5,7 +5,7 @@ export const updateTransactionStatusService = async (orderId: string, status: st
   try {
     const transaction = await prisma.transaction.findFirst({
       where: {
-        uuid: orderId, // Order ID dari Midtrans biasanya berbasis UUID
+        uuid: orderId, 
       },
     });
 
@@ -15,25 +15,23 @@ export const updateTransactionStatusService = async (orderId: string, status: st
 
     let newStatus: StatusTransaction;
 
-    // Mapping status dari Midtrans ke status transaksi internal
     switch (status) {
       case 'capture':
-      case 'settlement': // Pembayaran sukses
+      case 'settlement': 
         newStatus = StatusTransaction.PROCESSED;
         break;
-      case 'pending': // Menunggu pembayaran
+      case 'pending': 
         newStatus = StatusTransaction.WAITING_FOR_PAYMENT;
         break;
       case 'deny':
       case 'cancel':
-      case 'expire': // Pembayaran gagal atau dibatalkan
+      case 'expire': 
         newStatus = StatusTransaction.CANCELLED;
         break;
       default:
-        newStatus = transaction.status; // Jika status tidak dikenali, tetap dengan status sebelumnya
+        newStatus = transaction.status; 
     }
 
-    // Update status transaksi
     const updatedTransaction = await prisma.transaction.update({
       where: { id: transaction.id },
       data: { status: newStatus },
