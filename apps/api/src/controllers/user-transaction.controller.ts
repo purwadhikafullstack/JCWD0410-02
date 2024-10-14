@@ -179,7 +179,7 @@ export class UserTransactionController {
   }
   async getPropertyReviews(req: Request, res: Response, next: NextFunction) {
     try {
-      const propertyId = parseInt(req.params.id); // Property ID from route params
+      const propertyId = parseInt(req.params.id); 
 
       if (!propertyId) {
         return res.status(400).json({ message: 'Property ID is missing or invalid' });

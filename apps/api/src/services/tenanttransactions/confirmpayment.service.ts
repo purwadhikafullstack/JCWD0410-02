@@ -76,8 +76,7 @@ export const confirmPaymentService = async (
           console.error(`Failed to send immediate reminder email for transaction ID: ${transaction.id}`, error);
         }
       } else {
-        // Schedule the email for the H-1 reminder
-        console.log(`Scheduling reminder email for: ${reminderDate} (transaction ID: ${transaction.id})`);
+        
         schedule.scheduleJob(reminderDate, async () => {
           console.log(`Sending reminder email for transaction ID: ${transaction.id}`);
           try {
