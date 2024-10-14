@@ -103,8 +103,7 @@ export class UserTransactionController {
       if (!['MANUAL', 'OTOMATIS'].includes(paymentMethode)) {
         return res.status(400).json({ error: 'Invalid payment method' });
       }
-
-      const { transaction, peakSeasonPrices, remainingStock } = await createTransactionService({
+      const { transaction, peakSeasonPrices, remainingStock, snapTransaction } = await createTransactionService({
         roomId,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
@@ -112,7 +111,13 @@ export class UserTransactionController {
         paymentMethode: paymentMethode as PaymentMethode,
       });
 
-      return res.status(201).json({ transaction, peakSeasonPrices, remainingStock });
+      return res.status(201).json({ 
+        transaction, 
+        peakSeasonPrices, 
+        remainingStock, 
+        snapToken: snapTransaction?.token || null, 
+        snapRedirectUrl: snapTransaction?.redirect_url || null, 
+      });
     } catch (error) {
       next(error);
     }
