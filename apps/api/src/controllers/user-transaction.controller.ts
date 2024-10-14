@@ -9,19 +9,30 @@ import { PaymentMethode } from '@prisma/client';
 import { getPropertyReviewsService } from '@/services/usertransactions/get-userReview.service';
 
 export class UserTransactionController {
-  async getOrderListTransactions(req: Request, res: Response, next: NextFunction) {
+  async getOrderListTransactions(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const userId = res.locals.user?.id;
       if (!userId) {
-        return res.status(400).json({ message: 'User ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'User ID is missing or invalid' });
       }
       const page = parseInt(req.query.page as string) || 1;
       const take = parseInt(req.query.take as string) || 10;
       const sortBy = (req.query.sortBy as string) || 'createdAt';
-      const sortOrder: 'asc' | 'desc' = (req.query.sortOrder as string) === 'asc' ? 'asc' : 'desc';
+      const sortOrder: 'asc' | 'desc' =
+        (req.query.sortOrder as string) === 'asc' ? 'asc' : 'desc';
       const search = (req.query.search as string) || '';
-      const dateFrom = req.query.dateFrom ? new Date(req.query.dateFrom as string) : undefined;
-      const dateTo = req.query.dateTo ? new Date(req.query.dateTo as string) : undefined;
+      const dateFrom = req.query.dateFrom
+        ? new Date(req.query.dateFrom as string)
+        : undefined;
+      const dateTo = req.query.dateTo
+        ? new Date(req.query.dateTo as string)
+        : undefined;
       const uuid = req.query.uuid as string;
 
       const transactions = await getUserOrderListService({
@@ -48,11 +59,15 @@ export class UserTransactionController {
       const transactionId = parseInt(req.params.id);
 
       if (!userId) {
-        return res.status(400).json({ message: 'User ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'User ID is missing or invalid' });
       }
 
       if (!transactionId) {
-        return res.status(400).json({ message: 'Transaction ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'Transaction ID is missing or invalid' });
       }
 
       const transactionDetails = await getUserTransactionService({
@@ -78,11 +93,12 @@ export class UserTransactionController {
       const result = await uploadPaymentProofService(
         userId,
         transactionId,
-        req.file, 
+        req.file,
       );
 
       return res.status(200).json({
-        message: 'Payment proof uploaded successfully and awaiting confirmation.',
+        message:
+          'Payment proof uploaded successfully and awaiting confirmation.',
         result,
       });
     } catch (error) {
@@ -103,20 +119,25 @@ export class UserTransactionController {
       if (!['MANUAL', 'OTOMATIS'].includes(paymentMethode)) {
         return res.status(400).json({ error: 'Invalid payment method' });
       }
-      const { transaction, peakSeasonPrices, remainingStock, snapTransaction } = await createTransactionService({
-        roomId,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        userId,
-        paymentMethode: paymentMethode as PaymentMethode,
-      });
 
-      return res.status(201).json({ 
-        transaction, 
-        peakSeasonPrices, 
-        remainingStock, 
-        snapToken: snapTransaction?.token || null, 
-        snapRedirectUrl: snapTransaction?.redirect_url || null, 
+      const { transaction, peakSeasonPrices, remainingStock, snapTransaction } =
+        await createTransactionService({
+          roomId,
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+          userId,
+          paymentMethode: paymentMethode as PaymentMethode,
+        });
+
+      return res
+        .status(201)
+        .json({ transaction, peakSeasonPrices, remainingStock });
+      return res.status(201).json({
+        transaction,
+        peakSeasonPrices,
+        remainingStock,
+        snapToken: snapTransaction?.token || null,
+        snapRedirectUrl: snapTransaction?.redirect_url || null,
       });
     } catch (error) {
       next(error);
@@ -130,14 +151,14 @@ export class UserTransactionController {
 
       if (!roomId || !startDate || !endDate) {
         return res.status(400).json({
-          message: 'Missing required parameters: roomId, startDate, and endDate are required',
+          message:
+            'Missing required parameters: roomId, startDate, and endDate are required',
         });
       }
       const roomDetails = await getRoomDetailsService({
         roomId: parseInt(roomId),
         startDate: new Date(startDate as string),
         endDate: new Date(endDate as string),
-        // userId,
       });
 
       if (!roomDetails.isAvailable) {
@@ -163,11 +184,15 @@ export class UserTransactionController {
       const transactionId = parseInt(req.params.id);
 
       if (!userId) {
-        return res.status(400).json({ message: 'User ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'User ID is missing or invalid' });
       }
 
       if (!transactionId) {
-        return res.status(400).json({ message: 'Transaction ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'Transaction ID is missing or invalid' });
       }
 
       const result = await cancelTransactionService(userId, transactionId);
@@ -179,15 +204,18 @@ export class UserTransactionController {
   }
   async getPropertyReviews(req: Request, res: Response, next: NextFunction) {
     try {
-      const propertyId = parseInt(req.params.id); 
+      const propertyId = parseInt(req.params.id);
 
       if (!propertyId) {
-        return res.status(400).json({ message: 'Property ID is missing or invalid' });
+        return res
+          .status(400)
+          .json({ message: 'Property ID is missing or invalid' });
       }
       const page = parseInt(req.query.page as string) || 1;
       const take = parseInt(req.query.take as string) || 10;
-      const sortBy = req.query.sortBy as string || 'createdAt';
-      const sortOrder: 'asc' | 'desc' = (req.query.sortOrder as string) === 'asc' ? 'asc' : 'desc';
+      const sortBy = (req.query.sortBy as string) || 'createdAt';
+      const sortOrder: 'asc' | 'desc' =
+        (req.query.sortOrder as string) === 'asc' ? 'asc' : 'desc';
       const reviews = await getPropertyReviewsService({
         propertyId,
         page,

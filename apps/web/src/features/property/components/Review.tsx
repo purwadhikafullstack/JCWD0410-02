@@ -23,7 +23,9 @@ const ReviewItem: FC<ReviewItemProps> = ({ review, onReply }) => {
           <GoStarFill className="text-[#fbae2c]" />
           <p className="text-sm font-medium">{review.rating}</p>
         </div>
-        <p className="text-sm font-semibold mt-2">{new Date(review.createdAt).toLocaleDateString()}</p>
+        <p className="text-sm font-semibold mt-2">
+          {new Date(review.createdAt).toLocaleDateString()}
+        </p>
         <p className="text-justify">{review.review || 'No review provided.'}</p>
         {!isReplied && (
           <button

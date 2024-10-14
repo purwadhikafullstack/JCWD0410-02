@@ -53,7 +53,6 @@ const CreateRoomPage = () => {
 
   return (
     <div>
-      {/* Main Dashboard Content */}
       <section className="p-6 container max-w-7xl mx-auto">
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div className="space-y-5">
@@ -62,7 +61,7 @@ const CreateRoomPage = () => {
                 <div className="relative w-full h-[350px] overflow-hidden rounded-lg">
                   <Image
                     src={selectedImage}
-                    alt="Property Image"
+                    alt="Room Image"
                     fill
                     className="object-cover"
                   />

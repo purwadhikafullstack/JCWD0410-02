@@ -177,7 +177,10 @@ export class AuthController {
   ) {
     try {
       const userId = Number(res.locals.user.id);
-      const result = await verifyChangeEmailService(userId);
+      const result = await verifyChangeEmailService(
+        userId,
+        res.locals.user.email,
+      );
 
       return res.status(200).send(result);
     } catch (error) {

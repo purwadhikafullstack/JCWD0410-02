@@ -9,14 +9,22 @@ interface GetPropertyReviewsService {
   sortOrder?: 'asc' | 'desc';
 }
 
-export const getPropertyReviewsService = async (query: GetPropertyReviewsService) => {
+export const getPropertyReviewsService = async (
+  query: GetPropertyReviewsService,
+) => {
   try {
-    const { propertyId, page = 1, take = 10, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const {
+      propertyId,
+      page = 1,
+      take = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
 
     const whereClause: Prisma.ReviewWhereInput = {
       propertyId,
       transaction: {
-        status: 'PROCESSED', 
+        status: 'PROCESSED',
       },
     };
 
@@ -38,7 +46,7 @@ export const getPropertyReviewsService = async (query: GetPropertyReviewsService
                     title: true,
                     tenant: {
                       select: {
-                        id: true, 
+                        id: true,
                         name: true,
                       },
                     },
@@ -71,16 +79,20 @@ export const getPropertyReviewsService = async (query: GetPropertyReviewsService
 
     const dataWithReviewId = reviews.map((review) => ({
       ...review,
-      reviewId: review.id, // Use id as reviewId
-      tenantId: review.transaction?.room?.property?.tenant?.id, 
+      reviewId: review.id,
+      tenantId: review.transaction?.room?.property?.tenant?.id,
     }));
 
     return {
       data: dataWithReviewId,
-      meta: { total, take, page, averageRating: averageRating._avg?.rating || 0 },
+      meta: {
+        total,
+        take,
+        page,
+        averageRating: averageRating._avg?.rating || 0,
+      },
     };
   } catch (error) {
     throw error;
   }
 };
-
