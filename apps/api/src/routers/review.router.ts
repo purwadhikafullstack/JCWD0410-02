@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { UserReviewController } from '@/controllers/review.controller';
 import { verifyToken } from '@/middlewares/verifyToken';
-import { createReviewValidation, handleValidationErrors, replyReviewValidation } from '@/validators/reviewValidator';
+import {
+  createReviewValidation,
+  handleValidationErrors,
+  replyReviewValidation,
+} from '@/validators/reviewValidator';
 import { tenantGuard } from '@/middlewares/tenantGuard';
 
 export class ReviewRouter {
@@ -18,19 +22,18 @@ export class ReviewRouter {
     this.router.post(
       '/:transactionId/property/:propertyId/create',
       verifyToken,
-      createReviewValidation, 
-      handleValidationErrors, 
-      this.reviewController.createReview
+      createReviewValidation,
+      handleValidationErrors,
+      this.reviewController.createReview,
     );
 
-    // Endpoint untuk tenant membalas review
     this.router.post(
       '/:reviewId/reply',
       verifyToken,
-      replyReviewValidation, 
-      handleValidationErrors, 
+      replyReviewValidation,
+      handleValidationErrors,
       tenantGuard,
-      this.reviewController.replyReview
+      this.reviewController.replyReview,
     );
   }
 

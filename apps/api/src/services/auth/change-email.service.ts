@@ -43,7 +43,7 @@ export const changeEmailService = async (userId: number, email: string) => {
 
     await transporter.sendMail({
       from: 'Admin',
-      to: user.email,
+      to: email,
       subject: 'Please verify your email',
       html: htmlToSend,
     });

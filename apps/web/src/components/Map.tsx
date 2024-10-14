@@ -67,7 +67,6 @@ const MapClickHandler = ({ onClick }: { onClick: (event: any) => void }) => {
   return null;
 };
 
-// Component to get and move the map to the user's current location
 const MyLocationButton: React.FC<{
   onPositionChange: (lat: string, lng: string) => void;
 }> = ({ onPositionChange }) => {

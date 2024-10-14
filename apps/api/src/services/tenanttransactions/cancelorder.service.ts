@@ -7,8 +7,8 @@ export const cancelOrderService = async (transactionId: number) => {
       where: { id: transactionId },
       include: {
         user: { select: { name: true, email: true } },
-        room: { select: { id: true, stock: true } } 
-      }
+        room: { select: { id: true, stock: true } },
+      },
     });
 
     if (!transaction) {
@@ -16,7 +16,9 @@ export const cancelOrderService = async (transactionId: number) => {
     }
 
     if (transaction.status !== StatusTransaction.WAITING_FOR_PAYMENT) {
-      throw new Error('Cannot cancel order, transaction is not in WAITING_FOR_PAYMENT status');
+      throw new Error(
+        'Cannot cancel order, transaction is not in WAITING_FOR_PAYMENT status',
+      );
     }
 
     if (transaction.paymentProof) {
@@ -28,7 +30,6 @@ export const cancelOrderService = async (transactionId: number) => {
       data: { status: StatusTransaction.CANCELLED },
     });
 
-    // Increase room stock by 1
     await prisma.room.update({
       where: { id: transaction.roomId },
       data: { stock: transaction.room.stock + 1 },

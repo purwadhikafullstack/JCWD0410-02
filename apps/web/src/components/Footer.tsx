@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { GrLanguage } from 'react-icons/gr';
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -20,12 +19,13 @@ export const Footer = () => {
     pathname === '/change-password' ||
     pathname === '/register-tenant' ||
     pathname.startsWith('/verification') ||
+    pathname.startsWith('/verify-email') ||
     pathname.startsWith('/dashboard')
   ) {
     return null;
   }
   return (
-    <main className="bg-[#0E182F] w-full rounded-t-3xl overflow-hidden">
+    <main className="bg-[url('/Footer.svg')] bg-no-repeat bg-center bg-cover w-full rounded-t-3xl overflow-hidden">
       <div className="py-20 grid md:grid-cols-4 gap-7 max-w-7xl mx-auto justify-center md:justify-items-center">
         <div>
           <h1 className="text-2xl text-white font-semibold">About</h1>
@@ -88,6 +88,9 @@ export const Footer = () => {
           <p className="text-white hover:underline cursor-pointer">Careers</p>
           <p className="text-white hover:underline cursor-pointer">Investors</p>
         </div>
+      </div>
+      <div className="border-t-2 max-w-7xl mx-auto">
+        <p className="text-white text-center py-7">© 2024 EaseCoz, Inc</p>
       </div>
     </main>
   );

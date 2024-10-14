@@ -38,30 +38,30 @@ const Autocomplete = () => {
   const customStyles = {
     control: (provided: any) => ({
       ...provided,
-      border: 'none', // Remove the default border
-      borderRadius: '8px', // Add rounded corners
+      border: 'none',
+      borderRadius: '8px',
     }),
     placeholder: (provided: any) => ({
       ...provided,
-      color: '#999', // Modern placeholder color
+      color: '#999',
       fontStyle: 'italic',
     }),
     option: (provided: any, state: any) => ({
       ...provided,
-      backgroundColor: state.isSelected ? '#396ee4' : 'white', // Custom background for selected options
-      color: state.isSelected ? 'white' : '#333', // Text color change
+      backgroundColor: state.isSelected ? '#396ee4' : 'white',
+      color: state.isSelected ? 'white' : '#333',
       ':hover': {
-        backgroundColor: '#f0f0f0', // Hover effect
+        backgroundColor: '#f0f0f0',
       },
     }),
     singleValue: (provided: any) => ({
       ...provided,
-      color: '#333', // Modern text color
+      color: '#333',
     }),
     menu: (provided: any) => ({
       ...provided,
-      borderRadius: '8px', // Rounded corners for the dropdown menu
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Dropdown shadow
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
     }),
   };
 

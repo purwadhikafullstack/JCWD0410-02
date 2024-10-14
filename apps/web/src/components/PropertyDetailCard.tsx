@@ -27,7 +27,7 @@ const PropertyDetailCard: FC<PropertyDetailCardProps> = ({
   transactionId,
 }) => {
   return (
-    <Card>
+    <Card className="mt-7 md:mt-0">
       <div className="relative h-[300px] overflow-hidden rounded-lg">
         <Image src={imageUrl} alt="RoomImage" fill className="object-cover" />
       </div>
